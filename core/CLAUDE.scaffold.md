@@ -193,7 +193,7 @@ The project maintains a small set of continuity files (canonical skeletons in `.
 - **SESSION_LOG** — append-only session history.
 - **OPEN_ITEMS** — live backlog of open threads.
 - **lessons store** — durable hard-won lessons (Problem / Root cause / Solution / Sources / Date).
-- **memory store** — auto-loaded settled decisions + feedback + project context.
+- **memory store** — settled decisions + feedback + project context (how it loads — auto-injected vs pull-only — is overlay-defined; see the memory_paths slot + memory-discipline binding).
 
 The concrete paths for these, and the diary/recall discipline the agent follows, are project-specific:
 
