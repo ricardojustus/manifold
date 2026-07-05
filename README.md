@@ -63,6 +63,42 @@ Install is **copy mode** by default (a reproducible snapshot, with a hash manife
 live-track the harness repo). `CLAUDE.harness.md` is written but never auto-included — see
 [`bootstrap/INSTALL.md`](bootstrap/INSTALL.md) for the one-line include and full mechanics.
 
+## Give this to your agent
+
+The setup is agent-friendly by design — you answer questions, your agent does the
+mechanics. Clone the repo, open a Claude Code session **in your project**, and paste:
+
+> Read `~/manifold/MANUAL.md` end-to-end. Then set up Manifold for this project: copy
+> `~/manifold/overlays/_template/` to `~/manifold/overlays/<name-my-project>/` and fill it
+> in. For every slot file, **interview me — one question at a time — and use my answers**;
+> never invent facts about me, my project, or my security posture. Where the template's
+> FILL comment offers a sensible default and I have no preference, say so and use it. Then
+> run `~/manifold/bootstrap/install.sh <this repo> --overlay <the overlay path>`, fix
+> anything it names, run `doctor.sh`, and show me the assembled `CLAUDE.harness.md` for
+> review before adding the include line.
+
+**Your side of the interview.** The agent can't invent the slot truths — have answers ready
+for roughly these five things:
+
+1. **Who you are and how you like to work** — name, role, how the agent should address you,
+   tone and format preferences (the *identity* and *comms style* slots).
+2. **What the project is** — its goal, rough layout, where its docs and plans live, what
+   "ground truth" the agent should consult before asserting things (the *system map* and
+   *knowledge sources* slots).
+3. **Your security posture** — what the agent must never read, never touch, never send
+   anywhere; whether external access is read-only (the *security directive* slot). If in
+   doubt, start strict: deny unless explicitly allowed.
+4. **Your hard rules** — the non-negotiables you already know you want ("never force-push",
+   "never commit without asking", vocabulary that has a fixed meaning) (the *project hard
+   rules* slot).
+5. **Memory and continuity paths** — where state/journal/decision files should live. The
+   defaults are fine for most projects; say "defaults" and move on.
+
+**Two steps stay yours, on purpose.** (1) The installer writes `CLAUDE.harness.md` but never
+auto-includes it — you add the one-line include to your `CLAUDE.md` yourself after reviewing
+what your agent assembled. (2) If you opt into enforcement hooks, you paste their
+`settings.json` wiring by hand — never wire a hook you haven't read.
+
 ## What's inside
 
 | | |
