@@ -1,0 +1,42 @@
+# <name> overlay manifest — overlay METADATA (distinct from the install-time
+# .claude/manifold-manifest.yaml the installer writes into a target repo).
+# Copy this file when you copy _template to overlays/<name>/. Fill every field; keep it in
+# sync with the files under this overlay by hand.
+
+name: <name>                 # must equal the overlays/<name>/ directory name
+runtime: claude-code
+description: <one line — what this overlay adapts core to>
+
+# Binds the core <artifact-root> token (the Evidence Store: the project root where audit/council
+# records live). install.sh substitutes it into every staged .md file; if this key is REMOVED
+# the install FAILS CLOSED (nothing written), same as an unfilled slot. The default `.` (the
+# installed target's own root) lets a freshly-copied template install out of the box — CHANGE it
+# to your project's audit/evidence dir (absolute path, or a dir relative to the installed target).
+artifact_root: .
+
+# One entry per {{HARNESS:...}} placeholder in core/CLAUDE.scaffold.md. EVERY placeholder
+# needs a claude-slots/<slot>.md file or the install fails closed. Current slot set:
+claude_slots:
+  - identity
+  - user_import
+  - self_knowledge_corpus
+  - system_map
+  - project_knowledge_sources
+  - security_directive
+  - memory_paths
+  - comms_style
+  - project_hard_rules
+  - compact_instructions
+
+# Core skills that get a project binding appended on install (skill-bindings/<skill>.md).
+skill_bindings: []
+
+# Project-only skills shipped by this overlay (skills/<name>/SKILL.md).
+skills: []
+
+# Project rules installed to .claude/rules/ (rules/<file>.md).
+rules: []
+
+# Enforcement hook bindings for core/ENFORCEMENT.md bright-lines (hooks/<script>.sh).
+# DRAFT on install (not wired into settings.json). exit 2 = block, exit 0 = allow.
+hooks: []
