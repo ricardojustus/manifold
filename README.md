@@ -24,8 +24,10 @@ Manifold moves that judgment into **files**:
   guard against written down as receipts.
 - **Judgment** becomes *principles* and *case-law*: one-page kernels plus real precedent
   for the calls no rubric can make.
-- **Non-negotiables** become *enforcement*: bright-line invariants, optionally backed by
-  hooks that block the action mechanically (prose asks; exit code 2 refuses).
+- **Non-negotiables** become *enforcement*: a small set of invariants backed by an
+  enforcement ladder that prefers the runtime's native permission layer and plain-English
+  classifier rules over custom guards (and is honest about why deny hooks usually make
+  agents worse, not safer).
 - **Continuity** becomes *templates*: state snapshots, journals, decision logs, and handoff
   files, so every session starts cold and still picks up exactly where the last one left
   off.
@@ -107,7 +109,7 @@ reviewing what your agent assembled. (2) If you opt into enforcement hooks, you 
 | **15 principles** | One-page judgment kernels: grounding vs. confabulation, error triage, right-sized engineering (YAGNI with a floor), model economy, ask-vs-decide, fix-the-class, and others |
 | **Case-law** | Precedent for calls rubrics can't make: finding severity, dispatch sizing |
 | **METHODOLOGY.md** | The build pipeline end-to-end: vision, adversarial council review, plan, locked spec, implementation, multi-round audit to a 0-Critical/0-High/0-Medium gate, merge |
-| **ENFORCEMENT.md** | The bright-line invariants and how to back them with hooks (including the exit-code footgun that makes naive hooks fail open) |
+| **ENFORCEMENT.md** | The enforcement ladder: prose first, native permission layer + classifier rules next, hooks by taxonomy last (including the exit-code footgun that makes naive deny hooks fail open) |
 | **Constitution scaffold** | `core/CLAUDE.scaffold.md`: the agent's standing orders, with typed slots your overlay fills |
 | **20+ templates** | State/journal/decision continuity files, dispatch briefs, spec skeletons, ADRs, eval scorecards, steering docs |
 | **Successor docs** | `FIELD_GUIDE.md` (the narrative orientation an incoming agent reads once: what this harness believes, the failure catalog, the honest "what still requires judgment" chapter) and `core/SUCCESSOR_CALIBRATION.md` (scenario self-tests so a cold agent can check its judgment against known-good dispositions) |
@@ -124,7 +126,7 @@ The short version of the philosophy (the long version is `FIELD_GUIDE.md`):
   block, not shrug; an all-clear result gets its coverage audited before it is believed.
 - **Right-sized engineering.** Process weight scales with stakes times reversibility. A
   best-effort convenience gets a review and a selftest, not a hardening campaign. But
-  bright-line security invariants are never YAGNI'd away.
+  irreversibility-class security invariants are never YAGNI'd away.
 - **Structure over vibes.** Verdicts come from reading the artifact end-to-end, findings
   carry severity and evidence, and the audit gate is a number (0/0/0), not a feeling.
 

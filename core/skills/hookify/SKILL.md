@@ -4,13 +4,14 @@ description: >-
   Mine operator corrections into DRAFT enforcement-rule candidates — turn "you
   corrected me on X" into a proposed rule instead of a lesson that evaporates.
   Procedure: gather correction signals (recent conversation and/or the correction
-  corpus the operator points at); classify each by ENFORCEMENT.md's bright-line test
-  — mechanically-decidable + irreversible → HOOKABLE, judgment-shaped → route to
-  memory-discipline (prose tier); for each hookable one draft trigger + action
-  (warn|block) + message + a verbatim RECEIPT; write drafts to the project's
-  hook-drafts dir and PARK ratification. CRITICAL: unlike the upstream it adapts,
-  this NEVER activates a rule — it never writes into live hook or settings paths
-  (ENFORCEMENT bright-line #3). Use when the operator says "hookify", "turn that
+  corpus the operator points at); classify each by ENFORCEMENT.md's four escalation
+  tests — irreversible + mechanically-decidable + not-already-native + not-a-routine
+  -sanctioned-flow → a candidate; judgment-shaped → memory-discipline (prose tier);
+  prefer a native classifier rule (autoMode allow/soft_deny) or an informational/
+  anti-escape hook over any deny-on-work-surface hook; draft trigger + action +
+  message + verbatim RECEIPT; write drafts to the hook-drafts dir and PARK
+  ratification. CRITICAL: this NEVER activates a rule — never writes live hook or
+  settings paths (ENFORCEMENT invariant #3). Use when the operator says "hookify", "turn that
   correction into a rule", or after a run that accumulated corrections. Neighbors:
   memory-discipline (the prose-tier home for judgment rules), ENFORCEMENT.md (the
   classify test + wiring doctrine), the consistency-audit backlog item.
@@ -18,20 +19,22 @@ description: >-
 
 # Hookify — corrections into draft enforcement candidates
 
-*Pattern adapted from anthropics/claude-code `plugins/hookify` (MIT). Rewritten for this harness's two-tier enforcement doctrine and never-self-wire posture.*
+*Pattern adapted from anthropics/claude-code `plugins/hookify` (MIT). Rewritten for this harness's enforcement-ladder doctrine and never-self-wire posture.*
 
 A correction the operator gives you is a signal that evaporates at session end unless something
-durable catches it. Two homes exist: a **prose rule** (a judgment the model reads and applies) or
-a **bright-line hook** (a mechanical guard the runtime fires regardless of intent). This skill
-does the triage and drafts the hook candidates — it does NOT install them.
+durable catches it. Several homes exist, and ENFORCEMENT.md's ladder orders them: a **prose rule** (a judgment the
+model reads and applies — the default), a **native classifier rule** (a plain-English
+allow/soft_deny/hard_deny line the runtime's own permission classifier enforces with judgment),
+an **informational or anti-escape hook**, or — rarest, operator-commissioned only — a
+**deny hook**. This skill does the triage and drafts candidates — it does NOT install anything.
 
 **The one divergence from the upstream it adapts, stated up front:** the upstream `hookify`
 generates a rule and activates it immediately. **This harness never does.** A session authoring
-its own live enforcement is exactly `.claude/harness/ENFORCEMENT.md` bright-line #3 (no mid-session config /
-permission self-modification) — the guard that protects every other guard. So hookify's output
+its own live enforcement is exactly `.claude/harness/ENFORCEMENT.md` invariant #3 (no mid-session config /
+permission self-modification). So hookify's output
 is always a DRAFT parked for the operator; wiring is a separate, human, out-of-band step. If you
 ever find yourself writing into `.claude/harness-hooks/` or a `settings.json`, you have left this
-skill's lane and crossed a bright line — stop.
+skill's lane — stop.
 
 ## Step 1 — Gather the correction signals
 
@@ -50,26 +53,30 @@ many times it has fired*. Do not editorialize; the operator's words are the grou
 
 ## Step 2 — Classify each: HOOKABLE or prose-tier
 
-Run each correction through `.claude/harness/ENFORCEMENT.md`'s **test for a new bright line** (its "Extending the
-list" section) — the same three-part gate, applied here as a router:
+Run each correction through `.claude/harness/ENFORCEMENT.md`'s **four escalation tests** (its
+"Extending enforcement" section), applied here as a router:
 
 1. **Irreversibility / severity** — would one violation cause damage that cannot be cleanly
    undone (a destructive command, an exfiltration, a write outside the blast-radius fence)? A
-   recoverable slip is NOT bright-line material.
-2. **Mechanical decidability** — can a hook decide "block or allow" from the tool call *alone*,
-   without the judgment that lives in prose? A regex over a command string, a path glob, a
-   settings-file target — decidable. "Was this the right architectural call" — not.
-3. **Belt-and-suspenders, not replacement** — even a hookable rule still wants its prose form
-   with the reasoning. The hook is added on top; it never licenses deleting the why.
+   recoverable slip stays prose.
+2. **Native-layer check** — does the permission system or classifier already cover it, or would
+   a one-line classifier rule (autoMode allow/soft_deny/hard_deny in settings) cover it with
+   judgment? Then draft THAT rule, not a hook — plain English enforced by a model beats a regex.
+3. **Mechanical decidability** — can a hook decide "block or allow" from the tool call *alone*?
+   A regex over a command string — decidable. "Was this the right architectural call" — not.
+4. **Routine-flow check** — is the "violation" actually a common, operator-sanctioned flow? Then
+   the enforcement point is the operator's approval; do not mechanize it.
 
-**HOOKABLE** = passes 1 AND 2 (irreversible-class AND mechanically decidable). Draft a hook
-candidate (Step 3).
+**CANDIDATE** = passes all four. Prefer, in order: classifier rule > informational hook (warn) >
+anti-escape hook > deny hook (operator-commissioned only, with ownership verification — no hook
+may block a workstream from its own declared work surface). Draft it (Step 3).
 
 **Everything else routes to prose** = `memory-discipline`. Most corrections land here, and that
 is correct — a judgment rule that carries its reasoning generalizes to cases a regex never
 anticipates. Hand these off as a memory-discipline entry (the correction + its why); do not force
 a mechanical guard onto a judgment call, or you recreate the brittle-checklist failure the prose
-tier exists to avoid. When in doubt, prose.
+tier exists to avoid — and the over-block failure that got this harness's own deny tier retired.
+When in doubt, prose.
 
 ## Step 3 — Draft each hookable candidate
 
@@ -99,7 +106,7 @@ concrete location; it may override the default). This is a staging area — iner
 
 **Never** write into `.claude/harness-hooks/` (the installed-but-unwired bindings), and **never**
 touch any `settings.json` or permission file. Those are the live-enforcement surfaces, and a
-session editing its own enforcement is the bright-line-#3 violation this whole skill is built to
+session editing its own enforcement is the invariant-#3 violation this whole skill is built to
 avoid. The draft dir is the airlock; the operator moves things across it, not you.
 
 ## Step 5 — Park the ratification
@@ -125,7 +132,8 @@ the human makes it.
 
 - **memory-discipline** — the destination for every correction that classifies as prose-tier
   (the majority). Hookify decides HOOKABLE vs prose; memory-discipline owns the prose home.
-- **`.claude/harness/ENFORCEMENT.md`** — supplies the classify test (Step 2), the exit-code footgun (Step 3), and
-  the never-self-wire doctrine (Step 4). Read it before drafting any `block` candidate.
+- **`.claude/harness/ENFORCEMENT.md`** — supplies the four escalation tests (Step 2), the hook
+  taxonomy + exit-code footgun (Step 3), and the never-self-wire doctrine (Step 4). Read it
+  before drafting any `block` candidate.
 - **The consistency-audit / retro backlog item** — the periodic corrections-mining pass this
   skill is the manual stand-in for.

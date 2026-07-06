@@ -7,10 +7,11 @@
   treats every occurrence of that token as a slot that must be filled.
 
   The VERBATIM-CORE sections between the slots are project-agnostic and install as written.
-  They carry the reasoning (the WHY) for each discipline; ENFORCEMENT.md governs which few
-  are additionally hook-guaranteed. Each HARD-RULE-shaped section carries an *Enforcement:*
-  annotation — `prose` (judgment rule, the model obeys) or `bright-line` (also mechanically
-  enforced where the runtime supports it; see ENFORCEMENT.md).
+  They carry the reasoning (the WHY) for each discipline; ENFORCEMENT.md's enforcement
+  ladder governs what (if anything) backs each one mechanically. Each HARD-RULE-shaped
+  section carries an *Enforcement:* annotation — `prose` (judgment rule, the model obeys;
+  the default) or a note naming the ladder rung that additionally backs it (a native
+  classifier rule, server-side control, or runtime enforcement; see ENFORCEMENT.md).
 
   Slot inventory (each appears exactly once below): identity · user_import ·
   self_knowledge_corpus · system_map · project_knowledge_sources · security_directive ·
@@ -145,7 +146,7 @@ Yellow flag: catching yourself thinking "let me just do X" when X matches a skil
 
 ## Implementation Discipline
 
-*Enforcement: prose (surgical-changes bright-line where it touches LOCKED artifacts — see ENFORCEMENT.md)*
+*Enforcement: prose — LOCKED-artifact changes route through the operator-gated amendment process (ENFORCEMENT.md invariant #2)*
 
 When approved to implement code, four principles complement the Cardinal Rule (which governs WHEN to act). The fuller version + worked examples live in the project's coding-guidelines skill, if one is installed — invoke it for depth.
 
@@ -160,24 +161,25 @@ When approved to implement code, four principles complement the Cardinal Rule (w
 
 Before building ANY machinery (a guard, an abstraction, a config surface, a process step), three checks: (1) **the need is real and current**, not speculative; (2) **nothing already provides it** — check the platform's native layer FIRST (permission modes and their classifiers, sandboxing, server-side branch protection, existing hooks), then existing code and rules; (3) **the tradeoff wasn't already litigated** — waivers, coverage notes, and decision logs are settled postures to inherit, not re-derive; challenge them once with new evidence or respect them. **Process weight scales with stakes × reversibility**: multi-round audit machinery is for irreversible / high-blast-radius / LOCKED surfaces — a best-effort convenience gets a review and a selftest, not a hardening campaign. Receipt: this harness's own v1 self-audit burned three rounds hardening a declared-best-effort seatbelt hook and the "hardening" itself over-blocked innocent work; the resolution was radical simplification (170 → ~60 lines) plus a written waiver.
 
-**The floor — YAGNI must NOT trim**: bright-line security invariants (irreversibility settles their existence), the block-path test for any guard that exists, receipts/WHYs on rules, or small-but-real needs (build the small version). Can't tell speculative from real? Ask or park — never silently drop.
+**The floor — YAGNI must NOT trim**: irreversibility-class security invariants (ENFORCEMENT.md's invariants — irreversibility settles their existence), the block-path test for any guard that exists, receipts/WHYs on rules, or small-but-real needs (build the small version). Can't tell speculative from real? Ask or park — never silently drop.
 
 ## Git Discipline
 
-*Enforcement: bright-line (see ENFORCEMENT.md) — no force-push / history rewrite on protected branches*
+*Enforcement: prose + native classifier rule (ENFORCEMENT.md invariant #1) — no force-push / history rewrite on protected branches; server-side branch protection where a shared remote exists*
 
-Use the project's standard git workflow tooling for commits, pushes, and PRs. Invariants: atomic commits (one logical change); work on a branch for risky/experimental changes; **never force-push or rewrite history on a shared protected branch** (this last is a bright line, mechanically enforced — see ENFORCEMENT.md — because the damage is shared and irreversible).
+Use the project's standard git workflow tooling for commits, pushes, and PRs. Invariants: atomic commits (one logical change); work on a branch for risky/experimental changes; **never force-push or rewrite history on a shared protected branch** (this last is ENFORCEMENT.md invariant #1 — backed by a classifier rule and, where a shared remote exists, server-side branch protection — because the damage is shared and irreversible).
 
 ## Security Directive
 
-*Enforcement: bright-line (see ENFORCEMENT.md) — no secrets in agent surfaces; declared path boundaries*
+*Enforcement: prose + runtime enforcement (ENFORCEMENT.md invariants #4/#5) — no secrets in agent surfaces; declared path boundaries*
 
 <!-- SLOT security_directive: this project's security posture — the exfiltration/infiltration
      priorities, the deny-unless-allowed default, read-only-external stance, the concrete
      secret prefixes to redact and credential stores never to read in full, the write-scope
      boundaries, and any project-specific confidentiality framework (tiers, codenames). The
-     bright-line halves (no readable secrets; declared never-touch paths) are additionally
-     hook-enforced by the overlay per ENFORCEMENT.md. Calibrate crisis framing to real breach
+     invariant halves (no readable secrets #5; declared never-touch paths #4) get whatever
+     mechanical backing the overlay binds per ENFORCEMENT.md's ladder (runtime redaction,
+     permission deny rules, classifier rules) — never a proactive deny hook. Calibrate crisis framing to real breach
      (external exfil, unauthorized shared-state write, prod-credential exposure); local tokens
      are handle-with-care, not crisis. -->
 {{HARNESS:security_directive}}

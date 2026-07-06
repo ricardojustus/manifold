@@ -23,7 +23,7 @@ Three design commitments explain almost everything about how it's built:
 You'll recognize these in every corner of the repo:
 
 - **Verify, don't trust.** Claims get checked against sources *this turn*; agent reports get checked against artifacts; error causes get validated before diagnosis. The most expensive failures in agent work are confident claims nobody checked.
-- **Structure beats intention.** Most rules are prose the agent chooses to follow (deliberately — prose carries reasoning and generalizes). But the handful of rules where one violation is catastrophic are ALSO enforced mechanically, by hooks that fire regardless of what the model intends.
+- **Structure beats intention.** Most rules are prose the agent chooses to follow (deliberately — prose carries reasoning and generalizes). The handful where one violation is catastrophic get the lowest mechanical backing that actually covers them (the runtime's own permission classifier, server-side controls, runtime redaction) — never a custom guard where the platform already provides the net.
 - **Adversarial review is the price of confidence.** Specs get audited before code exists; code gets audited against specs; reviewers from a *different model family* double-check, because two copies of the same model share the same blind spots. Nothing ships because its author was smart.
 - **Right-size everything.** Full ceremony is for work that can hurt you. Small reversible changes take an express lane. Machinery isn't built until the need is real, nothing else already provides it, and the question wasn't already settled (YAGNI — with a floor: safety invariants, tests, and receipts are never trimmed "for simplicity").
 - **The context window is a workspace, not a memory.** Everything durable lives in files — state snapshots, journals, decision logs — because an agent's conversation can be compacted or lost at any moment. Files survive; recollections don't.
@@ -39,7 +39,7 @@ manifold/
 ├── core/                  ← the universal layer (zero project references)
 │   ├── CLAUDE.scaffold.md      the constitution (assembled into a project's CLAUDE file)
 │   ├── METHODOLOGY.md          the build loop: vision → council → plan → spec → audit → lock
-│   ├── ENFORCEMENT.md          the two-tier rules doctrine + the five bright lines
+│   ├── ENFORCEMENT.md          the enforcement ladder + the five invariants
 │   ├── SUCCESSOR_CALIBRATION.md self-test runbook for a cold agent's judgment
 │   ├── skills/            25 procedures (session lifecycle, build arc, dispatch, evals…)
 │   ├── principles/        15 one-page judgment kernels
@@ -66,7 +66,7 @@ The full build loop, formally: score the **stakes** first (a reversible small ch
 
 ### Enforcement (`core/ENFORCEMENT.md` + the overlay's `hooks/`)
 
-The two-tier doctrine. Tier one: prose rules (the majority — they carry reasoning, the agent applies judgment). Tier two: **bright lines** — five invariants so catastrophic-if-violated that they're mechanically enforced by small scripts the runtime consults before executing actions. The five: no force-push/history-rewrite on protected branches; no edits to LOCKED artifacts outside the amendment process; no session modifying its own permissions or config; no writes into declared never-touch directories; no secrets in agent-readable surfaces. Two things to know as the human: **hooks only ever tighten** (they can block, never grant), and **wiring them up is deliberately a manual human step** — a session must never arm its own guards. The force-push guard is explicitly a *seatbelt against carelessness, not armor against malice* — a text-matching hook cannot beat an agent crafting disguised commands, and we formally waived chasing that (the waiver, with reasoning, lives in the project's audit records).
+The enforcement ladder. Rung one: prose rules (the majority — they carry reasoning, the agent applies judgment). Rung two: the runtime's own permission layer — Claude Code's classifier surfaces dangerous-shaped actions for your approval, and you can feed it project-specific rules in plain English (settings `autoMode`: `allow` / `soft_deny` — prompts you, your yes clears it / `hard_deny` — even your yes doesn't). Rung three: you, in the conversation — flows whose normal case is sanctioned (like amending a locked spec) are enforced by your approval, never by a file guard. Rung four: hooks, by shape — informational (add context, never block) and anti-escape (stop the agent bypassing a gate YOU installed, like the `--no-verify` guard) are healthy; **deny hooks on work surfaces are built only on your explicit commission**, with ownership of every hard-coded path verified with its owning workstream. The harness once shipped four deny hooks; they were retired 2026-07-05 after producing one real incident (blocking a workstream from its own surface) and zero real saves. The five invariants still stand — as prose, backed by the lowest ladder rung that actually covers each. Two durable facts: **hooks only ever tighten** (block, never grant), and **wiring is always a manual human step** — a session must never arm its own guards.
 
 ### Skills (`core/skills/` — 25 procedures)
 
@@ -168,8 +168,8 @@ This is the intended shape of a project from empty repo to shipped feature.
 
 ## 8. The safety layer, summarized for the owner
 
-- Five bright lines, mechanically enforced (see §3/Enforcement). Everything else is prose + review.
-- Hooks are **seatbelts, not armor**: they catch the careless mistake reliably; a malicious actor is handled by structural layers (sandboxing, your review of merges, rollback tags) — not by making text-matchers cleverer. This posture is settled and documented; re-litigating it in audits is explicitly out of bounds.
+- Five invariants, prose-first, each backed by the lowest ladder rung that covers it (see §3/Enforcement): classifier rules + server-side branch protection for history-rewrite; your in-conversation approval for LOCKED-artifact amendments; runtime redaction for secrets. No deny hooks on work surfaces (retired 2026-07-05).
+- Guards, where they exist at all, are **seatbelts, not armor**: the careless mistake is caught by the native classifier and structural layers (sandboxing, your review of merges, rollback tags) — not by making text-matchers cleverer. This posture is settled and documented; re-litigating it in audits is explicitly out of bounds.
 - Guards are tested on their **block path** (a guard that only ever passed its allow-path tests can fail open exactly when needed) — including in degraded environments (there's a receipt: a hook that silently allowed everything when it couldn't create a temp file in a sandbox).
 - Accepted limits are **waived in writing**, with reasoning and a revalidation trigger — so a future reader sees a decision, not a hole.
 

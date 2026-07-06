@@ -16,7 +16,7 @@ overlays/<name>/
 ├── skills/              # project-only skills (each <name>/SKILL.md), copied alongside core skills.
 ├── skill-bindings/      # <core-skill-name>.md, appended to that core skill's SKILL.md as a
 │                        #   "## Project bindings" section on install.
-└── hooks/               # runtime enforcement bindings for core/ENFORCEMENT.md's bright-line list
+└── hooks/               # OPTIONAL enforcement bindings per core/ENFORCEMENT.md's ladder + taxonomy
                          #   (installed to .claude/harness-hooks/, DRAFT — wiring is manual; README.md skipped).
 ```
 
@@ -38,8 +38,11 @@ goes in it. Delete the placeholder READMEs (or leave them — the installer skip
 3. **`rules/`** — drop in any binding project directive that doesn't generalize into core.
 4. **`skill-bindings/`** — for each core skill that needs project concretes (paths, dispatch
    mechanics, doc-corpus refs), add `<skill>.md`; it appends as a `## Project bindings` section.
-5. **`hooks/`** — bind whichever `core/ENFORCEMENT.md` bright-lines you want mechanically
-   enforced (exit 2 = block; see that file's exit-code footgun), plus a `selftest-hooks.sh`.
+5. **`hooks/`** — optional. Read `core/ENFORCEMENT.md`'s enforcement ladder FIRST: prefer a
+   native classifier rule (settings `autoMode` allow/soft_deny) or an informational /
+   anti-escape hook; deny hooks on work surfaces are operator-commissioned only, with
+   ownership of every hard-coded path verified. Any hook that denies ships with a
+   `selftest-hooks.sh` asserting its block path (exit 2 — see the exit-code footgun).
 6. Keep `manifest.yaml` in sync with what you actually added.
 
 ## Steering documents (fill at init)

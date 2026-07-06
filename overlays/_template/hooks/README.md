@@ -1,8 +1,13 @@
 # overlays/<name>/hooks/
 
-Runtime enforcement bindings for the bright-line invariants in `core/ENFORCEMENT.md`. One
-hook script per bright line you choose to mechanically enforce; an invariant with no binding
-here falls back to prose-tier enforcement (still holds, just not hook-guaranteed).
+OPTIONAL enforcement bindings. Read `core/ENFORCEMENT.md`'s ladder first: most invariants
+are best backed by the runtime's native layer (a plain-English classifier rule in settings
+`autoMode`, permission deny rules, server-side controls) — not by a hook. Healthy hook
+shapes here: informational (adds context, never blocks), anti-escape (stops the agent
+bypassing an operator-installed gate), opt-in mode hooks. Deny hooks on work surfaces are
+operator-commissioned only, with every hard-coded surface's ownership verified — no hook
+may block a workstream from its own declared work surface. An invariant with no binding
+falls back to prose-tier enforcement (still holds).
 
 Every hook MUST:
 - exit **2** to block, **0** to allow (exit 1 / any other nonzero does NOT block — it fails

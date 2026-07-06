@@ -1,7 +1,7 @@
 ---
 name: audit-cycle
 description: >-
-  Dispatch the pre-merge layer-audit cycle — a primary reviewer subagent + an independent cross-model reviewer (each with a completion-watcher), multi-round to the 0/0/0 (C/H/M) lock gate with structured Low triage, MAX-severity consolidation with an empirical-truth carve-out. **Invoke whenever a feature branch is about to merge** — pre-merge gate, per-layer audits, spec LOCK cycles. Trigger phrases: "audit X" / "round-N audit" / "dispatch audit" / "audit before merge" / "fix-pass" / "consolidate the audits" / "/audit-cycle" — and proactively whenever a branch is contract-clean and ready to merge. The audit subject is the implementation AS A WHOLE, NOT the diff (diff-scoped framing is a recurring failure mode). DIFFERENT from `scoped-adversarial-audit` (scoped adversarial single-pass on a security-sensitive surface) and `system-audit` (whole-subsystem inventory with no specific change). DO NOT use for single-PR review, a scoped-security pass (`scoped-adversarial-audit`), or subsystem inventory (`system-audit`).
+  Dispatch the pre-merge layer-audit cycle — a primary reviewer subagent + an independent cross-model reviewer (each with a completion-watcher), multi-round to the 0/0/0 (C/H/M) lock gate with structured Low triage, MAX-severity consolidation with an empirical-truth carve-out. **Invoke when spec-lane work is about to merge** — a branch implementing a LOCKED spec or contract, a spec-LOCK cycle, or a per-layer audit inside that lane. Trigger phrases: "audit X" / "round-N audit" / "dispatch audit" / "audit before merge" / "fix-pass" / "consolidate the audits" / "/audit-cycle" — and proactively when a spec-lane branch is contract-clean and ready to merge. The lane choice IS the stakes gate: quick fixes and non-spec work get a normal review, not the ladder — UNLESS mission-critical (touches a LOCKED contract surface, live-prod path, or high blast radius): then ask the operator whether it enters the ladder, or during autonomous work decide by severity and record the call. The audit subject is the implementation AS A WHOLE, NOT the diff (diff-scoped framing is a recurring failure mode). DIFFERENT from `scoped-adversarial-audit` (scoped adversarial single-pass on a security-sensitive surface) and `system-audit` (whole-subsystem inventory with no specific change). DO NOT use for single-PR review, a scoped-security pass (`scoped-adversarial-audit`), or subsystem inventory (`system-audit`).
 ---
 
 # Audit cycle — pre-merge layer-audit dispatch
@@ -11,16 +11,21 @@ The pre-merge audit pattern. Parallel primary reviewer + independent cross-model
 ## When to invoke
 
 **In scope** (use this skill):
-- Feature branch contract-clean + ready to merge, needs a final audit gate
-- Per-layer / per-chunk pre-merge audit
+- Spec-lane branch (implements a LOCKED spec/contract) contract-clean + ready to merge, needs the final audit gate
+- Per-layer / per-chunk pre-merge audit inside the spec lane
 - Spec LOCK cycles
 - "audit X" / "round-1 audit" / "dispatch the audit cycle" / "audit before we merge" / "consolidate the audits"
 - Backlog-clearing passes (working `audit-backlog.md` items)
 
 **Out of scope** (different skill):
+- Quick fixes and non-spec work — a normal review, not the ladder. Exception: a mission-critical quick fix (LOCKED contract surface, live-prod path, high blast radius) MAY warrant the gate — ask the operator; during autonomous work decide by severity and record the call in the run journal.
 - Single-PR diff review by one reviewer → the runtime's single-PR review tool
 - Scoped adversarial pass on a security-sensitive surface → `scoped-adversarial-audit`
 - Whole-subsystem inventory with no specific change → `system-audit`
+
+## When rounds END (as important as when they start)
+
+**Rounds end on operator word or orchestrator judgment** once the finding tail goes cosmetic or waived — the gate is 0C/0H/0M on REAL findings, not infinite rounds. Inherit declared postures and waivers from earlier rounds and from design time: a settled threat-model or design posture is challenged once with NEW evidence or respected, never re-litigated by default. *(Receipt: rounds 2–3 of this harness's own self-audit re-hardened a tail the design had explicitly waived; the "hardening" itself became round 3's over-block finding; the operator's ruling — "stop burning cycles" — ended it. The waiver was right the first time.)*
 
 ## The canonical audit directory (one location, everywhere)
 

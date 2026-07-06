@@ -34,7 +34,7 @@ tail, selftest-pinned. The audit rounds were the failure mode, not diligence.
 
 This principle cuts speculation. It does not cut:
 
-- **Security invariants where one violation is irreversible** (the bright lines, exfiltration
+- **Security invariants where one violation is irreversible** (ENFORCEMENT.md's invariants, exfiltration
   posture). Their existence is settled by the irreversibility test, not by "have we needed it yet."
 - **The block-path test for any guard that exists.** A guard too trivial to test is a guard that
   fails open (see ENFORCEMENT.md's exit-code footgun).
@@ -69,4 +69,4 @@ Stop and reconsider when you see yourself:
   well-intentioned — the over-blocking belt in this harness's own v1 audit was exactly this.
 
 *Pairs with: `smell-checklist.md` (probe triggers), `ask-vs-decide.md` (when to park the maybe-need),
-ENFORCEMENT.md "Extending the list" (the same three-part discipline for bright lines).*
+ENFORCEMENT.md "Extending enforcement" (the four tests before any rule escalates past prose).*

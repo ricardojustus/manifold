@@ -28,4 +28,4 @@
 ## Boundaries
 <!-- The structural fences: directories or systems that are off-limits or owned elsewhere, and
      where the blast radius of a change is meant to stop. The project-level view of the
-     never-touch paths .claude/harness/ENFORCEMENT.md bright-line #4 binds. -->
+     never-touch paths ENFORCEMENT.md invariant #4 declares (prose + permission rules; ownership verified with the surface's owner). -->

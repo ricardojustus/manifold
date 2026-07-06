@@ -40,8 +40,8 @@ For each repo with changes:
 - **Check for gitignored-but-relevant state** — if a gitignored config changed and it matters
   for the handoff, mention it in the commit body.
 - Follow the project's standing branch decision; don't invent a branch for experimental work
-  without checking. **Never force-push or rewrite shared history** (a bright line — see the
-  enforcement doctrine).
+  without checking. **Never force-push or rewrite shared history** (ENFORCEMENT.md
+  invariant #1).
 
 ### 2. State snapshot — update + 4-way hygiene routing
 The state snapshot is the file future-you opens first — and the one that bloats fastest if

@@ -175,7 +175,7 @@ cancel       # touch this file to end the loop immediately  (cancel path)
 are the hard iteration cap; `cancel` is the soft stop.
 
 **Wiring (manual, out-of-band — a session never wires its own enforcement; see `.claude/harness/ENFORCEMENT.md`
-bright-line #3).** After copying the script somewhere runnable, add to the target repo's
+invariant #3, no mid-session config self-modification).** After copying the script somewhere runnable, add to the target repo's
 `.claude/settings.json`:
 
 ```json

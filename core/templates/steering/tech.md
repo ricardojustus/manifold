@@ -29,4 +29,4 @@
 ## Non-negotiables
 <!-- The hard technical constraints — the things a change must never violate (a security
      posture, a compatibility contract, a performance floor, a locked interface). These are the
-     project-level cousins of .claude/harness/ENFORCEMENT.md's bright lines; each should carry its WHY. -->
+     project-level cousins of .claude/harness/ENFORCEMENT.md's invariants; each should carry its WHY. -->
