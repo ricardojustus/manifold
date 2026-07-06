@@ -53,6 +53,14 @@ which store is closer:
 - **a rule that must fire unprompted is not merely saved — it is armed**: promoted to the
   always-loaded tier (a pin, a constitution line, a rule file) per the binding. Filing is not
   arming.
+- **The hot-buffer option (recommended for Mode B).** Promotion machinery has latency; a
+  correction given today should protect the very next session. A project may keep a small
+  **always-loaded lessons buffer** (an @-imported file, capped ~20 entries): on any operator
+  correction or self-caught mistake, append one line (`date · rule · pointer to the episodic
+  entry`) BEFORE continuing — the episodic system stays the record; the buffer is the
+  zero-latency echo. The cap forces graduation at session-end: each entry becomes a durable
+  rule/pin/skill fix or is dropped. Uncapped, it becomes the drawer-nobody-reads failure this
+  skill exists to prevent; the cap and sweep are what make it safe.
 
 ## Mode A mechanics: the direct-write store
 
