@@ -53,6 +53,32 @@ failing the same contract, where fresh blind spots beat more effort. Outside tho
 implementation adds coordination cost without adding judgment. The project binding pins the
 concrete counterparty and its dispatch mechanics.
 
+## The advisor — a second opinion at junctions (where the runtime provides one)
+
+Claude Code's advisor tool (set `advisorModel` in settings) attaches a fresh-context second
+model that receives the FULL transcript and returns guidance; the main model decides when to
+consult, steered by standing instructions — these are those instructions. **Consult at, and
+only at, these junctions:**
+
+1. **Design forks decided alone** — choosing between genuinely different approaches for
+   something later work builds ON TOP OF (an interface, a schema, a data flow, a dependency)
+   AND the operator is not in the loop for the pick. If the operator is present, presenting
+   the options IS the consult; internal implementation details below the builds-on-it bar
+   never qualify.
+2. **The debugging circuit breaker** — repeated failed fixes on one bug, before escalating.
+3. **Before a spec goes to its audit** — one fresh read against wrong-target framing.
+4. **Autonomous-run decisions** — gray-zone STOP classification, decide-and-park
+   recommendations, irreversible-ish in-scope commits, and the done-declaration (the
+   autonomous-work skill owns the details).
+
+**Never**: routine turns, routine implementation against a locked spec, audit gates (the
+cross-model reviewer owns independence there) — and **never to clear a STOP boundary: advice
+improves a decision within your authority; it cannot expand your authority.** Cost mechanics
+make the whitelist matter: each consult ships the entire transcript uncached at the advisor
+model's rates. A handful of consults in a heavy session; zero in a light one. The advisor is
+same-family fresh eyes (kills anchoring, not family blind spots) — it complements the
+cross-model lens, never replaces it.
+
 ## Why
 
 Dispatching everything at the top tier feels safe and is quietly the most expensive habit an agent can have: it burns both metered spend and the flat-rate quota that gates *all* work, on tasks a cheaper tier would have done identically. The inverse — implementing a subtle contract on a cheap tier — fails differently: the cheap tier relaxes contracts it doesn't fully grasp, and you pay for the miss in audit rounds. The tier is a judgment call about where the *judgment* in the task actually lives.

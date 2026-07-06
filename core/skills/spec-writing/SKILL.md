@@ -85,6 +85,8 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 ## Pre-flight checklist (before handing the spec to audit-cycle)
 
 - Regime declared on line 1?
+- (If the runtime has an advisor) one advisor consult on the finished draft — fresh eyes on
+  wrong-target framing before audit rounds are paid for?
 - **System understood FULLY from the actual specs (LOCKED + stale/archived) + the documentation-retrieval system + end-to-end code — not surface traces? Can you explain the design's reasoning + rejected alternatives from the sources?**
 - (HEAVY) Step-1 trace done, insertion point on the **live** path confirmed?
 - (HEAVY) Axis-2 scope validated with the owner before the body was written?

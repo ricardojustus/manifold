@@ -73,6 +73,27 @@ the loop working. The failure mode is guessing on their call to avoid the pause.
 judgment of which forks are yours to decide and which to park, see the **ask-vs-decide**
 principle in `.claude/harness/principles/` — it's the companion to these boundaries.
 
+
+## Advisor consults during the run (where the runtime has one)
+
+With `advisorModel` set, four run moments warrant a fresh-context second opinion — and only
+these; routine loop iterations never do (each consult ships the full transcript, uncached):
+
+1. **Gray-zone STOP classification** — before treating a borderline action as in-scope
+   reversible. Misclassifying "proceed" is the expensive direction.
+2. **Decide-and-park recommendations** — the parked lean is what the operator ratifies in the
+   morning; consult before writing it, and record concur/dissent with the entry.
+3. **Irreversible-ish in-scope commits** — a merge to a main branch, a lock record, an
+   amendment executed under a pre-GO.
+4. **The done-declaration** — before the morning presentation, an independent completion
+   check against early-victory / no-op rationalization.
+
+Log each consult in DECISIONS ("decided X; advisor concurred / dissented because Y") — a
+dissent is exactly the signal the operator should see before ratifying. **The advisor can
+improve a decision within your authority; it can NEVER expand it: a STOP boundary stays a
+STOP regardless of what the advice says.** The boundaries are the operator's, not a model
+consensus.
+
 ## Surviving the night — wakeups and watchers
 
 An unattended loop dies in two ways the runtime won't save you from: a background dependency

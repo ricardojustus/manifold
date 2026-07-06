@@ -101,6 +101,9 @@ attempt from the same wrong model produces another failure plus more layered dam
 three:
 - **Stop changing code.** Question the architecture, not the line — the defect may be a design
   mismatch, not a bug in this function.
+- **Consult the advisor first, if the runtime has one** (`advisorModel` set): a fresh
+  full-transcript read of the failed attempts is exactly what breaks a tunnel — do this BEFORE
+  escalating to the operator; fold its read into your summary (concur/dissent noted).
 - **Write a summary and escalate.** What the symptom is, what you've tried (all three, with what
   each showed), what you've ruled out, and what you now suspect is wrong at the design level.
   Escalate to the operator (or a fresh reviewer) with that summary.
