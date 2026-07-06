@@ -92,7 +92,7 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - Goals **and** Non-Goals explicit?
 - (Amendment) delta-scoped + sibling-coordination section present + no audit-trail in body?
 - Concrete code references grep-verified (per `brief-authoring`) — existence is necessary even though it isn't sufficient?
-- Implementation-dispatch triage filled (tier + effort + lane shape + cross-model role + rationale)?
+- Implementation-dispatch triage filled (tier + effort + lane shape + cross-model role + rationale)? (At dispatch, Agent-tool implementations use the `implementer` role with the tier passed as the per-invocation `model` param.)
 - Step-5 self-review clean?
 
 ## When to invoke / when to skip

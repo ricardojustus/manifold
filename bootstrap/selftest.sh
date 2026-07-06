@@ -48,6 +48,7 @@ mkdir -p "$CORE/core/skills/alpha" "$CORE/core/skills/beta" \
          "$CORE/overlays/_selftest/skill-bindings/scripts" \
          "$CORE/overlays/_selftest/rules" "$CORE/overlays/_selftest/hooks" \
          "$CORE/overlays/_selftest/skills/project-only" \
+         "$CORE/core/agents" "$CORE/overlays/_selftest/agent-bindings" "$CORE/overlays/_selftest/agents" \
          "$CORE/overlays/_selftest_bad/claude-slots" \
          "$CORE/overlays/_selftest_noroot/claude-slots"
 
@@ -104,6 +105,14 @@ printf '# placeholder — not installed\n' > "$CORE/overlays/_selftest/hooks/REA
 # overlay project-only skill: installs to .claude/skills/; NO binding appended; README skipped
 printf -- '---\nname: project-only\ndescription: A project-only overlay skill.\n---\nProject-only skill body.\n' > "$CORE/overlays/_selftest/skills/project-only/SKILL.md"
 printf '# placeholder — not installed\n' > "$CORE/overlays/_selftest/skills/README.md"
+
+# agents: gamma has an overlay agent-binding, delta doesn't; README.md must NOT install;
+# overlay-only agent ships complete from overlays/_selftest/agents/
+printf -- '---\nname: gamma\ndescription: Gamma dummy agent for selftest.\n---\nGamma agent body.\n' > "$CORE/core/agents/gamma.md"
+printf -- '---\nname: delta\ndescription: Delta dummy agent for selftest.\n---\nDelta agent body.\n' > "$CORE/core/agents/delta.md"
+printf '# authoring doc — not installed\n' > "$CORE/core/agents/README.md"
+printf 'gamma project binding line\n' > "$CORE/overlays/_selftest/agent-bindings/gamma.md"
+printf -- '---\nname: ovr-agent\ndescription: Overlay-only agent for selftest.\n---\nOverlay agent body.\n' > "$CORE/overlays/_selftest/agents/ovr-agent.md"
 
 # good overlay manifest: declares artifact_root so <artifact-root> binds on install
 cat > "$CORE/overlays/_selftest/manifest.yaml" <<'EOF'
@@ -162,6 +171,14 @@ assert '[ -f "$T1/.claude/skills/project-only/SKILL.md" ]'                      
 assert 'grep -q "path: .claude/skills/project-only/SKILL.md" "$T1/.claude/manifold-manifest.yaml"' "overlay project-only skill recorded in manifest"
 assert '! grep -q "Project bindings" "$T1/.claude/skills/project-only/SKILL.md"'                 "overlay project-only skill gets no binding appended"
 assert '[ ! -e "$T1/.claude/skills/README.md" ]'                                                 "overlay skills README.md placeholder NOT installed"
+# agents tier: core agents install to .claude/agents/, bindings append, README skipped, overlay agents ship
+assert '[ -f "$T1/.claude/agents/gamma.md" ]'                                    "core agent gamma installed to .claude/agents/"
+assert 'grep -q "Project bindings" "$T1/.claude/agents/gamma.md"'                "gamma agent-binding section appended"
+assert 'grep -q "gamma project binding line" "$T1/.claude/agents/gamma.md"'      "gamma agent-binding content present"
+assert '! grep -q "Project bindings" "$T1/.claude/agents/delta.md"'              "delta (no binding) left untouched"
+assert '[ ! -e "$T1/.claude/agents/README.md" ]'                                 "core agents README.md NOT installed"
+assert '[ -f "$T1/.claude/agents/ovr-agent.md" ]'                                "overlay-only agent installed"
+assert 'grep -q "path: .claude/agents/gamma.md" "$T1/.claude/manifold-manifest.yaml"' "agent recorded in manifest"
 # F2: FIELD_GUIDE installs into the target
 assert '[ -f "$T1/.claude/harness/FIELD_GUIDE.md" ]'                             "FIELD_GUIDE installed into .claude/harness/"
 assert 'grep -q "path: .claude/harness/FIELD_GUIDE.md" "$T1/.claude/manifold-manifest.yaml"' "FIELD_GUIDE recorded in manifest"

@@ -158,7 +158,7 @@ Agent({
   prompt: "Read <AUDIT_DIR>/reviewer-prompt.md and execute. Write to <AUDIT_DIR>/reviewer-<model>-round-<N>.md."
 })
 ```
-The project's reviewer role file owns the default model, effort, and standing audit doctrine, so the dispatch doesn't restate them. (A session-scoped model override from the owner goes on the `Agent` call.)
+The `reviewer` role file (ships in `core/agents/`, installed to `.claude/agents/reviewer.md` with the overlay's project floors appended) owns the effort pin and standing audit doctrine, so the dispatch doesn't restate them. **The MODEL travels on the `Agent` call** (`model: "<tier>"` — the per-invocation parameter beats the role file's frontmatter): the project's model pins name the reviewer tier.
 
 **Independent cross-model reviewer** — a reviewer from a genuinely different model family, dispatched through the project's cross-model mechanism, **paired with a completion-watcher**. A cross-model reviewer typically doesn't auto-notify like a subagent does — without the watcher the lead misses completion (a recurring failure mode). The concrete dispatch command, the completion-watcher, and the result-extraction are project-specific — **the binding names them and ships the `scripts/`**. Have it write (or have the lead persist its returned result) to `<AUDIT_DIR>/reviewer-<model>-round-<N>.md` — the same `AUDIT_DIR`, never a second tree.
 

@@ -106,6 +106,7 @@ reviewing what your agent assembled. (2) If you opt into enforcement hooks, you 
 | | |
 |---|---|
 | **26 skills** | The full arc: session lifecycle (`session-start` to `session-end`, compaction prep/resume), the build pipeline (`brainstorming`, `council`, `spec-writing`, `spec-adherence`, `audit-cycle`), dispatch (`brief-authoring`, `parallel-workstreams`, `merge-and-cleanup`), plus `debugging-discipline`, `test-driven-development`, `eval-building`, `research`, `autonomous-work`, `subsystem-grounding`, and more |
+| **2 named agent roles** | `reviewer` (the audit's adversarial arm: pinned effort, no Edit tool by design) and `implementer` (dispatched builds: ambiguity protocol, verify-before-done; deliberately no model pin — the spec's dispatch triage decides per job) |
 | **15 principles** | One-page judgment kernels: grounding vs. confabulation, error triage, right-sized engineering (YAGNI with a floor), model economy, ask-vs-decide, fix-the-class, and others |
 | **Case-law** | Precedent for calls rubrics can't make: finding severity, dispatch sizing |
 | **METHODOLOGY.md** | The build pipeline end-to-end: vision, adversarial council review, plan, locked spec, implementation, multi-round audit to a 0-Critical/0-High/0-Medium gate, merge |

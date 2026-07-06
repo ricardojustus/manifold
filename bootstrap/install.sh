@@ -172,6 +172,31 @@ copy_tree "$OVERLAY_DIR/skills" ".claude/skills"         "$OVERLAY_SRCREF/skills
 # points at a path that doesn't exist in the target. README.md placeholders skipped. ---
 copy_tree "$OVERLAY_DIR/skill-bindings/scripts" ".claude/harness-scripts" "$OVERLAY_SRCREF/skill-bindings/scripts" skip_readme
 
+# --- agents: core/agents/*.md -> .claude/agents/, append overlay agent-bindings (same
+# append mechanism as skill-bindings). README.md is an authoring doc, not installed.
+# Overlay-only roles come from overlays/<name>/agents/ and ship complete (no binding). ---
+if [ -d "$HARNESS_ROOT/core/agents" ]; then
+  for f in "$HARNESS_ROOT/core/agents"/*.md; do
+    [ -f "$f" ] || continue
+    [ "$(basename "$f")" = README.md ] && continue
+    ag="$(basename "$f" .md)"
+    binding="$OVERLAY_DIR/agent-bindings/$ag.md"
+    destrel=".claude/agents/$ag.md"
+    srcrel="core/agents/$ag.md"
+    if [ "$MODE" = link ] && [ ! -f "$binding" ] && ! file_has_artifact_token "$f"; then
+      stage_link "$f" "$destrel"; record "$destrel" "$srcrel" "link"
+    else
+      stage_copy "$f" "$destrel"
+      if [ -f "$binding" ]; then
+        printf '%s' "$BINDING_SECTION" >> "$STAGE/$destrel"
+        cat "$binding" >> "$STAGE/$destrel"
+      fi
+      record "$destrel" "$srcrel" "copy"
+    fi
+  done
+fi
+copy_tree "$OVERLAY_DIR/agents" ".claude/agents" "$OVERLAY_SRCREF/agents" skip_readme
+
 # --- METHODOLOGY.md + ENFORCEMENT.md + SUCCESSOR_CALIBRATION.md -> .claude/harness/
 # (token-bearing ones copy, not link) ---
 for base in METHODOLOGY.md ENFORCEMENT.md SUCCESSOR_CALIBRATION.md; do

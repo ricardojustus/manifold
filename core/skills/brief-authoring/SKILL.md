@@ -114,6 +114,12 @@ An A/B test made the shape concrete: given the same thin brief, one implementer 
 3. Does the brief state the ambiguity protocol — "surface on contradiction or silence"?
 4. Does the brief state success criteria in verifiable terms, and name the handoff triad + status vocabulary?
 5. If parallel implementers: did the worktree pre-flight run?
+5½. If an Agent-tool implementation dispatch: is it using the **`implementer` role**
+   (`subagent_type: "implementer"`)? The role file carries the standing conventions
+   (ambiguity protocol, pwd+branch re-verify, verify-before-done, handoff shape) so the
+   brief carries only the GIVEN block + contract — do not re-paste conventions the role
+   already enforces. The triage's model goes on the call as the per-invocation `model`
+   parameter.
 6. **Was every concrete code reference in the brief grep-verified against actual current code?** Includes claims propagated from upstream specs — spec ratification does NOT confer code-truth. Verify at brief-write time, not at impl time.
 
 If any answer is no, the brief is not ready to dispatch.
