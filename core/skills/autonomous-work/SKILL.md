@@ -76,6 +76,9 @@ principle in `.claude/harness/principles/` — it's the companion to these bound
 
 ## Advisor consults during the run (where the runtime has one)
 
+This section is the autonomous-run version of the advisor rules in the model-economy
+principle — the same rules, applied when there's no operator to ask. The decide-and-park
+item below is junction #1 (complex + surfaced) in its alone form.
 With `advisorModel` set, four run moments warrant a fresh-context second opinion — and only
 these; routine loop iterations never do (each consult ships the full transcript, uncached):
 

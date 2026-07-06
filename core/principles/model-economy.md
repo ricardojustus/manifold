@@ -60,11 +60,14 @@ model that receives the FULL transcript and returns guidance; the main model dec
 consult, steered by standing instructions — these are those instructions. **Consult at, and
 only at, these junctions:**
 
-1. **Design forks decided alone** — choosing between genuinely different approaches for
-   something later work builds ON TOP OF (an interface, a schema, a data flow, a dependency)
-   AND the operator is not in the loop for the pick. If the operator is present, presenting
-   the options IS the consult; internal implementation details below the builds-on-it bar
-   never qualify.
+1. **Complex decisions you're about to surface.** Consult the advisor when BOTH hold:
+   - **(a) You're about to surface it** — presenting it to the operator for a decision, or
+     (working alone) parking it or recording it as a formal decision; and
+   - **(b) It's genuinely contested** — more than one defensible option, a real tradeoff, no
+     obviously right answer.
+   Consult FIRST, so what you surface already carries a second opinion: your recommendation,
+   plus whether the advisor agreed (and if not, why). Obvious calls — even significant ones —
+   skip the consult. A choice you wouldn't surface at all never gets one.
 2. **The debugging circuit breaker** — repeated failed fixes on one bug, before escalating.
 3. **Before a spec goes to its audit** — one fresh read against wrong-target framing.
 4. **Autonomous-run decisions** — gray-zone STOP classification, decide-and-park
