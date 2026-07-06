@@ -88,6 +88,9 @@ Concrete Cardinal-Rule violations at phase boundaries this skill is built to sto
 ## Pairs with
 
 - `session-start` — same grounding ladder, different trigger (fresh session vs phase boundary).
+- `subsystem-grounding` — the deep arm when the subsystem's current-state doc is missing or
+  stale: it re-derives the whole model (fan-out, status vocabulary) and CAPTURES it as the
+  doc this ladder wanted to read.
 - `research` — the ladder's external-research rung dispatches through it (pre-feed pattern).
 - The constitution's Cardinal Rule + First-Hypothesis-Trap sections — the parent discipline;
   phase-start is its specialization at boundaries.

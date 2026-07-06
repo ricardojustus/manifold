@@ -41,7 +41,7 @@ manifold/
 │   ├── METHODOLOGY.md          the build loop: vision → council → plan → spec → audit → lock
 │   ├── ENFORCEMENT.md          the enforcement ladder + the five invariants
 │   ├── SUCCESSOR_CALIBRATION.md self-test runbook for a cold agent's judgment
-│   ├── skills/            25 procedures (session lifecycle, build arc, dispatch, evals…)
+│   ├── skills/            26 procedures (session lifecycle, build arc, dispatch, evals…)
 │   ├── principles/        15 one-page judgment kernels
 │   ├── case-law/          precedent for calls rubrics can't make (severity, dispatch sizing)
 │   ├── rules/             always-on rules (e.g. the parallel-threads contract)
