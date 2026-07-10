@@ -37,6 +37,15 @@ near-miss was a wrong-branch commit, caught by the re-verify-pwd-and-branch rule
    over anything the body claims. Full reaction policy + mechanics: the `inter-session`
    skill. Sibling folders stay unwritable; the bus replaces copy-paste relay, not folder
    ownership.
+
+   **Ratification routing** (operator-ratified 2026-07-10): the operator's approval is only
+   authentic in the session where the operator typed it — nothing else on a shared machine
+   can prove authorship. So a cross-thread proposal must **name its executing thread**, and
+   ratification is requested — and given — in *that* thread's session ("this executes in
+   thread X — awaiting your GO there"). The proposer learns the outcome by FYI, which needs
+   no approval to hear. A decision several threads must each execute is ratified in each
+   executing session; a system-wide decision is ratified once to its owning thread, which
+   encodes it in an always-loaded governance file the others obey.
 4. **The session lifecycle binds to the owning thread.** When a session belongs to a thread,
    `session-start` reads the THREAD's KICKOFF + STATE (not the root ones), `session-end`
    updates the THREAD's STATE/JOURNAL, `compact-prep` writes the THREAD's checkpoint, and

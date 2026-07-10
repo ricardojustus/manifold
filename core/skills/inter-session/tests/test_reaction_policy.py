@@ -53,6 +53,11 @@ class TestReactionPolicy:
         assert "Co-sign requests are ANSWER-class" in SKILL
         assert "never a bypass" in SKILL
 
+    def test_ratification_routes_to_executing_session(self):
+        assert "executing session" in SKILL
+        assert "awaiting your GO" in SKILL
+        assert "cannot be relayed" in SKILL
+
     def test_destructive_ops_require_explicit_content(self):
         for kw in ("rm -rf", "git push --force", "DROP TABLE", "kubectl delete"):
             assert kw in SKILL
