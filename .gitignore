@@ -1,3 +1,5 @@
 # scratch/test artifacts (selftest uses mktemp; nothing should land here)
 *.tmp
 .DS_Store
+__pycache__/
+*.pyc
