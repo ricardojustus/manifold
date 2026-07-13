@@ -34,6 +34,18 @@ Files in scope (read end-to-end):
 - Cross-reference the spec's `<table/code-block/schema>` against the surrounding prose. If they disagree, table/code wins for implementers — flag the mismatch.
 - Verify every "resolved" item in the round-(N-1) disposition table by reading the cited file:line; mark VERIFIED-CLOSED / STILL-OPEN / FALSE-POSITIVE.
 
+## Adversarial-probe classes — DECLARE OR JUSTIFY (build-phase rounds on LOCKED / high-stakes surfaces)
+
+*Include this block only for build-phase audit rounds on a LOCKED or otherwise high-stakes surface — a best-effort convenience review does not pay this cost (right-sized engineering).*
+
+Your report MUST carry a line per class below: either the **probe RESULT** (what you ran, what happened) or **why the class is N/A for this subject** — a specific reason, not "looks fine." This mandates the REPORT, not a fixed probe list: a bare checklist invites box-ticking and no-op rationalization; a declare-or-justify line is what changes behavior. Silence on a class is an incomplete review.
+
+1. **Dependency-failure injection** — make the dependency FAIL, not succeed: force the query/read/write/parse to throw or return empty, and follow every `catch`/fallback path. Does a fallback silently restore a defect the spec calls load-bearing? Does the system continue in a state the spec forbids?
+2. **Boundary-scale inputs** — MB-class strings, 10k-record fixtures, empty and single-element sets, max-length identifiers. Does anything blow up (RangeError/OOM/timeout) or silently truncate? Pay special attention to SHARED dependencies: a size limit in a common utility can make a legal record permanently unprocessable.
+3. **Hostile-value classes** — values that are *type-valid but semantically impossible or adversarial*: impossible calendar dates, clock regressions, duplicate/reused identifiers, encoding edge cases, values that normalize into something else. Does anything impossible get accepted into a durable/immutable store?
+
+*Receipt (2026-07-10): across a 9-round two-model ladder, the cross-model lens was the decisive finder in 6 of 7 rounds; in one impl round the primary returned a clean MERGE while the cross-model lens found three empirically-provable Highs — an error-fallback that silently restored a spec-forbidden state, an impossible calendar date accepted into a forever-raw store, and a size-limit RangeError in a shared security dependency that made a legal record uncapturable. The primary's empirical work was solid on the probes it CHOSE; it simply never ran these classes. This narrows the primary-lens gap — it never substitutes for the cross-model lens, whose orthogonal threat model remains the strongest signal there is.*
+
 # Rubric — universal categories
 
 1. **Contract fidelity** — does the code realize the spec verbatim?

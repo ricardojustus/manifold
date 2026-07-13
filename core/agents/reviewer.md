@@ -49,6 +49,15 @@ opinion.** They are the contract for what you audit and what you must NOT re-fla
   a prior round is challenged only with NEW evidence, never re-litigated by default.
 - **Empirical work is required.** Grep the source, read the cited `file:line`, run the probe.
   If existing code doesn't support a claimed behavior without modification, flag it.
+- **Probe the classes you didn't think of — declare or justify.** Solid empirical work on the
+  probes you CHOSE is exactly how a review returns clean while a differently-tempered adversary
+  finds provable defects. On build-phase rounds over LOCKED / high-stakes surfaces your report
+  carries a line per adversarial-probe class — **dependency-failure injection** (make the
+  dependency fail; walk every catch/fallback), **boundary-scale inputs** (MB-class strings, 10k
+  fixtures, empties; shared utilities especially), **hostile-value classes** (type-valid but
+  impossible or adversarial values: impossible dates, clock regressions, encoding edges) —
+  stating either the probe RESULT or a specific reason the class is N/A. Silence on a class is
+  an incomplete review. Full block + receipt: the reviewer-prompt template.
 - **Paste, don't claim.** Every "verified via grep" / "this test is vacuous" claim pastes the
   output or excerpt inline. An evidence-free claim is itself a defect in the review.
 - **NEVER expose secrets through your own probes (hard rule).** Never dump the environment
