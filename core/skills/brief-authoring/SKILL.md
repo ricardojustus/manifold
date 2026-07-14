@@ -113,7 +113,7 @@ An A/B test made the shape concrete: given the same thin brief, one implementer 
 2. Does the brief name the locked spec by path + LOCK version?
 3. Does the brief state the ambiguity protocol — "surface on contradiction or silence"?
 4. Does the brief state success criteria in verifiable terms, and name the handoff triad + status vocabulary?
-5. If parallel implementers: did the worktree pre-flight run?
+5. **Worktree isolation — not parallel-only.** If parallel implementers: did the worktree pre-flight run? AND if the brief's work dir is a **live-daemon / production repo** (a running bridge, a cron-booted checkout), does the brief mandate a **linked worktree** and **forbid `git switch`/`checkout` in the live path** — *regardless of lane count*? A single lane told to "work in `<live repo>` on branch X" will move the LIVE checkout onto an unmerged branch, and the daemon boots that branch at its next scheduled fire.
 5½. If an Agent-tool implementation dispatch: is it using the **`implementer` role**
    (`subagent_type: "implementer"`)? The role file carries the standing conventions
    (ambiguity protocol, pwd+branch re-verify, verify-before-done, handoff shape) so the
@@ -134,3 +134,4 @@ If any answer is no, the brief is not ready to dispatch.
 - **The A/B silent-scope-out** (above): on the same thin brief, one arm scoped out silently, the other surfaced the ambiguity. The brief is the ambient-context contract.
 - **The spec-confab incident**: an overnight worker authored spec drafts with confabulated code references (a `migrations/` directory that didn't exist; a wrongly-named module; an event enum value that was different in the actual code; cross-refs to a spec that had since been renamed). Those confabs were then propagated into impl-lane briefs WITHOUT re-grepping. The impl lane caught the first confab on `ls migrations/`. Cumulative cost: 3 impl lanes stopped + spec-audit and spec-fix dispatches to clean up. Lesson: **spec ratification + LOCK status do NOT confer code-truth; only fresh grep does**. Brief authors who skip the grep are the LAST safety gate before impl wastes tokens on invented infrastructure.
 - **The runtime-reference-docs gap** (above, GIVEN block): a lane discovered a live-subsystem interaction at round 8 that a current-state reference doc in the GIVEN block would have front-loaded.
+- **The live-checkout move**: a brief said "work in `<live-daemon repo>` on branch X"; the lane read it literally and switched the running daemon's checkout onto an unmerged branch — the next scheduled cron fire would have booted it. Worktree isolation is a **single-lane** requirement for live-daemon repos too, not just a parallel-writer race guard.

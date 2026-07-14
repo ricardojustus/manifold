@@ -117,6 +117,8 @@ The cross-model lens has been load-bearing in every cycle: each lens catches a c
 
 **Skill-prompt framing matters MORE than model family** — vary the prompt framing per reviewer for max angle-coverage.
 
+**Independence = fresh eyes + both families, NOT "exclude the author's family."** The requirement is two seats from two model families, each seeing the work fresh — and it is satisfied *whether the author was a Claude or a Codex*. A fresh same-family-as-author reviewer plus a cross-family reviewer IS the cross-model pair; the author's family is not disqualified from auditing its own family's output, because a fresh seat carries none of the authoring session's blind spots. (This gets relitigated — "the author was Claude, so a Claude reviewer doesn't count" — and it shouldn't: exclude the author's *session*, not the author's *family*.)
+
 ## No second lens available (solo fallback)
 
 The cross-model pair is the goal, not a precondition. If no second model family is reachable — no cross-model mechanism is configured, the fleet is offline, or you are a lone agent — **do not skip the audit**. Run it with the single lens you have, plus an explicit self-review at the subject's tier floor, and record the degradation in the audit record: verdict **DONE_WITH_CONCERNS**, with a line stating plainly that a single-lens result is *weaker evidence* — it shares the author's blind spots, which is exactly the failure the cross-model rule exists to prevent. A one-lens LOCK is provisional: flag it for re-audit if a second lens becomes reachable before the stakes justify shipping on one. The deviation is recorded, never hidden — but skipping the audit entirely because the fleet is missing is never the answer.
@@ -272,6 +274,7 @@ A **confabulation** is: the spec claims X (file path / function name / line numb
 - Pattern claim ("follow the existing X pattern") → confirm the pattern exists; if not, the spec invented a convention
 - Cross-reference claim → `ls <sibling-spec-path>`; verify §N exists at the claimed anchor
 - Line-count claim → `wc -l <file>`
+- **Normative-oracle claim** (a spec cell that *drives* impl + golden tests — an exact field list, a bound, a decoding/encoding behavior) → the symbol resolving is NOT enough. Read the cited handler **body end-to-end** and verify every claimed field / bound / behavior against it. A name-level "anchor exists" check gives false confidence on an oracle table: the symbol can exist while its fields, bounds, or behavior diverge from what the cell asserts.
 
 **Reporting shape** (in consolidated findings):
 ```
@@ -288,7 +291,7 @@ A **confabulation** is: the spec claims X (file path / function name / line numb
 - **Medium** — a cross-reference to a non-existent sibling spec OR a named module that's elsewhere.
 - **Low** — minor numerical drift (line count off by 1-5), trivial citation precision. Triage like any Low.
 
-*Receipt: an overnight spec batch carried 20 confabs across 4 specs (invented directories, modules, enums, cross-refs); the clean spec was the one whose author did real end-to-end reads.* Cat #15 is the FIRST audit dimension, not the last — confabs in the spec invalidate every downstream layer of audit.
+*Receipt: an overnight spec batch carried 20 confabs across 4 specs (invented directories, modules, enums, cross-refs); the clean spec was the one whose author did real end-to-end reads.* *Receipt: a normative-oracle spec table read clean at the name/line level by two lenses ("38/38 anchors exist"); a third lens that read the handler bodies found 9 field/bound/behavior confabs the anchor-check structurally could not see.* Cat #15 is the FIRST audit dimension, not the last — confabs in the spec invalidate every downstream layer of audit.
 
 ## Project-specific audit dimensions
 
