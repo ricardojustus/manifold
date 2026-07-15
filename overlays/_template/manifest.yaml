@@ -7,6 +7,16 @@ name: <name>                 # must equal the overlays/<name>/ directory name
 runtime: claude-code
 description: <one line — what this overlay adapts core to>
 
+# Install profile: `base` = the core discipline set (methodology, session lifecycle,
+# spec/audit/research skills, principles, agents); `full` = base + every optional module.
+# Optional modules (enable individually via `modules:` below or --modules at install time):
+#   inter-session — the peer-session messaging bus (ships a Python runtime; only useful when
+#                   the project runs multiple coordinated Claude Code sessions on one machine)
+#   multi-agent   — parallel-workstreams + merge-and-cleanup (multi-lane worktree dispatch)
+# New adopters start at base; enable modules when the need is real, not speculatively.
+profile: base
+modules:                     # e.g.: inter-session multi-agent
+
 # Binds the core <artifact-root> token (the Evidence Store: the project root where audit/council
 # records live). install.sh substitutes it into every staged .md file; if this key is REMOVED
 # the install FAILS CLOSED (nothing written), same as an unfilled slot. The default `.` (the

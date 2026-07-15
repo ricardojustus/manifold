@@ -17,9 +17,16 @@ near-miss was a wrong-branch commit, caught by the re-verify-pwd-and-branch rule
    brief), `STATE.md`, `JOURNAL.md`, `DECISIONS.md`, `QUESTIONS-FOR-OPERATOR.md`, and
    `COMPACT_CHECKPOINT.md` when it compacts. The templates in `harness-templates/` apply
    unchanged — they just live in the thread's folder.
-2. **Root session files belong to exactly ONE primary thread** (named in the binding). Every
-   other thread treats them as read-only, always. This is the single rule that makes parallel
-   threads safe: two writers on one state file is how continuity dies.
+2. **Root session files have exactly ONE owner — the binding names the model and the owner.**
+   Three ownership models: **primary-thread** (one named thread owns the root files — natural
+   for a project whose threads grew out of a single original stream), **trackless-main** (a
+   deliberate main seat — a session belonging to NO thread — owns the root files, and every
+   thread lives in its own folder), or **none** (root session files are retired; any shared
+   project surfaces are individually named in the binding). Whatever the model, the invariant
+   is identical and is the single rule that makes parallel threads safe: **every root file has
+   exactly one writing seat; every other session treats it as read-only, always** — two
+   writers on one state file is how continuity dies. A session that cannot tell whether it is
+   the owner touches no root file until the operator names its seat.
 3. **Never write into a sibling thread's folder.** Not updates, not helpful fixes, not
    messages. If a sibling needs to know or decide something, park it in YOUR
    `QUESTIONS-FOR-OPERATOR.md` — the operator is the bus between threads. Never assume a
@@ -60,7 +67,8 @@ near-miss was a wrong-branch commit, caught by the re-verify-pwd-and-branch rule
 > **⚡ THREAD SPLIT:** this is **<Thread Name>** — its session files live in
 > `<threads-root>/<name>/` (KICKOFF + STATE.md + JOURNAL.md + DECISIONS.md +
 > QUESTIONS-FOR-OPERATOR.md). **Never edit root session files** — those belong to
-> <primary thread>. Cross-thread coordination = a parked question + the operator as bus
+> <the root owner the binding names: the primary thread, or the trackless main seat>.
+> Cross-thread coordination = a parked question + the operator as bus
 > (questions / co-sign opinions / FYIs may ride the inter-agent bus where installed;
 > ACT-class requests and decisions still park for the operator). Sibling threads: <list>.
 

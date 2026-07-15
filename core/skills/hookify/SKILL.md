@@ -3,18 +3,17 @@ name: hookify
 description: >-
   Mine operator corrections into DRAFT enforcement-rule candidates — turn "you
   corrected me on X" into a proposed rule instead of a lesson that evaporates.
-  Procedure: gather correction signals (recent conversation and/or the correction
-  corpus the operator points at); classify each by ENFORCEMENT.md's four escalation
-  tests — irreversible + mechanically-decidable + not-already-native + not-a-routine
-  -sanctioned-flow → a candidate; judgment-shaped → memory-discipline (prose tier);
-  prefer a native classifier rule (autoMode allow/soft_deny) or an informational/
-  anti-escape hook over any deny-on-work-surface hook; draft trigger + action +
-  message + verbatim RECEIPT; write drafts to the hook-drafts dir and PARK
-  ratification. CRITICAL: this NEVER activates a rule — never writes live hook or
-  settings paths (ENFORCEMENT invariant #3). Use when the operator says "hookify", "turn that
-  correction into a rule", or after a run that accumulated corrections. Neighbors:
-  memory-discipline (the prose-tier home for judgment rules), ENFORCEMENT.md (the
-  classify test + wiring doctrine), the consistency-audit backlog item.
+  Gather correction signals (recent conversation, or the corpus the operator points
+  at); classify by ENFORCEMENT.md's four escalation tests (irreversible +
+  mechanically-decidable + not-already-native + not-a-routine-sanctioned-flow →
+  candidate; judgment-shaped → memory-discipline instead); prefer a native
+  classifier rule or an informational hook over any deny-on-work-surface hook;
+  draft trigger + action + message + verbatim RECEIPT; write to the hook-drafts
+  dir and PARK ratification. CRITICAL: this NEVER activates a rule — never writes
+  live hook or settings paths (ENFORCEMENT invariant #3). Use on "hookify" /
+  "turn that correction into a rule", or after a run that accumulated corrections.
+  Neighbors: memory-discipline (prose-tier judgment rules), ENFORCEMENT.md (the
+  tests + wiring doctrine).
 ---
 
 # Hookify — corrections into draft enforcement candidates

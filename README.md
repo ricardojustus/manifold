@@ -39,8 +39,10 @@ inherits the discipline on day one instead of re-deriving it, or not re-deriving
 
 Two layers, one assembly step:
 
-- **`core/`** is project-agnostic and contains **zero project references** (mechanically
-  verified). It is the part that survives being carried to your next project.
+- **`core/`** is project-agnostic and contains **zero project references** — checked at every
+  export by a fail-closed purity gate (a sensitive-term battery, generic leak patterns for
+  home paths / emails / key material, a file-type allowlist, and a build-artifact check).
+  It is the part that survives being carried to your next project.
 - **`overlays/<your-project>/`** holds everything concrete: real paths, real names, model
   pins, hooks, and per-skill *bindings* that adapt each generic procedure to your project.
 

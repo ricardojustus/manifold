@@ -2,7 +2,7 @@
 
 *The operator's guide. Written 2026-07-05, for the human who owns a project running on this harness — what each part is, what it does, how to use it, and how to build software with it. The agent-facing counterpart is `FIELD_GUIDE.md` (written for the AI successor); this document is for you. Plain language throughout; every term of art is in the glossary at the end.*
 
-*Freshness: inventory counts and model names in this manual are as of 2026-07-05. The repo's `CHANGELOG.md` is the running truth; if they disagree, the changelog wins.*
+*Freshness: inventory counts and model names in this manual are as of 2026-07-15. `VERSION` is the version truth (it ships in the public export; the installer reads it); the dev repo's `CHANGELOG.md` carries the running history. If this manual disagrees with either, they win.*
 
 ---
 
@@ -34,7 +34,8 @@ You'll recognize these in every corner of the repo:
 manifold/
 ├── MANUAL.md              ← you are here (human operator's guide)
 ├── FIELD_GUIDE.md         ← the agent successor's orientation (read-once narrative)
-├── CHANGELOG.md           ← version + running history (installer reads the version)
+├── VERSION                ← the version (installer + public export read this)
+├── CHANGELOG.md           ← running history (dev repo only; not exported)
 ├── BACKLOG.md             ← deferred work, each item with the trigger that revives it
 ├── core/                  ← the universal layer (zero project references)
 │   ├── CLAUDE.scaffold.md      the constitution (assembled into a project's CLAUDE file)
@@ -42,7 +43,7 @@ manifold/
 │   ├── ENFORCEMENT.md          the enforcement ladder + the five invariants
 │   ├── SUCCESSOR_CALIBRATION.md self-test runbook for a cold agent's judgment
 │   ├── agents/            named subagent roles (reviewer, implementer) for recurring dispatches
-│   ├── skills/            26 procedures (session lifecycle, build arc, dispatch, evals…)
+│   ├── skills/            27 procedures (session lifecycle, build arc, dispatch, evals…)
 │   ├── principles/        15 one-page judgment kernels
 │   ├── case-law/          precedent for calls rubrics can't make (severity, dispatch sizing)
 │   ├── rules/             always-on rules (e.g. the parallel-threads contract)
@@ -161,7 +162,7 @@ This is the intended shape of a project from empty repo to shipped feature.
 
 ## 7. Parallel work: threads, lanes, and overnight runs
 
-**Threads** (`core/rules/threads.md`) — when a project has several long-lived workstreams at once, each becomes a thread with its own folder of session files (kickoff, state, journal, decisions, questions). Root session files belong to exactly ONE primary thread; nobody else touches them. Threads never write into each other's folders — **you are the bus**: cross-thread needs become parked questions, and you carry decisions between lanes. Every thread kickoff opens with a banner declaring all of this, so a fresh session can't wander out of its lane.
+**Threads** (`core/rules/threads.md`) — when a project has several long-lived workstreams at once, each becomes a thread with its own folder of session files (kickoff, state, journal, decisions, questions). Root session files have exactly ONE owner, and the overlay binding names the ownership model: a designated **primary thread**, a deliberate **trackless main seat**, or **none** (root files retired). Whatever the model, one writing seat per file; everyone else reads. Threads never write into each other's folders — **you are the bus**: cross-thread needs become parked questions, and you carry decisions between lanes. Every thread kickoff opens with a banner declaring all of this, so a fresh session can't wander out of its lane.
 
 **Lanes** (`parallel-workstreams`) — short-lived parallel *implementation* dispatches, one git worktree per writer (two agents in one checkout is a proven disaster — there's a receipt). The orchestrator drafts briefs, dispatches, verifies the artifacts first-hand (never trusts a lane's report), and merges sequentially.
 
@@ -208,8 +209,8 @@ The harness assumes agents forget — every session starts cold — and makes co
 - **A guard blocks legitimate work** → that's the harmful direction; don't shrug it off. Check the waiver record first (it may be a known accepted limit), then fix the guard's pattern — over-blocking teaches people to disable guards, which is worse than the risk they guard.
 - **Installed files drifted** → `bash bootstrap/doctor.sh <target>` tells you what changed and whether it was sanctioned.
 - **The agent seems to be violating its own discipline** → point it at the specific rule; the receipts are written so disputes resolve by reading, not arguing. If the correction recurs, hookify it.
-- **A build went sideways** → the audit records and JOURNAL reconstruct what happened; the rollback tag (taken before every risky transition) restores the previous state in one command.
-- **You want to undo the harness entirely** → it's all files: `git checkout` the rollback tag in the target (or remove the installed `.claude/` pieces and the assembled constitution). Nothing else in your project is touched.
+- **A build went sideways** → the audit records and JOURNAL reconstruct what happened; git history restores the previous state (the methodology's release gate requires a tested rollback-or-recovery path for anything that ships — use it).
+- **You want to undo the harness entirely** → it's all files and it's all in git: revert the install commit (or remove the installed `.claude/` pieces and the assembled constitution). Nothing else in your project is touched.
 
 ## 12. Glossary
 
