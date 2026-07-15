@@ -37,13 +37,51 @@ surface readable in well under a minute**, not a document the operator must go d
 > **Watch out**: unresolved assumptions, the strongest dissent, and **what evidence would
 > reverse this recommendation** — concrete and checkable, not generic reassurance. Where an
 > independent reviewer (a council seat, a cross-model lens) raised the dissent, it is quoted
-> from them, not paraphrased by the recommender.
+> from them, not paraphrased by the recommender — **and when the quote is technical, a
+> plain-language rendering rides beside it** (fidelity lives in the quote, comprehension in
+> the pairing; an untranslated technical quote is jargon injected under the template's own
+> instruction).
 > **Full picture**: link to the filed brief (below) when one exists.
 > **GO / NO / ASK?**
 
 **Compression guard:** the packet must still carry enough substance that the GO *means*
 something — a context line and a prose description are load-bearing, not padding. Too terse to
 ratify is as much a failure as too dense to read.
+
+## The language bar — shape is not translation (the cold-read test)
+
+The template above is checkable by section; the translation is the point, and it is checkable
+too. **Before sending any packet, re-read it cold, as the operator** — someone smart, with zero
+knowledge of the codebase's internal names — and hold it to this bar:
+
+- **Every internal name either doesn't appear or is paired, on first use, with what the thing
+  DOES in plain words.** "The checker that approves which external commands the tool may use" —
+  not "the install-manifest generator's discovery drift-check." Name things by their function,
+  not their filename.
+- **Internal codes stay out of the packet body entirely** — rule IDs, spec §-references, job
+  letters, module codenames belong in the linked brief, where depth lives. If the operator
+  needs the code to understand the sentence, the sentence isn't translated yet.
+- **Quoted technical dissent carries its plain rendering beside it** (per the Watch-out line
+  above).
+- **The test**: if any sentence requires the reader to already know an internal noun, the
+  packet has failed — regardless of how faithfully it followed the section shape.
+
+**The size bar rides with it** (same receipt, second half): the packet is a CHAT MESSAGE the
+operator decides on in ~30 seconds — in practice roughly 150–250 words. The failed packet was
+~600 words of template-compliant sections; the operator's own calibration, after seeing a
+~200-word plain rendering of the same decision: *"that quantity was ok for a DOCUMENT that I
+dig deeper (though probably less jargony!), not for a chat message asking me to read and
+decide."* Evidence, sub-cases, spec references, the full advisor exchange — all of it goes in
+the linked brief, none of it in the packet. A packet you have to scroll is a brief wearing a
+packet costume; file it and re-send the short version.
+
+*Receipt (2026-07-15, the same day the template shipped): a session produced a packet that
+followed every section of this template — context anchor, lean, cost tier, quoted dissent,
+GO/NO — and the operator's response was "I have NO IDEA what it is talking about... I don't
+know what [the component] is or what [the check] even is... your translation layer isn't
+working AT ALL." Every section was filled with system-internal vocabulary. Shape compliance
+without language compliance reproduces the exact failure this principle exists to prevent —
+the template's sections are the skeleton; the cold-read is the organ that does the work.*
 
 ## Two tiers — packet vs. filed brief
 
