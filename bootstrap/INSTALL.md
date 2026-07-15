@@ -4,8 +4,28 @@
 
 ```
 bootstrap/install.sh <target-repo> --overlay <name-or-path> [--link]
+                     [--profile base|full] [--modules m1,m2]
+                     [--allow-placeholder-template] [--overwrite-local]
 bootstrap/doctor.sh  <target-repo> [--harness <harness-repo-path>]
+bootstrap/maintenance-check.sh <artifact-root> [--days N]
 ```
+
+**Profiles.** `--profile base` installs the core discipline set; `--profile full` adds the
+optional modules — `inter-session` (peer-session messaging bus + its Python runtime) and
+`multi-agent` (parallel-workstreams + merge-and-cleanup). Enable modules individually with
+`--modules`. The overlay manifest may pin `profile:`/`modules:`; the CLI overrides; the
+default (nothing specified anywhere) is full, for back-compat. `doctor.sh` reports each
+module READY/UNAVAILABLE and flags skills whose referenced helper scripts are missing.
+
+**Re-installing (upgrade).** A re-install reconciles against the prior manifest: files the
+harness retired are **pruned** (removed if unmodified since install; kept with a warning if
+locally edited), and a locally-edited managed file the new install would overwrite **aborts
+the install** unless `--overwrite-local` — sync local edits back to the harness source first;
+that is where they belong.
+
+**Placeholder sentinels.** An overlay slot still containing the template's `<!-- FILL ... -->`
+comment fails the install closed (it would assemble a valid-looking constitution with no real
+identity). `--allow-placeholder-template` exists for installer smoke tests only.
 
 `--overlay` takes either a bare **name** (resolved under this repo's `overlays/`) or a **path**
 to an external overlay directory (any argument containing a `/`, or an existing directory).

@@ -17,6 +17,13 @@
 #   9. external overlay by PATH installs; artifact-root binds; manifest records the abspath
 #  10. an overlay whose manifest omits artifact_root fails closed (nothing written)
 #  11. source-path lint FLAGs an installed core/ path (informational); FIELD_GUIDE exempt
+#  12. doctor block-scalar description-length lint fires
+#  13. the real _template FAILS CLOSED on its FILL sentinels; installs with
+#      --allow-placeholder-template (the installer-smoke escape hatch)
+#  14. re-install PRUNES a file the harness retired (manifest-owned, unmodified)
+#  15. re-install ABORTS on a locally-edited managed file; --overwrite-local proceeds
+#  16. doctor survives a skill with no frontmatter name (FLAG NO-NAME, no crash)
+#  17. --profile base skips module-owned skills; --profile full installs them
 #
 # case 1 also asserts: FIELD_GUIDE installs into the target; skill-binding scripts install to
 # .claude/harness-scripts/ (README skipped); and <artifact-root> is bound from the overlay
@@ -80,6 +87,16 @@ description: Beta dummy skill for selftest.
 ---
 Beta body.
 EOF
+# a MODULE-owned skill (the installer's module map keys on the name `inter-session`):
+# installed under --profile full (the fixture default), skipped under --profile base
+mkdir -p "$CORE/core/skills/inter-session"
+cat > "$CORE/core/skills/inter-session/SKILL.md" <<'EOF'
+---
+name: inter-session
+description: Module-owned dummy skill for the profile selftest.
+---
+Module skill body.
+EOF
 
 printf 'methodology stub\n' > "$CORE/core/METHODOLOGY.md"
 printf 'enforcement stub\n'  > "$CORE/core/ENFORCEMENT.md"
@@ -97,10 +114,13 @@ printf 'alpha project binding line\n' > "$CORE/overlays/_selftest/skill-bindings
 printf '#!/usr/bin/env bash\necho watch\n'  > "$CORE/overlays/_selftest/skill-bindings/scripts/watch.sh"
 printf '# placeholder — not installed\n'    > "$CORE/overlays/_selftest/skill-bindings/scripts/README.md"
 
-# overlay rules + hooks: a rule + a hook install; a README.md placeholder must be SKIPPED
+# overlay rules + hooks: a rule + a hook install; the rules README placeholder is SKIPPED but
+# the hooks README INSTALLS (it is the operative manual-wiring instruction — dropping it
+# stranded fresh installs without their setup doc)
 printf 'overlay rule line\n'       > "$CORE/overlays/_selftest/rules/ovr-rule.md"
+printf '# rules placeholder — not installed\n' > "$CORE/overlays/_selftest/rules/README.md"
 printf '#!/usr/bin/env bash\nexit 0\n' > "$CORE/overlays/_selftest/hooks/ovr-hook.sh"
-printf '# placeholder — not installed\n' > "$CORE/overlays/_selftest/hooks/README.md"
+printf '# hook WIRING instructions — installed\n' > "$CORE/overlays/_selftest/hooks/README.md"
 
 # overlay project-only skill: installs to .claude/skills/; NO binding appended; README skipped
 printf -- '---\nname: project-only\ndescription: A project-only overlay skill.\n---\nProject-only skill body.\n' > "$CORE/overlays/_selftest/skills/project-only/SKILL.md"
@@ -163,7 +183,8 @@ assert 'grep -q "alpha project binding line" "$T1/.claude/skills/alpha/SKILL.md"
 assert '! grep -q "Project bindings" "$T1/.claude/skills/beta/SKILL.md"'         "beta (no binding) left untouched"
 assert '[ -f "$T1/.claude/rules/ovr-rule.md" ]'                                  "overlay rule installed to .claude/rules/"
 assert '[ -f "$T1/.claude/harness-hooks/ovr-hook.sh" ]'                          "overlay hook installed to .claude/harness-hooks/"
-assert '[ ! -e "$T1/.claude/harness-hooks/README.md" ]'                          "overlay hooks README.md placeholder NOT installed"
+assert '[ -f "$T1/.claude/harness-hooks/README.md" ]'                            "overlay hooks README.md (wiring doc) IS installed"
+assert '[ ! -e "$T1/.claude/rules/README.md" ] || grep -q "core/rules" "$T1/.claude/rules/README.md"' "overlay rules README placeholder NOT installed (core rules README may link-install)"
 assert 'grep -q "path: .claude/rules/ovr-rule.md" "$T1/.claude/manifold-manifest.yaml"'      "overlay rule recorded in manifest"
 assert 'grep -q "path: .claude/harness-hooks/ovr-hook.sh" "$T1/.claude/manifold-manifest.yaml"' "overlay hook recorded in manifest"
 # H-2: overlay project-only skills install to .claude/skills/ (README skipped; no binding appended)
@@ -340,20 +361,78 @@ assert 'grep -q "WARN DESCRIPTION-LONG .claude/skills/longdesc" "$SCRATCH/d8.log
 assert 'grep -q "doctor: PASS" "$SCRATCH/d8.log"'                                  "block-scalar length WARN is informational (doctor still PASSes)"
 
 # ---------------------------------------------------------------------------
-# case 13: the REAL _template overlay installs out of the box (M-1)
+# case 13: the REAL _template fails closed on FILL sentinels; installs with the flag
 # ---------------------------------------------------------------------------
-# Uses the real install/doctor + the real overlays/_template (not the fixture core), because
-# M-1 is about the shipped on-ramp. A raw copy (name filled) must install: artifact_root now
-# defaults to `.` and the FILL-comment slots are non-empty, so nothing fails closed.
-echo "== case 13: real _template installs out of the box =="
+# Uses the real install/doctor + the real overlays/_template (not the fixture core). A raw
+# template's slots are `<!-- FILL ... -->` sentinels: substituting them produces a
+# syntactically-valid but IDENTITY-LESS constitution — so the install must FAIL CLOSED
+# unless --allow-placeholder-template (the installer-smoke escape hatch) is passed.
+echo "== case 13: real _template sentinel gate =="
 TPL="$SCRATCH/tpl-overlay"
 cp -R "$HERE/../overlays/_template" "$TPL"
 sed -i.bak 's/^name:.*/name: tpl-overlay/' "$TPL/manifest.yaml" && rm -f "$TPL/manifest.yaml.bak"
 T9="$SCRATCH/target9"; mkdir -p "$T9"
-if "$INSTALL" "$T9" --overlay "$TPL" >"$SCRATCH/i9.log" 2>&1; then ok "real _template installs out of the box"; else no "real _template installs out of the box"; cat "$SCRATCH/i9.log"; fi
+if "$INSTALL" "$T9" --overlay "$TPL" >"$SCRATCH/i9a.log" 2>&1; then no "raw _template fails closed on FILL sentinels"; else ok "raw _template fails closed on FILL sentinels"; fi
+assert '[ ! -e "$T9/CLAUDE.harness.md" ]'                      "sentinel gate: nothing written"
+assert 'grep -q "FILL" "$SCRATCH/i9a.log"'                     "sentinel gate: failure output names the sentinel"
+if "$INSTALL" "$T9" --overlay "$TPL" --allow-placeholder-template >"$SCRATCH/i9.log" 2>&1; then ok "_template installs with --allow-placeholder-template"; else no "_template installs with --allow-placeholder-template"; cat "$SCRATCH/i9.log"; fi
 assert '[ -f "$T9/CLAUDE.harness.md" ]'                        "real _template: constitution assembled"
 assert '! grep -q "<artifact-root>" "$T9/CLAUDE.harness.md"'   "real _template: artifact_root default bound (no unbound token)"
 if "$DOCTOR" "$T9" >"$SCRATCH/d9.log" 2>&1; then ok "doctor PASSes on real _template install"; else no "doctor PASSes on real _template install"; cat "$SCRATCH/d9.log"; fi
+
+# ---------------------------------------------------------------------------
+# case 14: re-install prunes a retired file
+# ---------------------------------------------------------------------------
+echo "== case 14: re-install prunes a retired file =="
+T10="$SCRATCH/target10"; mkdir -p "$T10"
+"$INST" "$T10" --overlay _selftest >/dev/null 2>&1
+assert '[ -f "$T10/.claude/skills/beta/SKILL.md" ]' "pre-prune: beta installed"
+rm -rf "$CORE/core/skills/beta"                      # the harness retires beta
+if "$INST" "$T10" --overlay _selftest >"$SCRATCH/i10.log" 2>&1; then ok "re-install over existing target exits 0"; else no "re-install over existing target exits 0"; cat "$SCRATCH/i10.log"; fi
+assert '[ ! -e "$T10/.claude/skills/beta/SKILL.md" ]'          "retired beta pruned from target"
+assert 'grep -q "pruned" "$SCRATCH/i10.log"'                   "install output reports the prune"
+assert '! grep -q "path: .claude/skills/beta/SKILL.md" "$T10/.claude/manifold-manifest.yaml"' "new manifest no longer lists beta"
+
+# ---------------------------------------------------------------------------
+# case 15: re-install aborts on a locally-edited managed file; --overwrite-local proceeds
+# ---------------------------------------------------------------------------
+echo "== case 15: local-edit conflict abort =="
+T11="$SCRATCH/target11"; mkdir -p "$T11"
+"$INST" "$T11" --overlay _selftest >/dev/null 2>&1
+printf 'LOCAL EDIT LINE\n' >> "$T11/.claude/rules/r1.md"       # local edit in the target
+printf 'UPSTREAM V2\n'     >> "$CORE/core/rules/r1.md"         # source moves too
+if "$INST" "$T11" --overlay _selftest >"$SCRATCH/i11.log" 2>&1; then no "conflicting re-install aborts"; else ok "conflicting re-install aborts"; fi
+assert 'grep -q "LOCAL EDIT: .claude/rules/r1.md" "$SCRATCH/i11.log"' "abort names the conflicted file"
+assert 'grep -q "LOCAL EDIT LINE" "$T11/.claude/rules/r1.md"'         "abort left the local edit in place"
+if "$INST" "$T11" --overlay _selftest --overwrite-local >"$SCRATCH/i11b.log" 2>&1; then ok "--overwrite-local proceeds"; else no "--overwrite-local proceeds"; cat "$SCRATCH/i11b.log"; fi
+assert 'grep -q "UPSTREAM V2" "$T11/.claude/rules/r1.md"'             "--overwrite-local installed the new content"
+assert '! grep -q "LOCAL EDIT LINE" "$T11/.claude/rules/r1.md"'       "--overwrite-local discarded the local edit"
+
+# ---------------------------------------------------------------------------
+# case 16: doctor survives a skill with no frontmatter name
+# ---------------------------------------------------------------------------
+echo "== case 16: doctor survives missing frontmatter name =="
+T12="$SCRATCH/target12"; mkdir -p "$T12"
+"$INST" "$T12" --overlay _selftest >/dev/null 2>&1
+mkdir -p "$T12/.claude/skills/noname"
+printf -- '---\ndescription: A skill with no name.\n---\nbody\n' > "$T12/.claude/skills/noname/SKILL.md"
+"$DOC" "$T12" >"$SCRATCH/d10.log" 2>&1 || true
+assert 'grep -q "FLAG NO-NAME .claude/skills/noname" "$SCRATCH/d10.log"' "doctor FLAGs the missing name"
+assert 'grep -q "doctor: " "$SCRATCH/d10.log"'                           "doctor reaches its summary line (no mid-script death)"
+
+# ---------------------------------------------------------------------------
+# case 17: profiles — base skips module skills, full installs them
+# ---------------------------------------------------------------------------
+echo "== case 17: profile base vs full =="
+T13="$SCRATCH/target13"; mkdir -p "$T13"
+"$INST" "$T13" --overlay _selftest --profile base >"$SCRATCH/i13.log" 2>&1 || cat "$SCRATCH/i13.log"
+assert '[ -f "$T13/.claude/skills/alpha/SKILL.md" ]'          "base: core skill installed"
+assert '[ ! -e "$T13/.claude/skills/inter-session/SKILL.md" ]' "base: module skill skipped"
+assert 'grep -q "^profile: base" "$T13/.claude/manifold-manifest.yaml"' "base: manifest records the profile"
+T14="$SCRATCH/target14"; mkdir -p "$T14"
+"$INST" "$T14" --overlay _selftest --profile full >"$SCRATCH/i14.log" 2>&1 || cat "$SCRATCH/i14.log"
+assert '[ -f "$T14/.claude/skills/inter-session/SKILL.md" ]'  "full: module skill installed"
+assert 'grep -q "^modules: .*inter-session" "$T14/.claude/manifold-manifest.yaml"' "full: manifest records the modules"
 
 # ---------------------------------------------------------------------------
 echo "======================================================"

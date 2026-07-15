@@ -5,18 +5,25 @@
 #   doctor.sh <target-repo> [--harness <harness-repo-path>]
 #
 # Per manifest file, prints exactly one line:
-#   OK <path>                 installed hash == manifest hash
-#   FLAG LOCAL-CHANGE <path>  installed hash != manifest hash (sanctioned local edit — informational)
-#   FLAG MISSING <path>       manifest file no longer present in target        (blocking)
-#   FLAG STALE <path>         (with --harness) installed==manifest but the harness source moved on
-#   FLAG SOURCE-PATH <path>   installed .md points at a core/ source-tree path (informational)
+#   OK <path>                  installed matches manifest (and, with --harness, the source)
+#   FLAG MISSING <path>        manifest file no longer present in target        (blocking)
+#   FLAG BAD-RECORD <path>     manifest record missing required fields          (blocking)
+#   FLAG BROKEN-LINK <path>    mode:link but the symlink target doesn't resolve (blocking)
+#   FLAG LINK-RETARGETED <path> (with --harness) link points outside the harness (warn)
+#   FLAG LOCAL-CHANGE <path>   installed differs from manifest; source unchanged (info)
+#   FLAG STALE <path>          (with --harness) installed==manifest but source moved on (info)
+#   FLAG CONVERGED <path>      (with --harness) installed matches CURRENT source but not the
+#                              manifest — a hand-synced copy; re-install to refresh the
+#                              manifest (info)
+#   FLAG DIVERGED <path>       (with --harness) installed matches neither manifest nor
+#                              current source — local edit + upstream movement (warn)
 #
 # Then lints installed skills (frontmatter name+description, name==dirname, description
 # and body length WARNs), scans for unfilled {{HARNESS:...}} slots (blocking), lints for
-# core/ source-tree paths in installed .md (informational), and checks that .claude/harness/
-# exists (blocking).
+# core/ source-tree paths in installed .md (informational), checks that .claude/harness/
+# exists (blocking), and reports module/capability status (informational).
 #
-# Exit 0 iff no MISSING and no unfilled-slot. LOCAL-CHANGE, STALE, and WARN never fail.
+# Exit 0 iff no blocking issue. LOCAL-CHANGE, STALE, CONVERGED, and WARN never fail.
 # macOS bash-3.2 safe.
 set -euo pipefail
 
@@ -42,14 +49,17 @@ MANIFEST="$TARGET/.claude/manifold-manifest.yaml"
 
 sha256_of() { shasum -a 256 "$1" | awk '{print $1}'; }
 
-# For the STALE comparison only: a copied core .md may have had its <artifact-root> token
-# bound at install time (install.sh), so its recorded hash won't match the raw source hash.
-# Resolve the overlay's artifact_root (the same manifest install.sh read) and apply the same
-# substitution to the source before hashing, so an install-time binding isn't misread as
-# STALE. Only relevant under --harness (the one mode STALE runs in).
-ARTIFACT_ROOT=""
-if [ -n "$HARNESS" ]; then
-  OVERLAY_REF="$(sed -n 's/^overlay:[[:space:]]*//p' "$MANIFEST" | head -1)"
+# --- manifest header fields ---
+hdr_key() { sed -n "s/^$1:[[:space:]]*//p" "$MANIFEST" | head -1; }
+MF_MODE="$(hdr_key mode)"
+MF_PROFILE="$(hdr_key profile)"
+MF_MODULES="$(hdr_key modules)"
+ARTIFACT_ROOT="$(hdr_key artifact_root)"
+
+# Older manifests predate the artifact_root header — fall back to resolving it from the
+# overlay manifest (the same file install.sh read), the pre-recipe behavior.
+if [ -z "$ARTIFACT_ROOT" ] && [ -n "$HARNESS" ]; then
+  OVERLAY_REF="$(hdr_key overlay)"
   case "$OVERLAY_REF" in
     "")  OVL_MANIFEST="" ;;
     */*) OVL_MANIFEST="$OVERLAY_REF/manifest.yaml" ;;        # external overlay path
@@ -64,56 +74,110 @@ if [ -n "$HARNESS" ]; then
   fi
 fi
 
-# Hash a harness source file the way install.sh stages it: for a .md carrying <artifact-root>,
-# bind it first (matching the install-time substitution + trailing-newline normalization).
-source_hash() {
-  local src="$1" body
-  case "$src" in
-    *.md)
-      if [ -n "$ARTIFACT_ROOT" ] && grep -Iq '<artifact-root>' "$src" 2>/dev/null; then
-        body="$(cat "$src")"
-        printf '%s\n' "${body//"<artifact-root>"/$ARTIFACT_ROOT}" | shasum -a 256 | awk '{print $1}'
-        return
-      fi ;;
+# Resolve a manifest `source:`/`binding:` ref to an absolute path: absolute refs (external
+# overlays) are used as-is; relative refs resolve under --harness.
+resolve_src() { # <ref> -> abs path or "" when unresolvable
+  local ref="$1"
+  [ -n "$ref" ] || { echo ""; return 0; }
+  case "$ref" in
+    /*) echo "$ref" ;;
+    *)  if [ -n "$HARNESS" ]; then echo "$HARNESS/$ref"; else echo ""; fi ;;
   esac
-  sha256_of "$src"
 }
 
-FAILS=0   # MISSING + unfilled-slot + missing harness dir
+# Rebuild the EXPECTED installed content of a record exactly the way install.sh stages it:
+# source file, plus the appended "## Project bindings" section when a binding is recorded,
+# plus the <artifact-root> substitution (which normalizes to exactly one trailing newline,
+# matching install.sh's printf '%s\n' rewrite). Prints the sha256 of the expected content.
+BINDING_SECTION=$'\n\n## Project bindings\n\n'
+expected_hash() { # <abs-source> <abs-binding-or-empty>
+  local src="$1" bind="${2:-}" tmp body
+  tmp="$(mktemp "${TMPDIR:-/tmp}/manifold-doctor.XXXXXX")"
+  cp "$src" "$tmp"
+  if [ -n "$bind" ] && [ -f "$bind" ]; then
+    printf '%s' "$BINDING_SECTION" >> "$tmp"
+    cat "$bind" >> "$tmp"
+  fi
+  if [ -n "$ARTIFACT_ROOT" ] && grep -Iq '<artifact-root>' "$tmp" 2>/dev/null; then
+    body="$(cat "$tmp")"
+    printf '%s\n' "${body//"<artifact-root>"/$ARTIFACT_ROOT}" > "$tmp"
+  fi
+  sha256_of "$tmp"
+  rm -f "$tmp"
+}
+
+FAILS=0   # MISSING + BAD-RECORD + BROKEN-LINK + unfilled-slot + missing harness dir
 WARNS=0
+RECORD_COUNT=0
 
 # --- per-file manifest verification (state machine over the manifest) ---
-P=""; S=""; SRC=""; M=""
+P=""; S=""; SRC=""; M=""; SRCH=""; BREF=""; BH=""
 check_record() {
   [ -n "$P" ] || return 0
-  local installed="$TARGET/$P" ih sh
-  if [ ! -e "$installed" ]; then
+  RECORD_COUNT=$((RECORD_COUNT+1))
+  local installed="$TARGET/$P" ih eh srcabs bindabs
+  if [ -z "$S" ] || [ -z "$SRC" ] || [ -z "$M" ]; then
+    echo "FLAG BAD-RECORD $P (missing sha256/source/mode field)"; FAILS=$((FAILS+1)); return 0
+  fi
+  if [ ! -e "$installed" ] && [ ! -L "$installed" ]; then
     echo "FLAG MISSING $P"; FAILS=$((FAILS+1)); return 0
   fi
-  # linked files live-track their harness source: a hash drift there is upstream
-  # movement, not a local edit — hash comparison is only meaningful for copies.
+  # linked files live-track their harness source: verify the LINK itself instead of hashes —
+  # a dangling link is broken (blocking); a link pointing outside the harness was retargeted.
   if [ "$M" = "link" ]; then
-    echo "OK $P"; return 0
+    if [ -L "$installed" ]; then
+      if [ ! -e "$installed" ]; then
+        echo "FLAG BROKEN-LINK $P"; FAILS=$((FAILS+1)); return 0
+      fi
+      if [ -n "$HARNESS" ]; then
+        local ltarget; ltarget="$(readlink "$installed")"
+        case "$ltarget" in
+          "$HARNESS"/*) : ;;
+          *) echo "FLAG LINK-RETARGETED $P -> $ltarget"; WARNS=$((WARNS+1)); return 0 ;;
+        esac
+      fi
+      echo "OK $P"; return 0
+    fi
+    # recorded as link but a regular file sits there now — treat as a local change
+    echo "FLAG LOCAL-CHANGE $P (recorded mode:link, found regular file)"; return 0
   fi
   ih="$(sha256_of "$installed")"
-  if [ "$ih" != "$S" ]; then
-    echo "FLAG LOCAL-CHANGE $P"; return 0
+  # Without --harness we can only compare against the manifest.
+  if [ -z "$HARNESS" ] || [ "$SRC" = "assembled" ]; then
+    if [ "$ih" = "$S" ]; then echo "OK $P"; else echo "FLAG LOCAL-CHANGE $P"; fi
+    return 0
   fi
-  if [ -n "$HARNESS" ] && [ "$SRC" != "assembled" ] && [ -f "$HARNESS/$SRC" ]; then
-    sh="$(source_hash "$HARNESS/$SRC")"
-    if [ "$sh" != "$S" ]; then echo "FLAG STALE $P"; return 0; fi
+  srcabs="$(resolve_src "$SRC")"
+  bindabs="$(resolve_src "$BREF")"
+  if [ -z "$srcabs" ] || [ ! -f "$srcabs" ]; then
+    # source ref no longer resolvable — the harness retired or moved it
+    if [ "$ih" = "$S" ]; then echo "FLAG STALE $P (source gone: $SRC)"; else echo "FLAG DIVERGED $P (source gone: $SRC)"; WARNS=$((WARNS+1)); fi
+    return 0
   fi
-  echo "OK $P"
+  eh="$(expected_hash "$srcabs" "$bindabs")"
+  if [ "$ih" = "$S" ] && [ "$eh" = "$S" ]; then echo "OK $P"; return 0; fi
+  if [ "$ih" = "$S" ] && [ "$eh" != "$S" ]; then echo "FLAG STALE $P"; return 0; fi
+  if [ "$ih" = "$eh" ]; then echo "FLAG CONVERGED $P (hand-synced to current source; re-install refreshes the manifest)"; return 0; fi
+  if [ "$eh" = "$S" ]; then echo "FLAG LOCAL-CHANGE $P"; return 0; fi
+  echo "FLAG DIVERGED $P (local edit + upstream movement)"; WARNS=$((WARNS+1))
 }
 while IFS= read -r line; do
   case "$line" in
-    "  - path: "*)   check_record; P="${line#  - path: }"; S=""; SRC=""; M="" ;;
-    "    sha256: "*) S="${line#    sha256: }" ;;
-    "    source: "*) SRC="${line#    source: }" ;;
-    "    mode: "*)   M="${line#    mode: }" ;;
+    "  - path: "*)            check_record; P="${line#  - path: }"; S=""; SRC=""; M=""; SRCH=""; BREF=""; BH="" ;;
+    "    sha256: "*)          S="${line#    sha256: }" ;;
+    "    source: "*)          SRC="${line#    source: }" ;;
+    "    mode: "*)            M="${line#    mode: }" ;;
+    "    source_sha256: "*)   SRCH="${line#    source_sha256: }" ;;
+    "    binding: "*)         BREF="${line#    binding: }" ;;
+    "    binding_sha256: "*)  BH="${line#    binding_sha256: }" ;;
   esac
 done < "$MANIFEST"
 check_record
+
+# --- manifest sanity: an empty or truncated manifest must not read as a clean pass ---
+if [ "$RECORD_COUNT" -eq 0 ]; then
+  echo "FLAG BAD-RECORD (manifest contains zero file records — truncated or corrupt)"; FAILS=$((FAILS+1))
+fi
 
 # --- structural lint over installed skills ---
 SKILLS_DIR="$TARGET/.claude/skills"
@@ -124,7 +188,9 @@ if [ -d "$SKILLS_DIR" ]; then
     sk="${d}SKILL.md"
     if [ ! -f "$sk" ]; then echo "FLAG MISSING .claude/skills/$name_dir/SKILL.md"; FAILS=$((FAILS+1)); continue; fi
     fm="$(awk 'NR==1 && /^---/ {f=1; next} f && /^---/ {exit} f {print}' "$sk")"
-    fname="$(printf '%s\n' "$fm" | grep -E '^name:'        | head -1 | sed 's/^name:[[:space:]]*//')"
+    # sed -n never exits nonzero on no-match — a missing name must produce FLAG NO-NAME,
+    # not kill the script under set -e (grep in a pipeline here did exactly that).
+    fname="$(printf '%s\n' "$fm" | sed -n 's/^name:[[:space:]]*//p' | head -1)"
     # Description may be an inline scalar OR a YAML block scalar (description: >- / | ...), whose
     # value is the indented continuation lines. Reading only the `description:` line counts a
     # block scalar as 1 word (">-"), making the length lint vacuous — so gather the block body.
@@ -197,6 +263,40 @@ if [ -d "$TARGET/.claude" ]; then
   done < <(find "$TARGET/.claude" -type f -name '*.md' 2>/dev/null)
 fi
 if [ -f "$TARGET/CLAUDE.harness.md" ]; then lint_source_paths "$TARGET/CLAUDE.harness.md"; fi
+
+# --- module / capability report (informational) ---
+# Modules: which optional modules this install carries (from the manifest header).
+# Capabilities: a skill that references an .claude/harness-scripts/ helper that is not
+# installed is DEGRADED (its binding names a script the target lacks); audit-cycle with no
+# appended Project bindings runs in its documented solo/degraded fallback.
+echo "--- capabilities ---"
+echo "profile: ${MF_PROFILE:-unrecorded} (modules: ${MF_MODULES:-unrecorded})"
+ALL_MODULES="inter-session multi-agent"
+module_skill_dirs() { case "$1" in inter-session) echo "inter-session" ;; multi-agent) echo "parallel-workstreams merge-and-cleanup" ;; esac }
+for m in $ALL_MODULES; do
+  present=1
+  for sd in $(module_skill_dirs "$m"); do
+    [ -d "$SKILLS_DIR/$sd" ] || present=0
+  done
+  if [ "$present" = 1 ]; then echo "module $m: READY"; else echo "module $m: UNAVAILABLE (not installed — enable via --modules $m)"; fi
+done
+if [ -d "$SKILLS_DIR" ]; then
+  for d in "$SKILLS_DIR"/*/; do
+    [ -d "$d" ] || continue
+    sk="${d}SKILL.md"
+    [ -f "$sk" ] || continue
+    name_dir="$(basename "$d")"
+    while IFS= read -r ref; do
+      [ -n "$ref" ] || continue
+      if [ ! -e "$TARGET/.claude/harness-scripts/$ref" ]; then
+        echo "DEGRADED $name_dir: references harness-scripts/$ref which is not installed"; WARNS=$((WARNS+1))
+      fi
+    done < <(grep -oE 'harness-scripts/[A-Za-z0-9._-]+\.(sh|mjs|py)' "$sk" 2>/dev/null | sed 's#^harness-scripts/##' | sort -u || true)
+  done
+  if [ -f "$SKILLS_DIR/audit-cycle/SKILL.md" ] && ! grep -q '^## Project bindings' "$SKILLS_DIR/audit-cycle/SKILL.md" 2>/dev/null; then
+    echo "INFO audit-cycle: no project binding appended — cross-model lens unbound; runs the documented solo-fallback"
+  fi
+fi
 
 echo "---"
 if [ "$FAILS" -gt 0 ]; then

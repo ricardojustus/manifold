@@ -339,7 +339,7 @@ class TestFindCcAncestorPidMatching:
         across distinct bg sessions on the ppid flock."""
         import psutil
         tree = {
-            100: {"cmdline": ["/Users/x/.local/share/claude/versions/2.1.146",
+            100: {"cmdline": ["/Users/you/.local/share/claude/versions/2.1.146",
                               "--bg-spare"], "ppid": 50},
             50:  {"cmdline": ["claude", "daemon", "run"], "ppid": 1},
         }
@@ -355,9 +355,9 @@ class TestFindCcAncestorPidMatching:
         monitor for this session is already running`."""
         import psutil
         tree = {
-            100: {"cmdline": ["/Users/x/.local/share/claude/versions/2.1.146",
+            100: {"cmdline": ["/Users/you/.local/share/claude/versions/2.1.146",
                               "--bg-spare", "A"], "ppid": 50},
-            200: {"cmdline": ["/Users/x/.local/share/claude/versions/2.1.146",
+            200: {"cmdline": ["/Users/you/.local/share/claude/versions/2.1.146",
                               "--bg-spare", "B"], "ppid": 50},
             50:  {"cmdline": ["claude", "daemon", "run"], "ppid": 1},
         }
