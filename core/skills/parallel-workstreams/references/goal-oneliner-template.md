@@ -17,7 +17,7 @@ The skill-suppression list is **load-bearing** — without it, lanes reflexively
 For lanes whose deliverable is operator evidence, not a spec or impl (e.g. an implementation-plus-soak, a bootstrap, a migration run):
 
 ```
-/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, plan-update, doc-placement, reference-doc-writing, or memory-discipline (the controller session owns those). This is OPERATOR/OPS work — no spec audit-cycle. DO invoke brief-authoring if sub-dispatching. Final action: <one-sentence acceptance condition>. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
+/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, plan-update, doc-placement, reference-doc-writing, or memory-discipline (the controller session owns those). This is OPERATOR/OPS work — non-spec, so the audit gate is builder's judgment: run the methodology's light review at minimum, and invoke audit-cycle if the work turns out to warrant it. DO invoke brief-authoring if sub-dispatching. Final action: <one-sentence acceptance condition>. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
 ```
 
 ## Variant — proposal / research lane (no audit-cycle, no impl)

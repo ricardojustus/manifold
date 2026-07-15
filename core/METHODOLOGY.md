@@ -4,7 +4,7 @@
 >
 > Entry is gated by the **project stakes score**, not the build-type label — Low stakes takes an **express lane**, Medium/High runs the full eight phases (see Project stakes). **Abandon** is a terminal disposition with a Kill record (see Locks and re-opens). All findings live in one **Evidence Store** with `councils/` and `audits/` as parallel sub-trees (see Records). Cross-examination **defaults to 1 round** (see The Round Table).
 
-**Entry is by stakes, not by label.** Score the build on the project stakes rubric (below) first. A build whose **max-of-dimension stakes come out Low takes the express lane**; **Medium or High runs the full eight phases.** The gate is the stakes score, so a trivial feature can't trip the full loop (and get routed around), and a load-bearing one can't slip the gate by calling itself "just a feature." A whole subsystem (several components plus their orchestration) typically scores Medium+ and runs the full phases; a single reversible change scores Low and takes the express lane. This methodology describes **roles**, not specific agents — map your actual agents onto these roles in their own identity files. Agents read it before scoring stakes and treat its gates and authority rules as binding.
+**Entry is by stakes, not by label.** Score the build on the project stakes rubric (below) first. A build whose **max-of-dimension stakes come out Low takes the express lane**; **Medium or High runs the full eight phases.** The gate is the stakes score, so a trivial feature can't trip the full loop (and get routed around), and a load-bearing one can't slip the gate by calling itself "just a feature." A whole subsystem (several components plus their orchestration) typically scores Medium+ and runs the full phases; a small, familiar, self-contained change scores Low and takes the express lane. This methodology describes **roles**, not specific agents — map your actual agents onto these roles in their own identity files. Agents read it before scoring stakes and treat its gates and authority rules as binding.
 
 **Where things are filed.** The methodology requires an **Evidence Store** — a project root where locks, findings, and audit/council records live. This document calls that root `<artifact-root>`; the overlay binds it to a concrete path (each overlay binds it to a concrete path — a docs tree, a repo folder). Wherever you see `<artifact-root>/audits/<topic>/` or `<artifact-root>/councils/<topic>/`, read the project's configured root.
 
@@ -47,12 +47,16 @@ Score the build on each dimension. **Project stakes = the highest tier reached o
 
 | Dimension | Low | Medium | High |
 |---|---|---|---|
-| **Reversibility** | Undo in under a day | Days to redo | Architectural, hard or impossible to cleanly reverse |
-| **Blast radius** | Self-contained, no dependents | One shared component or a few dependents | Core shared substrate (the project's central data store or engine) or many dependents |
+| **Size (build cost)** | Hours to one day | Days to ~two weeks | Weeks or more, or expensive to get wrong |
 | **Novelty** | Done before, standard pattern | Adjacent to something known | First-principles, unprecedented |
+| **Design choice** | No real design decision — the pattern is given | A bounded choice among known options | Genuine architecture: multiple viable approaches, a contract / data model / data flow to get right, decisions that constrain future work |
+| **Complexity** | Single module, few moving parts | A few modules, moderate coupling | Many moving parts, cross-subsystem coupling, concurrency or distributed behavior |
+| **Knowledge gaps** | Domain and system well understood | Meaningful unknowns — research or a spike owed first | Major unknowns in the domain or the existing system; building now would be guessing |
+| **Blast radius** | Self-contained, no dependents | One shared component or a few dependents | Core shared substrate (the project's central data store or engine) or many dependents |
 | **External commitment** | None | Internal stakeholders only | A contract, a partner, a public launch, or money is on the line |
 | **Security / privacy** | No sensitive data, no new attack surface | Internal-only sensitive data, limited surface | Confidential IP, user data, credentials, or a new external attack surface (partner NDAs, restricted material) |
-| **Build cost** | Hours to one day | Days to ~two weeks | Weeks or more, or expensive to get wrong |
+
+**Reversibility is deliberately NOT a dimension** (operator ruling 2026-07-14). Most work is reversible, so a reversibility-keyed gate goes vestigial — the big-but-reversible feature would skip the process that exists for exactly it. Irreversibility keeps its bite where it actually lands: as a destructive-action **halt trigger** (`ask-vs-decide`), as a **chunk-level hardening trigger** (an irreversible migration owes a rollback proof and escalates the chunk to Critical), and in the **release gate's** rollback requirements — depth once you're already in process, never the entry gate.
 
 **What stakes control:**
 
@@ -62,7 +66,11 @@ Score the build on each dimension. **Project stakes = the highest tier reached o
 | **Medium** | Optional (Orchestrator's call) | 2 seats: 1 strong-reasoning + 1 cross-model. Full Round Table at the Orchestrator's discretion. |
 | **High** | **Required** | **Full 4-seat Round Table: 2 strong-reasoning + 2 cross-model.** |
 
-**The express lane (Low stakes).** A build that scores Low on every dimension does **not** run the full eight phases. It runs: **Phase 0** grounding + **acceptance criteria** (one line each is fine) → **build** → **`audit-cycle`** on the implementation (at the chunk's risk-tier floor) → a **lightweight release verify** (does it meet the one-line acceptance criteria). It **drops** Phase 2 deep research, Gate A, the Phase 5 Council, and per-chunk spec ceremony. This is not a lesser process; it is the right-sized one for reversible, self-contained, low-novelty work, and it keeps the full loop credible by not charging ceremony where none is owed. **A bug fix is the archetypal express-lane build** — it uses the Bugfix artifact below in place of a full spec. The instant any dimension would score Medium+, the build leaves the express lane and runs the full phases.
+**The express lane (Low stakes).** A build that scores Low on every dimension does **not** run the full eight phases. It runs: **Phase 0** grounding + **acceptance criteria** (one line each is fine) → **build** → the **light review** (defined below; the builder's judgment escalates it to a full `audit-cycle`) → a **lightweight release verify** (does it meet the one-line acceptance criteria). It **drops** Phase 2 deep research, Gate A, the Phase 5 Council, and per-chunk spec ceremony. This is not a lesser process; it is the right-sized one for small, familiar, well-understood, self-contained work, and it keeps the full loop credible by not charging ceremony where none is owed. **A bug fix is the archetypal express-lane build** — it uses the Bugfix artifact below in place of a full spec. The instant any dimension would score Medium+, the build leaves the express lane and runs the full phases.
+
+**The audit gate — one rule, no exceptions (operator ruling 2026-07-14).** **Anything implementing a spec gets the full `audit-cycle`, PERIOD** — spec-lane work (Phase 6 specs, Phase 7 implementations, LOCKED-contract amendments) never substitutes the lighter review, whatever its blast radius. **Non-spec work** (express-lane fixes, ops, tooling) is NOT auto-excluded: it defaults to the light review below, and the **builder's judgment escalates** it into the full ladder when it warrants one. The gate fixes the floor; it never caps the ceiling.
+
+**The light review (the express lane's default gate — defined, not vibes).** (1) **Self-review** the diff against the acceptance criteria — read the change as its reviewer, not its author. (2) **Verify by exercising**: drive the changed behavior end-to-end for real (run the command, fire the job, hit the endpoint) — a green test suite alone is not exercising it. (3) **Regression test** when the change is a bugfix (the Bugfix artifact already requires one). (4) **One fresh-eyes reviewer pass at the builder's judgment** — a single reviewer, no multi-round ladder, no cross-model requirement — whenever the change touches anything the builder wouldn't want shipping on one pair of eyes.
 
 **The Bugfix artifact (the express lane's default spec).** Bugs fall between the full 8-phase loop (too heavy) and ad-hoc patching (too loose). A bug is scored on the stakes rubric like anything else — most land Low and take the express lane — and its lightweight contract is a **Bugfix artifact** with five fields:
 
@@ -271,7 +279,7 @@ Four legitimate loop-backs. Each is travelled only via an authorized, recorded r
 ## Quick reference checklist
 
 ```
-[ ] Stakes 1st Score the build. Low → EXPRESS LANE (Phase 0 + 1-line acceptance → build → audit-cycle → release verify; skip research / Gate A / Council / per-chunk specs; a bug uses the Bugfix artifact). Medium or High → the full checklist below.
+[ ] Stakes 1st Score the build. Low → EXPRESS LANE (Phase 0 + 1-line acceptance → build → light review, escalate to audit-cycle at builder's judgment → release verify; skip research / Gate A / Council / per-chunk specs; a bug uses the Bugfix artifact). Medium or High → the full checklist below. Spec-implementing work is ALWAYS audit-cycle'd, period.
 [ ] Phase 0  Current-state note written; constraints named; runtime premises verified
 [ ] Phase 1  Vision Doc + acceptance criteria written
 [ ] Phase 2  Research questions derived; all answered or marked unanswerable

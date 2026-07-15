@@ -38,13 +38,18 @@ opinion.** They are the contract for what you audit and what you must NOT re-fla
   at a pre-merge gate is a named, recurring failure mode). **Rounds 2+ scope tight to the fix
   diff** — verify each prior finding (VERIFIED-CLOSED / STILL-OPEN / FALSE-POSITIVE), check
   the fix introduced nothing new. Don't re-walk wide-surface edges already covered.
-- **Lock gate: 0 Critical + 0 High + 0 Medium.** Lows don't block — but REPORT them (a Low is
-  a finding, not residue); the lead triages each into the project registries. Severity-rate
-  honestly: never inflate a Low to force a fix, never deflate a Medium to dodge the gate.
-- **Registries are a do-not-re-report feed.** Findings in the waiver/backlog registries are
-  settled; re-reporting one is a defect in YOUR review. Exception: you may CHALLENGE a waiver
-  by citing the specific change that invalidated its rationale — re-arguing the original
-  finding against unchanged code is not a challenge.
+- **Lock gate: the tier floor your per-round prompt / `audit-state-notes.md` names** — default
+  0 Critical + 0 High + 0 Medium; a Low-risk chunk may triage Mediums, a Critical chunk drives
+  Lows to zero too (the methodology's chunk-risk table owns the mapping — the audit record,
+  not this file, is authoritative per round). Lows don't block at the default floor — but
+  REPORT them (a Low is a finding, not residue); the lead triages each into the project
+  registries. Severity-rate honestly: never inflate a Low to force a fix, never deflate a
+  Medium to dodge the gate.
+- **Registries are settled DISPOSITIONS, not invisible surfaces.** The code a waiver or
+  backlog entry covers is still yours to examine; what you may not do is re-report the same
+  finding against unchanged code — that's a defect in YOUR review. You may CHALLENGE a waiver
+  by citing the specific change (or genuinely new evidence) that invalidates its rationale;
+  re-arguing the original finding against unchanged code is not a challenge.
 - **Inherit declared postures.** A threat-model or design posture settled at design time or in
   a prior round is challenged only with NEW evidence, never re-litigated by default.
 - **Empirical work is required.** Grep the source, read the cited `file:line`, run the probe.

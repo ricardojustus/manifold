@@ -13,10 +13,16 @@ machinery at all (a guard, an abstraction, a config surface, a process step), ru
    *settled*. Inherit them. Re-deriving a threat model or a design tradeoff that a prior decision
    already closed burns budget and — worse — can silently reverse a deliberate call.
 
-**Proportionality of process.** Process weight scales with **stakes × reversibility**, not with how
-interesting the problem is. Multi-round adversarial audit machinery is for irreversible,
-high-blast-radius, or LOCKED surfaces. A best-effort convenience gets a review and a selftest —
-not a hardening campaign.
+**Proportionality of process.** Process weight scales with the **stakes rubric** — size, novelty,
+design-choice, complexity, knowledge gaps, blast radius, security/privacy, external commitment
+(max-of-dimension; METHODOLOGY.md owns the table) — not with how interesting the problem is, and
+**never with reversibility** (operator ruling 2026-07-14: almost all work is reversible, so a
+reversibility-keyed process goes vestigial — the big-but-reversible feature is exactly what the
+full process exists for). Irreversibility keeps its bite where it lands: destructive actions halt
+(`ask-vs-decide`), an irreversible chunk owes hardening (a rollback/migration proof; Critical
+escalation), and one-violation-is-forever security invariants are the floor below. Multi-round
+adversarial audit machinery is for spec-lane implementations and high-stakes surfaces; a
+best-effort convenience gets a review and a selftest — not a hardening campaign.
 
 ## Receipt (2026-07-04, this harness's own v1 self-audit)
 

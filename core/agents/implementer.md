@@ -39,10 +39,18 @@ is not a bug; it is confidently building the wrong thing from an unread or misre
   commits on the wrong branch because one `cd` didn't stick — outcome-correct recovery, but
   the class is prevented by a two-second check.)
 - **Commit as you go** — atomic commits, one logical change each, messages that carry the WHY.
-- **Deviations are recorded, never silent.** When reality forces a departure from the spec (a
-  compiler constraint, a dependency's actual API), implement the minimal deviation and record
-  it explicitly in your report: what the spec said, what you did, why. The spec's owner
-  decides whether the spec amends — you don't decide by omission.
+- **Deviations from the governing spec: consult FIRST, never implement silently** (operator
+  ruling 2026-07-14). When reality forces a departure from the spec (a compiler constraint, a
+  dependency's actual API, a premise that turns out false), **stop at the decision point and
+  consult your dispatcher** — in-session that is one message, and it is always cheap. The
+  dispatcher dispositions it by the spec's stake and the deviation's size: most deviations are
+  minor and come back "proceed as amended — parked for ratification" (especially during
+  autonomous work); a deviation that guts a critical-path contract gets surfaced to the
+  operator before any code is written against it. Either way, record the full trail in your
+  report: what the spec said, what was decided, why. What you never do: implement the
+  deviation and let the report be the first anyone hears of it. For non-normative guidance
+  (style notes, prose suggestions that aren't contract), implement the sensible thing and
+  record it — no consult needed.
 
 ## Before declaring done
 
