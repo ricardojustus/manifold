@@ -21,6 +21,8 @@ Right under the top matter, an attestation the author fills and a reviewer can c
 - Coverage gate: walked (taxonomy in coverage-and-self-review.md); gaps filled in <sections>
 - Complexity gate: <no deviations> | see Complexity-Tracking table
 - Success-criteria gate: PASS (criteria objectively checkable)
+- Visual-surface gate: N/A | PASS — surface observed at <where>
+- Resource-envelope gate: N/A — <why> | PASS — tier <T>, multiplication + caps/canary in §<n>, $ math if metered API
 
 ### Complexity-Tracking   (one row per deviation from the simplest thing that works; empty is good)
 | What was added | Why it's needed | Simpler alternative rejected — and why |

@@ -22,6 +22,8 @@
 6. **Encounter reality early.** Analysis and review reduce uncertainty only so far. A feasibility unknown is retired by a spike, not by more research or another Council. Integration risk is retired by vertical slices and a real release gate, not by validating chunks in isolation. Prefer the cheapest probe that touches reality over the most thorough argument about it.
 7. **Assess operational cost before shipping — quota IS cost.** Every feature, change, or design choice must have its *recurring runtime* cost impact assessed and recorded BEFORE it ships — distinct from the stakes rubric's one-time "Build cost." Two cost surfaces, both mandatory: **metered spend** (per-token API) AND **flat-rate account quota/throughput** (a subscription's periodic cap is a finite, exhaustible resource — burning it is a real cost even when zero dollars are metered). Name the cost dimension explicitly in the spec/plan and answer: does this add model/embedding calls per item processed? Does the per-call input scale with **corpus or graph size** (the unbounded-candidate trap)? Can it **fan out** (one call per item) or **retry-storm**? A change that is correct but unboundedly expensive is **not shippable** — bound it first. "Benign for correctness" is NOT "benign for cost"; they are separate audits. *Receipt: a graph edge-inflation fix once shipped with its edge growth measured only for correctness (judged benign) while its cost dimension was never checked — it multiplied per-item model calls and, compounded with an uncapped candidate list, drove a ~$20-25/day spend spike plus weekly-quota exhaustion. Correctness-benign, cost-catastrophic.*
 
+   **This principle has owners and gates, not just prose** (hardened 2026-07-15 after it failed to fire — it existed, cited, while a ~2,500-call recurring design sailed through every gate; a principle with no assigned owner silently doesn't execute). Three enforcement points: **(a) magnitude over precision** — designs classify into the project's **cost tiers** (the overlay binds the boundaries to observed account physics; order-of-magnitude buckets, never window-% arithmetic against unpublished limits — don't math the unmathable), with flat-rate quota priced as *displacement* ("jams the account other work runs on for ~N hours") and **metered API priced in dollars, mandatorily**; **(b) the Proportionality Skeptic** owns the check at councils and independently recomputes the designer's arithmetic; **(c) the resource-envelope gate** (spec-writing skill) makes an unpriced spec unlockable, and for Heavy-tier+ runs the envelope is a **closed loop, not a forecast**: hard call/token caps in the runner, a bounded canary first, observed-vs-forecast reconciliation before scaling, and exceeding the envelope **halts and re-opens the decision** — never "log it and keep going." *An approved estimate is not an operational control* — the incident's first ~150 real calls disproved a week of internally consistent reasoning, and the thing that stopped the run was the operator, not a limit.
+
 ---
 
 ## Roles
@@ -32,7 +34,7 @@
 | **Orchestrator / Main agent** | Runs the process end to end. Holds delegated authority. Drafts the Vision Doc in Phases 1 and 3 on the Human's direction. Convenes the Council, synthesizes its findings, dispositions them, owns Locks and re-opens on the Human's behalf, and escalates anything above its delegation. |
 | **Builder** | Phase 0 grounding, Phase 2 research, Phase 6 specs, Phase 7 implementation. |
 | **Auditor** | Runs the `audit-cycle` on every spec and every implementation: the same cross-model lens every time. The chunk's risk tier sets the lock-gate floor and the evidence burden, not whether the audit happens. |
-| **Round Table** | Ephemeral panel spawned only for the Council (Phase 5 and Gate A). At full strength, 2 strong-reasoning + 2 cross-model seats, four adversarial roles. Advisory only. Disbanded after each sitting so nothing it argues contaminates later phases. |
+| **Round Table** | Ephemeral panel spawned only for the Council (Phase 5 and Gate A). At full strength, 2 strong-reasoning + 3 cross-model seats, five adversarial roles — the Proportionality Skeptic standing at every sitting. Advisory only. Disbanded after each sitting so nothing it argues contaminates later phases. |
 | **Untrusted-content handler** | Fetches and quarantines untrusted external content when research reaches the open web. |
 
 The Council is deliberately **not** the agents who built the thing. Freshness is the point: a builder defending its own plan is not an adversary.
@@ -53,6 +55,8 @@ Score the build on each dimension. **Project stakes = the highest tier reached o
 | **Complexity** | Single module, few moving parts | A few modules, moderate coupling | Many moving parts, cross-subsystem coupling, concurrency or distributed behavior |
 | **Knowledge gaps** | Domain and system well understood | Meaningful unknowns — research or a spike owed first | Major unknowns in the domain or the existing system; building now would be guessing |
 | **Blast radius** | Self-contained, no dependents | One shared component or a few dependents | Core shared substrate (the project's central data store or engine) or many dependents |
+
+**Blast-radius scores are claims, and claims get grounded** (added 2026-07-15). Any High blast-radius or irreversibility classification — especially one used to justify heavy machinery — must cite the **concrete recovery story from the project's current-state docs**: what actually happens when this goes wrong, how fast it's detected, what propagates meanwhile, and what recovery costs in operator labor. Designer intuition is not a source. The check runs **symmetrically**: an inflated danger claim (machinery built to guard a thing the architecture already made recoverable) is as much a defect as a minimized one. *(Receipt: an arc classified "AI edits the memory graph" as irreversible when the architecture had made graph mistakes recoverable months earlier — the false classification justified a certification fortress, and the rule that keyed on blast radius had no check that the classification was grounded.)*
 | **External commitment** | None | Internal stakeholders only | A contract, a partner, a public launch, or money is on the line |
 | **Security / privacy** | No sensitive data, no new attack surface | Internal-only sensitive data, limited surface | Confidential IP, user data, credentials, or a new external attack surface (partner NDAs, restricted material) |
 
@@ -63,8 +67,10 @@ Score the build on each dimension. **Project stakes = the highest tier reached o
 | Project stakes | Gate A (early vision challenge) | Phase 5 Council |
 |---|---|---|
 | **Low** | Skip | **Dropped** — Low takes the express lane (below), so the Phase 5 Council is skipped; human review suffices. An out-of-method advisory pass only on explicit request. |
-| **Medium** | Optional (Orchestrator's call) | 2 seats: 1 strong-reasoning + 1 cross-model. Full Round Table at the Orchestrator's discretion. |
-| **High** | **Required** | **Full 4-seat Round Table: 2 strong-reasoning + 2 cross-model.** |
+| **Medium** | Optional (Orchestrator's call) | 3 seats: 1 strong-reasoning + 1 cross-model + the Proportionality Skeptic. Full Round Table at the Orchestrator's discretion. |
+| **High** | **Required** | **Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model (Proportionality standing).** |
+
+**The Proportionality Skeptic sits at every Council sitting, whatever the stakes tier** — a standing cross-model seat whose only mandate is overengineering, YAGNI, and cost (its full charter lives in the council skill's seat mandates). It is never folded into another seat: a proportionality mandate embedded in a broader charter silently drops — a certification-fortress arc (2026-07-15) passed two councils whose Feasibility seat nominally owned "is the cost estimate honest" and nobody multiplied the constants.
 
 **The express lane (Low stakes).** A build that scores Low on every dimension does **not** run the full eight phases. It runs: **Phase 0** grounding + **acceptance criteria** (one line each is fine) → **build** → the **light review** (defined below; the builder's judgment escalates it to a full `audit-cycle`) → a **lightweight release verify** (does it meet the one-line acceptance criteria). It **drops** Phase 2 deep research, Gate A, the Phase 5 Council, and per-chunk spec ceremony. This is not a lesser process; it is the right-sized one for small, familiar, well-understood, self-contained work, and it keeps the full loop credible by not charging ceremony where none is owed. **A bug fix is the archetypal express-lane build** — it uses the Bugfix artifact below in place of a full spec. The instant any dimension would score Medium+, the build leaves the express lane and runs the full phases.
 
@@ -122,6 +128,14 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Phase 0 facts are immutable; the architecture they describe is not.** The current-state note records what the repo *is*, and that observation is never silently rewritten to suit the plan. But the repo is ground truth descriptively, not normatively: sometimes the correct finding is that the current architecture is itself the problem. A repo constraint can be challenged through a recorded **architectural re-open** (see Backward propagation), never through a quiet edit to the note.
 - **Verify the premises, don't inherit them.** A plan or a prior doc can assert facts about the runtime that are no longer true. Before building on any such premise, verify it against the *current* system, and record what you verified. (Receipt: a build once proceeded on a plan that said the input transcripts didn't exist; hundreds of them did. The premise was never checked. A §0 "Verified Inputs" note is cheap insurance against building on a stale assumption.)
 
+### Blind-Spot Pass — hunt the unknowns before the Vision (Medium/High)
+- **When.** At arc entry, after Phase 0 grounding and **before any Vision prose is drafted**. Required at Medium/High stakes; skipped on the express lane.
+- **Purpose.** The most expensive failures enter as *unknown unknowns* — especially the operator's. The Vision and every gate after it can only validate what someone thought to ask; this step is where someone is **assigned** to ask. *(Receipt: a certification-machinery arc collapsed on operating cost that was an unknown unknown to the operator and an unowned known to the harness — a blind-spot pass at entry would have put "this class of design means thousands of recurring model calls" on the table before a single vision paragraph existed.)*
+- **Owner.** The Orchestrator runs it WITH the Human — it is a conversation, not a document ceremony.
+- **Activities.** Inventory the unknowns across the standing categories: what this costs to **run** (not build — recurrence, quota, dollars), what it takes to **maintain**, what breaks and **who fixes it at what cost**, what the **domain** knows that the operator hasn't asked about, what **security surface** it opens. The agent's explicit duty is hunting on the operator's behalf: name the things they don't know to ask.
+- **Output.** A short unknowns inventory; each item marked **resolve-now / research (Phase 2) / spike / accept-knowingly**. It feeds the Vision, the research question list, and the decision packets that follow.
+- **Exit criteria.** The inventory exists and no item is unmarked. An "accept-knowingly" needs the operator's actual eyes, not a default.
+
 ### Phase 1 — Vision
 - **Purpose.** Decide what we are building and why, and what "done" looks like.
 - **Owner.** Human owns the decisions; the Orchestrator does the writing.
@@ -143,11 +157,12 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Output.** Updated Vision Doc.
 - **Exit criteria.** The Vision is consistent with what research revealed, and acceptance criteria still hold.
 
-### Spike path — empirical probes (as needed)
+### Spike & Prototype path — empirical probes (as needed)
 - **When.** Any time from Phase 2 onward, whenever a feasibility unknown is identified that reading and arguing cannot settle: a tool or model choice, a throughput target, an integration that might not hold, a performance ceiling.
 - **Purpose.** Retire a specific unknown with the cheapest experiment that touches reality. Research tells you what others claim; a spike tells you what is true in your environment.
 - **Owner.** Builder.
 - **Rules.** A spike is time-boxed and scoped to one named question. Its only output is a **learning**, recorded as a finding that feeds the Vision (Phase 3) or the Plan (Phase 4). A spike never ships: throwaway by default, so it is never quietly promoted into the build. If its result deserves to live on, it re-enters as a normal chunk with its own spec and audit.
+- **Prototypes — the unknown-KNOWN probe (distinct from spikes).** A spike answers *"can it be built?"*; a prototype answers *"is this what the operator actually wants?"* — the criterion they will recognize instantly on sight but could never have specified in advance. **When a build's value depends on operator judgment of an experiential surface** (a UI, a report format, an interaction flow, an instrument whose outputs the operator will consume), a throwaway prototype goes in front of the operator **before Phase 4 planning** — not after the structure is built. Same discipline as spikes: time-boxed, never ships, output is a learning. Scope it honestly: only for **material** experiential decisions that cannot be answered from an existing surface, at the **cheapest fidelity that answers the question** (a mock, a hand-run sample, a sketch — not a mini-build). *(Receipts: UI specs locked unseen shipped the same visual defect twice; a certification instrument was built vision→plan→spec→impl without the operator ever seeing twenty sample judgments — a hand-run prototype would have shown him its cost and feel in an afternoon.)*
 - **Exit criteria.** The named unknown is resolved to a recorded learning, or explicitly marked still-open with the residual risk flagged for the Council.
 
 ### Gate A — Optional vision-only challenge
@@ -160,18 +175,19 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Purpose.** Turn the locked-in-spirit Vision into a buildable plan.
 - **Owner.** Builder drafts; the Orchestrator reviews; the Human eyeballs.
 - **Activities.** Break the work into chunks. **Prefer vertical slices** (thin end-to-end pieces that each exercise the whole stack) over horizontal layers wherever dependencies allow, so integration reality and learning arrive at slice one instead of at the end. Set order, priority, dependencies, and architecture. **Tag every chunk with a risk tier** (Low / Medium / High / Critical), and for any High chunk name its required hardening artifact. Record the Plan.
-- **Human eyeball gate.** Before convening the expensive Phase 5 Council, the Human does a quick sanity pass on the Plan: (1) does the Plan match the Vision, (2) are the risks honestly tagged, (3) are chunks ordered so learning comes early, (4) is anything obviously unwanted, (5) is the cost acceptable. This is a thirty-second gate, not a ritual: it exists to catch the thing the Human would kill on sight before Council cycles are spent on it. An under-tagged chunk (check 2) is the cheapest place to catch gaming.
+- **Human eyeball gate.** Before convening the expensive Phase 5 Council, the Human does a quick sanity pass on the Plan: (1) does the Plan match the Vision, (2) are the risks honestly tagged, (3) are chunks ordered so learning comes early, (4) is anything obviously unwanted, (5) is the cost acceptable — **judged from the plan's priced resource envelope rendered in the operator's units** (cost tier, displacement, dollars for metered API), never from a duration guess; the operator cannot price what nobody multiplied out. This is a thirty-second gate, not a ritual: it exists to catch the thing the Human would kill on sight before Council cycles are spent on it. An under-tagged chunk (check 2) is the cheapest place to catch gaming.
 - **Competing-architectures option (High/Critical designs).** When the plan's central design choice is high-stakes, don't settle for the first architecture: race two or three designer agents in parallel, each given a deliberately DIFFERENT mandate — smallest-possible-change, cleanest-long-term-structure, pragmatic-balance — then lay the proposals side by side (what each costs, what each buys, where each breaks) and let the Human pick or direct a merge. A few agent-minutes at plan time buys visibility into the trade-off space instead of trust in a single designer's instincts. Skip it for Low/Medium designs — one good architecture and the eyeball gate is enough. *(Pattern from Anthropic's first-party feature-dev plugin, MIT.)*
-- **Output.** Plan Doc with chunked, ordered, risk-tagged work and a dependency map.
-- **Exit criteria.** Plan recorded, every chunk risk-tagged, Human has done the eyeball pass.
+- **Output.** Plan Doc with chunked, ordered, risk-tagged work, a dependency map, and — for any plan whose build or runtime consumes model calls/quota — the **priced resource envelope** (cost tier; the one-line multiplication for Heavy-tier+, with guessed numbers named as guesses; dollar math wherever metered API is involved).
+- **Exit criteria.** Plan recorded, every chunk risk-tagged, the resource envelope priced (or N/A for a build that consumes nothing at runtime), Human has done the eyeball pass. **A vision-mandated deliverable with no plan element and no explicit waiver blocks this phase's close** — a silent drop between Vision and Plan is a defect, not an oversight.
 
 ### Phase 5 — Round Table Council, then Lock
 - **Purpose.** Subject the Vision *and* the Plan to fresh adversarial scrutiny from first principles, then lock both.
 - **Owner.** The Orchestrator convenes and synthesizes. The Round Table argues. The Human co-signs the Lock.
 - **Activities.** See **The Round Table** section below for seats, roles, and run format.
 - **Disposition.** The Orchestrator collects the Council's severity-rated findings into one list. For each finding, the Human or the Orchestrator chooses one of: **re-open** (loop back, see governance), **waiver** (accept the risk, logged), **refine in place**, or — when a finding kills the build itself — **abandon** (terminal; recorded as a Kill, see governance).
-- **Lock.** Once dispositioned, the Human co-signs a **Lock** on the Vision and the Plan. A Lock is a recorded decision, not a mood. Locked artifacts are the source of truth until a logged re-open supersedes them.
-- **Exit criteria.** All findings recorded. High and Critical dispositioned before lock; Medium and Low waived, backlogged, or refined per policy. Vision and Plan Locked.
+- **Vision-guard invariants (promoted at this phase).** Before the Lock, the Orchestrator extracts the Vision's **load-bearing guards** — its quantitative or bounding promises ("sampled", "bounded ≪", caps, densities, a mandated envelope) — into a short named-invariants list attached to the Lock. Every downstream artifact (Plan constants, Specs, release evidence) is checked against these **verbatim**: a paraphrase that inverts magnitude ("sampled" becoming 100%) is a violation, not coverage. *(Receipt: a vision's "countersign density is bounded (applies ≪ judgments)" became 100% countersign in the plan; every later gate faithfully verified the wrong number.)*
+- **Lock.** Once dispositioned, the Human co-signs a **Lock** on the Vision and the Plan. A Lock is a recorded decision, not a mood. Locked artifacts are the source of truth until a logged re-open supersedes them. **The co-sign attaches to the operator decision packet/brief, not to the raw artifact** (the operator-translation principle): a GO obtained against a document the operator is known not to parse is not informed consent, and ratification never transfers accountability for what the operator wasn't equipped to see.
+- **Exit criteria.** All findings recorded. High and Critical dispositioned before lock; Medium and Low waived, backlogged, or refined per policy. Vision-guard invariants named. Vision and Plan Locked against the operator brief.
 
 ### Phase 6 — Specs
 - **Purpose.** Produce a detailed, authoritative spec for each chunk.
@@ -185,7 +201,7 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **When.** After the chunk specs exist and before implementation begins — the seam between Phase 6 and Phase 7. Advisory, like the Human eyeball gate, but agent-run and cross-artifact.
 - **Purpose.** Catch the contradictions *between* artifacts that a single-artifact audit can't see: a spec that assumes an interface a sibling spec doesn't provide, an acceptance criterion no chunk covers, a plan dependency the specs invert. These are cheapest to catch before code is written against them.
 - **Owner.** An agent (not the spec's author) runs a consistency pass over the locked artifact set.
-- **Activities.** One pass, one section, producing a short findings note: (1) **coverage** — every Phase 1 acceptance criterion maps to at least one chunk/spec; every locked spec traces back to a plan chunk; (2) **contradiction scan** — cross-spec interface and assumption conflicts; (3) **premise check** — the specs' stated runtime premises still hold against the current system (see Phase 0's verify-the-premises rule). Advisory: findings route to the Orchestrator, who dispositions them (amend a spec, re-open, or waive with rationale) before implementation.
+- **Activities.** One pass, one section, producing a short findings note: (1) **coverage** — every Phase 1 acceptance criterion maps to at least one chunk/spec; every locked spec traces back to a plan chunk; (2) **contradiction scan** — cross-spec interface and assumption conflicts; (3) **premise check** — the specs' stated runtime premises still hold against the current system (see Phase 0's verify-the-premises rule); (4) **vision-guard fidelity** — the Lock's named invariants (Phase 5) survive verbatim into every spec's constants; a magnitude-inverting paraphrase is a finding, not a mapping. Advisory: findings route to the Orchestrator, who dispositions them (amend a spec, re-open, or waive with rationale) before implementation.
 - **Exit criteria.** Every acceptance criterion is covered or its gap is dispositioned; no un-dispositioned cross-spec contradiction remains; premises confirmed. This gate never *blocks* on its own authority — it informs the Orchestrator, exactly like the eyeball gate.
 
 ### Phase 7 — Implementation
@@ -199,21 +215,23 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Purpose.** A green chunk is not a shipped product. This phase validates the assembled whole, which is where the Phase 1 acceptance criteria finally pay off: they were written so something downstream could verify against them, and this is that something.
 - **Owner.** Builder integrates; Auditor runs the final gate; the Human signs off.
 - **Activities.** Assemble the chunks. Verify the system end to end against the **Vision's acceptance criteria** (the whole, not the per-chunk slices). Confirm the release essentials are in place: deployment path, a rollback or recovery path appropriate to the artifact, docs, and post-release observability or verification appropriate to the artifact. A server gets rollback and monitoring; a doc or local tool gets version restore and a verification step instead.
-- **Output.** A release candidate that satisfies the acceptance criteria, with the appropriate rollback-or-recovery path and post-release verification wired.
+- **The operator explainer.** When the build ships (or an arc closes), the operator gets the plain-English story: what got built, how it changes the system's shape, what new thing they can now reason about — written for a smart non-engineer to *think with*, not for an agent to execute from. It closes with 2–3 **ungated self-check questions** ("if any of these feels shaky, ask me and I'll teach that part") — the teaching duty is the agent's; the operator is never quizzed or gated. The overlay binds where explainers file and whether they feed a living operator primer.
+- **Output.** A release candidate that satisfies the acceptance criteria, with the appropriate rollback-or-recovery path and post-release verification wired, plus the operator explainer.
 - **Exit criteria.** Every Phase 1 acceptance criterion is demonstrably met end to end, the rollback or recovery path is tested, the appropriate post-release observability or verification is in place, and the Human has signed off. Only then does the build ship.
 
 ---
 
 ## The Round Table
 
-The Council is a fresh, ephemeral panel spawned for Gate A and Phase 5. At full strength (High stakes) it is **four seats: 2 strong-reasoning + 2 cross-model**, each given a distinct adversarial role. Diversity of role beats raw model count: telling two strong models to "argue" yields shared blind spots, while assigning genuinely different mandates forces genuinely different attacks. (The overlay pins which concrete models fill the strong-reasoning and cross-model seats.)
+The Council is a fresh, ephemeral panel spawned for Gate A and Phase 5. At full strength (High stakes) it is **five seats: 2 strong-reasoning + 3 cross-model**, each given a distinct adversarial role. Diversity of role beats raw model count: telling two strong models to "argue" yields shared blind spots, while assigning genuinely different mandates forces genuinely different attacks. (The overlay pins which concrete models fill the strong-reasoning and cross-model seats.)
 
 | Seat | Default model class | Mandate |
 |---|---|---|
 | **The Advocate** | strong-reasoning | Argues from the end user or player. Does this actually serve and delight them? Where does the experience break down? |
 | **The Premise Skeptic** | strong-reasoning | Attacks the core premise from first principles. Should we build this at all? What is the strongest case for a completely different approach, or for doing nothing? |
 | **The Feasibility Skeptic** | cross-model | Technical and resource realism. Can this be built with the stack, the constraints, the timeline? Where is the hidden complexity? |
-| **The Systems Critic** | cross-model | Coherence and second-order effects. Does the Plan actually deliver the Vision? Are the dependencies, ordering, and architecture sound? What breaks at scale or under load? |
+| **The Systems Critic** | cross-model | Coherence and second-order effects. Does the Plan actually deliver the Vision — its acceptance criteria AND its explicitly mandated deliverables? Are the dependencies, ordering, and architecture sound? What breaks at scale or under load? |
+| **The Proportionality Skeptic** | cross-model (standing, every sitting) | Overengineering, YAGNI, and cost. Prices the design against the account it runs on ("cannot price it" blocks a Phase 5 lock); challenges the blast-radius classification against the written recovery story; asks the six standing proportionality questions; every finding names a concrete deletion. |
 
 Model-to-seat mapping is a sensible default (the strongest qualitative reasoner on the conceptual seats, a genuinely different model on the technical and architectural seats), not a law. The Orchestrator may remap if a particular build calls for it. **Cross-model is the point** — two seats from a model family genuinely different from the primary reasoner, because a second instance of the same model shares the first's blind spots.
 
@@ -281,19 +299,20 @@ Four legitimate loop-backs. Each is travelled only via an authorized, recorded r
 ```
 [ ] Stakes 1st Score the build. Low → EXPRESS LANE (Phase 0 + 1-line acceptance → build → light review, escalate to audit-cycle at builder's judgment → release verify; skip research / Gate A / Council / per-chunk specs; a bug uses the Bugfix artifact). Medium or High → the full checklist below. Spec-implementing work is ALWAYS audit-cycle'd, period.
 [ ] Phase 0  Current-state note written; constraints named; runtime premises verified
+[ ] BlindSpot (Med/High) Unknowns inventory run WITH the operator before any vision prose; every item marked resolve/research/spike/accept-knowingly
 [ ] Phase 1  Vision Doc + acceptance criteria written
 [ ] Phase 2  Research questions derived; all answered or marked unanswerable
-[ ] Spike    Any feasibility unknown retired by a time-boxed probe; learning recorded
+[ ] Spike    Any feasibility unknown retired by a time-boxed probe; learning recorded. Prototype any material experiential surface (operator sees it BEFORE Phase 4)
 [ ] Phase 3  Vision refined against findings and spikes
-[ ] Stakes   Project scored Low / Medium / High; any downgrade logged with evidence
-[ ] Gate A   Run if High (required) or Medium (optional); skip if Low
-[ ] Phase 4  Plan chunked (prefer vertical slices), risk-tagged, High/Critical chunks name a hardening artifact
-[ ] Gate     Human eyeball pass: matches vision, honest tags, ordered for learning, nothing unwanted, cost ok
-[ ] Phase 5  Council sat at stakes-appropriate size; independent first passes; findings dispositioned
-[ ] Lock     Vision + Plan Locked, Human co-signed
-[ ] Phase 6  Each spec audited (audit-cycle) and locked at its risk-tier floor
-[ ] Analyze  Pre-implementation cross-artifact pass: acceptance coverage, contradiction scan, premise check; findings dispositioned
-[ ] Phase 7  Each impl audited (audit-cycle) at its risk-tier floor; chunk acceptance met
-[ ] Phase 8  Whole verified end-to-end vs acceptance criteria; rollback + post-release verification + signoff
+[ ] Stakes   Project scored Low / Medium / High; any downgrade logged with evidence; High blast-radius claims cite the recovery story
+[ ] Gate A   Run if High (required) or Medium (optional); skip if Low — Proportionality Skeptic sits
+[ ] Phase 4  Plan chunked (prefer vertical slices), risk-tagged, High/Critical chunks name a hardening artifact; resource envelope PRICED (tier + multiplication + $ for metered API); vision-mandated deliverables mapped or waived
+[ ] Gate     Human eyeball pass: matches vision, honest tags, ordered for learning, nothing unwanted, cost acceptable FROM the priced envelope in operator units
+[ ] Phase 5  Council sat at stakes-appropriate size (+ Proportionality, standing); independent first passes; findings dispositioned; vision-guard invariants named
+[ ] Lock     Vision + Plan Locked, Human co-signed AGAINST the operator packet/brief
+[ ] Phase 6  Each spec audited (audit-cycle) and locked at its risk-tier floor; unpriced resource envelope = cannot lock
+[ ] Analyze  Pre-implementation cross-artifact pass: acceptance coverage, contradiction scan, premise check, vision-guard fidelity (verbatim); findings dispositioned
+[ ] Phase 7  Each impl audited (audit-cycle) at its risk-tier floor; chunk acceptance met; Heavy-tier+ runs launch capped + canary-first, exceed = halt-and-reopen
+[ ] Phase 8  Whole verified end-to-end vs acceptance criteria; rollback + post-release verification + signoff; operator explainer delivered
 [ ] Loop     Any change classed (clarification / amendment / re-open) and recorded
 ```

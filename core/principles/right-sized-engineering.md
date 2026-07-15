@@ -24,6 +24,26 @@ escalation), and one-violation-is-forever security invariants are the floor belo
 adversarial audit machinery is for spec-lane implementations and high-stakes surfaces; a
 best-effort convenience gets a review and a selftest — not a hardening campaign.
 
+**The classification check — the rubric's inputs are claims, and claims get grounded** (added
+2026-07-15). A rule that keys on blast radius has no defense against a false classification. Any
+invocation of "irreversible / high blast radius" **used to justify machinery** must cite the
+concrete recovery story from the project's current-state docs — what actually happens when this
+goes wrong, detection latency, what propagates meanwhile, recovery cost in operator labor — never
+the designer's intuition. Check both directions: inflated danger inflates machinery; minimized
+danger skips needed care. Evidence scales with stakes: citing where the recovery path was last
+exercised usually suffices; a recovery *proof* is owed only when the claim carries heavy machinery
+on its back. *(Receipt: an arc classified "AI edits the memory graph" as irreversible — the
+category that justifies heavy machinery — while the architecture had made graph mistakes
+recoverable months earlier (immutable evidence master, rebuildable projection, worst real
+corruption hand-repaired in an afternoon). The rule was cited; it was fed a false premise; a
+certification fortress followed.)*
+
+**Pinned constants are design decisions.** Sample sizes, confidence bars, densities, thresholds,
+seat counts get the same adversarial scrutiny as architecture — each pinned constant carries its
+**cost implication inline** (what does this number multiply out to, per run, at recurrence?).
+Constants ratified as statistics whose *price* nobody computed are how a design passes every gate
+and dies on first contact with the account it runs on.
+
 ## Receipt (2026-07-04, this harness's own v1 self-audit)
 
 A best-effort force-push guard hook — whose limits were *declared at design time* ("it cannot
@@ -35,6 +55,21 @@ innocent commands (`rm -rf pushcache/` was denied by a "safety" belt — the har
 because a guard that blocks normal work gets disabled). The operator's resolution: **radical
 simplification** — 170 lines → ~60 obviously-correct lines, a written waiver for the disguise
 tail, selftest-pinned. The audit rounds were the failure mode, not diligence.
+
+## Receipt (2026-07-15, the certification fortress — the other direction)
+
+The v1 receipt above is process pointed at too small a target; this one is machinery built too
+big. A week-long arc built statistical certification gates (97% CI at n≥99/class, 100% blind
+grading by a second model, 100% countersign by a third, bake-offs, held-out splits) so a nightly
+janitor could apply memory-graph fixes autonomously — **enterprise ML-evaluation standards
+imported into a one-user system whose mistakes had an undo story**. Every gate passed: two
+unanimous councils, clean spec ladders, four dual-lens audit rounds to zero findings. The pilot
+needed ~2,500 recurring model calls; the account saturated at ~150; the operator killed the arc
+in an hour ("NO OVERENGINEERING IS A CORE PRINCIPLE"). Root causes now encoded as checks here and
+in METHODOLOGY.md: a false irreversibility classification fed the stakes rubric (→ the
+classification check), the constants' price was never computed (→ constants-carry-cost, the
+resource-envelope gate), and every gate validated the design against itself, none against the
+machine it ran on (→ the Proportionality Skeptic seat).
 
 ## The floor — what YAGNI must NOT trim
 
@@ -75,4 +110,6 @@ Stop and reconsider when you see yourself:
   well-intentioned — the over-blocking belt in this harness's own v1 audit was exactly this.
 
 *Pairs with: `smell-checklist.md` (probe triggers), `ask-vs-decide.md` (when to park the maybe-need),
-ENFORCEMENT.md "Extending enforcement" (the four tests before any rule escalates past prose).*
+ENFORCEMENT.md "Extending enforcement" (the four tests before any rule escalates past prose), the
+Proportionality Skeptic council seat (this principle's standing adversarial owner), and the
+spec-writing skill's resource-envelope gate (its lock-blocking teeth).*

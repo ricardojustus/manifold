@@ -1,12 +1,12 @@
 ---
 name: council
 description: >-
-  Convene the Round Table — a fresh, ephemeral panel of up to 2 strong-reasoning + 2 cross-model adversarial seats that reviews a Vision (and Plan) from first principles and returns ONE consolidated severity-rated findings list. This is the methodology's Council: Gate A (vision-only challenge) and Phase 5 (vision + plan lock). Invoke on "convene the council" / "round table" / "run Gate A" / "Phase 5 council" / "/council", or proactively when a Medium/High-stakes Vision (Gate A) or Vision+Plan (Phase 5) is ready for adversarial review BEFORE locking. ADVISORY ONLY — it never edits, locks, or loops back; the Orchestrator + Human disposition its findings. It reviews INTENT and DESIGN, never a diff or code: pre-merge gating is `audit-cycle`; security surfaces `scoped-adversarial-audit`; subsystem inventory `system-audit`.
+  Convene the Round Table — a fresh, ephemeral panel of up to 2 strong-reasoning + 3 cross-model adversarial seats (the Proportionality Skeptic standing at every sitting) that reviews a Vision (and Plan) from first principles and returns ONE consolidated severity-rated findings list. This is the methodology's Council: Gate A (vision-only challenge) and Phase 5 (vision + plan lock). Invoke on "convene the council" / "round table" / "run Gate A" / "Phase 5 council" / "/council", or proactively when a Medium/High-stakes Vision (Gate A) or Vision+Plan (Phase 5) is ready for adversarial review BEFORE locking. ADVISORY ONLY — it never edits, locks, or loops back; the Orchestrator + Human disposition its findings. It reviews INTENT and DESIGN, never a diff or code: pre-merge gating is `audit-cycle`; security surfaces `scoped-adversarial-audit`; subsystem inventory `system-audit`.
 ---
 
 # Council — the Round Table
 
-Fresh adversarial scrutiny of a **Vision** (Gate A) or **Vision + Plan** (Phase 5) from genuinely different mandates, then ONE consolidated findings list handed to the Orchestrator. Mirrors `audit-cycle`'s cross-model dispatch (parallel strong-reasoning subagents + a cross-model reviewer with completion-watchers), but the subject is **intent/design**, not code.
+Fresh adversarial scrutiny of a **Vision** (Gate A) or **Vision + Plan** (Phase 5) from genuinely different mandates — including one seat whose only mandate is that the design isn't oversized — then ONE consolidated findings list handed to the Orchestrator. Mirrors `audit-cycle`'s cross-model dispatch (parallel strong-reasoning subagents + a cross-model reviewer with completion-watchers), but the subject is **intent/design**, not code.
 
 Authority: `.claude/harness/METHODOLOGY.md` (Roles, The Round Table, Project stakes). The methodology is the WHY; this skill is the HOW.
 
@@ -38,12 +38,14 @@ At `gate-a` with no Plan, the skill **degrades cleanly**: no plan-targeted findi
 | stakes | seats |
 |---|---|
 | **low** | **Skip** — Low builds take the express lane, which drops the Council (human review suffices). Convene only if the operator *explicitly* asks for an out-of-method advisory pass. |
-| **medium** | 2 seats — default **Premise Skeptic (strong-reasoning) + Systems Critic (cross-model)** (premise + coherence are highest-leverage). Full 4 at Orchestrator discretion. |
-| **high** | Full 4-seat Round Table: 2 strong-reasoning + 2 cross-model. |
+| **medium** | 3 seats — default **Premise Skeptic (strong-reasoning) + Systems Critic (cross-model) + Proportionality Skeptic (cross-model)** (premise + coherence are highest-leverage; proportionality always sits). Full panel at Orchestrator discretion. |
+| **high** | Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model (the Proportionality Skeptic standing). |
 
-**At Gate A (vision-only), the 2-seat cross-model default is the Feasibility Skeptic, not the Systems Critic** — the Systems Critic's mandate (plan delivery + risk-tag honesty) is gutted with no Plan to critique.
+**The Proportionality Skeptic sits at EVERY sitting, both phases, all stakes where a council convenes** — it is a standing seat, not a stakes-scaled one. It exists because a proportionality mandate embedded inside a broader charter silently drops (the receipt is in its mandate text), so it is never folded into another seat. At Gate A its pricing check degrades gracefully: with no plan constants yet, "price it" becomes a named plan-phase obligation; the classification challenge and simplest-design/measured-size questions run in full.
 
-## The four seats
+**At Gate A (vision-only), the cross-model default alongside it is the Feasibility Skeptic, not the Systems Critic** — the Systems Critic's mandate (plan delivery + risk-tag honesty) is gutted with no Plan to critique.
+
+## The five seats
 
 Diversity of *mandate* beats raw model count — identical prompts yield one shared blind spot, so each seat is briefed through its own mandate (full text in `references/seat-mandates.md`).
 
@@ -52,7 +54,8 @@ Diversity of *mandate* beats raw model count — identical prompts yield one sha
 | **The Advocate** | strong-reasoning | The end user / player. Does this serve and delight them? Where does the experience break? |
 | **The Premise Skeptic** | strong-reasoning | First-principles attack on the core premise. Should we build this at all? Strongest case for a different approach or doing nothing? |
 | **The Feasibility Skeptic** | cross-model | Technical + resource realism. Buildable with the stack/constraints/timeline? Where's the hidden complexity? |
-| **The Systems Critic** | cross-model | Coherence + second-order effects. Does the Plan deliver the Vision? Dependencies/ordering/architecture sound? What breaks at scale? **Are chunks honestly risk-tagged, or under-tagged to earn an easier audit floor?** |
+| **The Systems Critic** | cross-model | Coherence + second-order effects. Does the Plan deliver the Vision (acceptance criteria AND vision-mandated deliverables)? Dependencies/ordering/architecture sound? What breaks at scale? **Are chunks honestly risk-tagged, or under-tagged to earn an easier audit floor?** |
+| **The Proportionality Skeptic** | cross-model (standing, every sitting) | Overengineering + YAGNI + cost. Price the design (tiers; "cannot price" blocks at Phase 5); challenge the blast-radius classification against the written recovery story; the six standing questions; findings name concrete deletions. |
 
 Model-to-seat mapping is the default, not a law — the Orchestrator may remap (e.g. if the cross-model provider is saturated, remap a cross-model seat to a third strong-reasoning seat). **Cross-model is the point** — the two cross-model seats come from a model family genuinely different from the primary reasoner, because a second instance of the same model shares the first's blind spots.
 
@@ -109,8 +112,8 @@ This is one Evidence Store with `audit-cycle`'s — same schema/severity/disposi
 
 ## Test prompts
 
-1. *"Convene the council on the integration — Phase 5, High stakes. Vision + Plan are in councils/<topic>/."* → 4 seats dispatched same turn (2 strong-reasoning subagents + 2 cross-model backgrounded + watchers), independent first passes, 1 cross-exam round, MAX-severity consolidation → `consolidated-findings.md`, advisory.
-2. *"Run Gate A on this Vision — no Plan yet, Medium stakes."* → degrades to vision-only; 2 seats (Premise Skeptic strong-reasoning + Feasibility Skeptic cross-model — Systems Critic is gutted with no Plan); no plan-targeted findings; under-tagging check skipped.
+1. *"Convene the council on the integration — Phase 5, High stakes. Vision + Plan are in councils/<topic>/."* → 5 seats dispatched same turn (2 strong-reasoning subagents + 3 cross-model backgrounded + watchers, Proportionality standing), independent first passes, 1 cross-exam round, MAX-severity consolidation → `consolidated-findings.md`, advisory.
+2. *"Run Gate A on this Vision — no Plan yet, Medium stakes."* → degrades to vision-only; 3 seats (Premise Skeptic strong-reasoning + Feasibility Skeptic cross-model + Proportionality Skeptic cross-model — Systems Critic is gutted with no Plan); no plan-targeted findings; under-tagging check skipped; the Proportionality seat's pricing check converts to a named plan-phase obligation.
 3. *"The council came back with a High that the Human rejects."* → logged as a waived finding; the Council never forces a loop-back; the Orchestrator records the disposition.
 
 ## Related skills

@@ -46,11 +46,19 @@ is not a bug; it is confidently building the wrong thing from an unread or misre
   dispatcher dispositions it by the spec's stake and the deviation's size: most deviations are
   minor and come back "proceed as amended — parked for ratification" (especially during
   autonomous work); a deviation that guts a critical-path contract gets surfaced to the
-  operator before any code is written against it. Either way, record the full trail in your
-  report: what the spec said, what was decided, why. What you never do: implement the
+  operator before any code is written against it. What you never do: implement the
   deviation and let the report be the first anyone hears of it. For non-normative guidance
   (style notes, prose suggestions that aren't contract), implement the sensible thing and
   record it — no consult needed.
+- **The deviations ledger — record AS IT HAPPENS, not at the end.** Keep a `DEVIATIONS.md` in
+  your workspace and append one entry **at each consult, the moment it's dispositioned**: what
+  the spec said (quote) / what reality was / the disposition (proceed-as-amended, parked,
+  halted) / status. The ledger is the **single record**: your handoff report's Deviations
+  section *references* it rather than re-transcribing it. Why live, not end-of-run: an
+  end-report trail is invisible mid-flight (the orchestrator can't see trouble accumulating),
+  dies with a crashed or compacted session, and fragments across implementers on a multi-lane
+  arc. The ledger also feeds the spec's back-prop and the audit — deviations are exactly where
+  audits should look hardest.
 
 ## Before declaring done
 
@@ -65,8 +73,8 @@ Return a condensed structured report (the artifacts stay in files; your reply is
 
 - **Status**: COMPLETE / BLOCKED / COMPLETE-WITH-DEVIATIONS
 - **What landed**: commits (hashes + one-liners), files touched
-- **Deviations & ambiguities**: each with the spec quote, the choice made or the question
-  parked
+- **Deviations & ambiguities**: point at the `DEVIATIONS.md` ledger (the single record) +
+  a one-line rollup (count, any parked or halted items)
 - **Verification**: what ran, pasted evidence of passing
 - **Flags for the orchestrator**: anything you saw but correctly did NOT touch
 
