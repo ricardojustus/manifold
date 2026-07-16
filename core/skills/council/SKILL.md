@@ -1,7 +1,7 @@
 ---
 name: council
 description: >-
-  Convene the Round Table — a fresh, ephemeral panel of up to 2 strong-reasoning + 3 cross-model adversarial seats (the Proportionality Skeptic standing at every sitting) that reviews a Vision (and Plan) from first principles and returns ONE consolidated severity-rated findings list. This is the methodology's Council: Gate A (vision-only challenge) and Phase 5 (vision + plan lock). Invoke on "convene the council" / "round table" / "run Gate A" / "Phase 5 council" / "/council", or proactively when a Medium/High-stakes Vision (Gate A) or Vision+Plan (Phase 5) is ready for adversarial review BEFORE locking. ADVISORY ONLY — it never edits, locks, or loops back; the Orchestrator + Human disposition its findings. It reviews INTENT and DESIGN, never a diff or code: pre-merge gating is `audit-cycle`; security surfaces `scoped-adversarial-audit`; subsystem inventory `system-audit`.
+  Convene the Round Table — a fresh, ephemeral panel of up to 2 strong-reasoning + 3 cross-model adversarial seats (the Proportionality Skeptic standing at every sitting, seated LAST to price the other seats' additions) that reviews a Vision (and Plan) from first principles and returns ONE consolidated severity-rated findings list. This is the methodology's Council: Gate A (vision-only challenge) and Phase 5 (vision + plan lock). Invoke on "convene the council" / "round table" / "run Gate A" / "Phase 5 council" / "/council", or proactively when a Medium/High-stakes Vision (Gate A) or Vision+Plan (Phase 5) is ready for adversarial review BEFORE locking. ADVISORY ONLY — it never edits, locks, or loops back; the Orchestrator + Human disposition its findings. It reviews INTENT and DESIGN, never a diff or code: pre-merge gating is `audit-cycle`; security surfaces `scoped-adversarial-audit`; subsystem inventory `system-audit`.
 ---
 
 # Council — the Round Table
@@ -43,6 +43,8 @@ At `gate-a` with no Plan, the skill **degrades cleanly**: no plan-targeted findi
 
 **The Proportionality Skeptic sits at EVERY sitting, both phases, all stakes where a council convenes** — it is a standing seat, not a stakes-scaled one. It exists because a proportionality mandate embedded inside a broader charter silently drops (the receipt is in its mandate text), so it is never folded into another seat. At Gate A its pricing check degrades gracefully: with no plan constants yet, "price it" becomes a named plan-phase obligation; the classification challenge and simplest-design/measured-size questions run in full.
 
+**And it runs LAST — a second stage, after every other seat has finished (operator ruling 2026-07-16).** The other seats' bias is structurally ADDITIVE (skeptics find missing safeguards, critics find missing coverage); when the Proportionality seat ran in parallel it reviewed only the original artifact, so a clean design earned a clean pass while the other seats piled on additions that no one priced — the operator had to demote them personally. So the seat receives the artifact **plus every other seat's findings**, with a dual target: (a) the design itself, unchanged; (b) **every additive finding from the other seats gets its own verdict — `endorse` / `demote` / `price` — with plain-language reasoning**. The trade accepted with the ruling: the other seats cannot cross-examine its verdicts; both sides of any disagreement reach the Human in the consolidated list, and the Human is the disposition anyway.
+
 **At Gate A (vision-only), the cross-model default alongside it is the Feasibility Skeptic, not the Systems Critic** — the Systems Critic's mandate (plan delivery + risk-tag honesty) is gutted with no Plan to critique.
 
 ## The five seats
@@ -62,12 +64,13 @@ Model-to-seat mapping is the default, not a law — the Orchestrator may remap (
 ## Run format
 
 1. **Pre-flight.** Set `COUNCIL_DIR` to the ONE session dir every step below uses — an **absolute** path under the artifact root, `<artifact-root>/councils/<topic>/<phase>` (a bare relative `councils/…` would wrongly resolve under the orchestrator's cwd; the binding gives the concrete root). `mkdir -p "$COUNCIL_DIR"`. Write `$COUNCIL_DIR/briefing.md` (the artifacts + phase + stakes + topic). Compose each seat's prompt from `references/seat-mandates.md` + the briefing into `$COUNCIL_DIR/seat-<name>-prompt.md` — **one tailored prompt per seat, never a shared prompt**.
-2. **Independent first pass — dispatch all seats in the SAME turn** (see Dispatch). Each seat produces findings WITHOUT seeing any other seat's. Every finding carries `assumptions`, `confidence`, and a `steelman` (the strongest counter the seat can make to its own finding).
-3. **Cross-examine — default 1 round, 0 for cheap sittings.** Give each seat the other seats' pass-1 findings; each may challenge, concede, or sharpen. Write `seat-<name>-pass2.md`. The Orchestrator may set 0 rounds at Low/Medium to favor speed + maximal independence.
-4. **Consolidate** all findings into one list, **MAX-severity** when two seats raise the same issue (mirror `audit-cycle`). Dedup by `(target, claim-class)`.
-5. **Hand to the Orchestrator.** Write the session record (next section). The Orchestrator + Human disposition; the Council does not.
+2. **Independent first pass — dispatch all seats EXCEPT the Proportionality Skeptic in the SAME turn** (see Dispatch). Each seat produces findings WITHOUT seeing any other seat's. Every finding carries `assumptions`, `confidence`, and a `steelman` (the strongest counter the seat can make to its own finding).
+3. **Cross-examine — default 1 round, 0 for cheap sittings.** Give each first-pass seat the other seats' pass-1 findings; each may challenge, concede, or sharpen. Write `seat-<name>-pass2.md`. The Orchestrator may set 0 rounds at Low/Medium to favor speed + maximal independence.
+4. **Proportionality stage — the standing seat runs now, alone.** Compose its prompt from its mandate + the briefing + **all other seats' final findings** (pass-2 where cross-exam ran, else pass-1). It reviews the design AND verdicts every additive finding (`endorse`/`demote`/`price` + plain-language reasoning) per its mandate. Write `seat-proportionality-pass1.md`. Same dispatch mechanics + completion guard as any cross-model seat.
+5. **Consolidate** all findings into one list, **MAX-severity** when two seats raise the same issue (mirror `audit-cycle`). Dedup by `(target, claim-class)`. **Each additive finding carries its proportionality verdict inline** ("Systems Critic proposes X — Proportionality: demote, because Y"); a disagreement between a seat and the Proportionality verdict is surfaced as-is, both sides, never resolved by the Orchestrator.
+6. **Hand to the Orchestrator.** Write the session record (next section). The Orchestrator + Human disposition; the Council does not.
 
-## Dispatch — parallel, all seats same turn (mirrors `audit-cycle`)
+## Dispatch — parallel, all first-pass seats same turn (mirrors `audit-cycle`; the Proportionality Skeptic dispatches later, in its own stage)
 
 **Strong-reasoning seats** (subagents with a Write tool):
 ```
@@ -103,7 +106,7 @@ This is one Evidence Store with `audit-cycle`'s — same schema/severity/disposi
 ## Anti-patterns (don't regress)
 
 1. **Shared prompt across seats** — defeats the whole design; brief each seat through its own mandate.
-2. **Seats see each other before the first pass** — independence is the point; cross-exam is a *separate, later* round.
+2. **First-pass seats see each other before the first pass** — independence is the point; cross-exam is a *separate, later* round. (The Proportionality Skeptic is the deliberate exception: it runs LAST and sees everything — that's its job, not a leak.)
 3. **Skipping a cross-model seat's completion-watcher** — it doesn't auto-notify; you'll consolidate on a half-finished panel.
 4. **The Council deciding** — it advises. Re-open / waiver / refine / abandon are Orchestrator + Human calls.
 5. **Using it as a code audit** — no diffs, no impl, no single spec. That's `audit-cycle`.
@@ -112,7 +115,7 @@ This is one Evidence Store with `audit-cycle`'s — same schema/severity/disposi
 
 ## Test prompts
 
-1. *"Convene the council on the integration — Phase 5, High stakes. Vision + Plan are in councils/<topic>/."* → 5 seats dispatched same turn (2 strong-reasoning subagents + 3 cross-model backgrounded + watchers, Proportionality standing), independent first passes, 1 cross-exam round, MAX-severity consolidation → `consolidated-findings.md`, advisory.
+1. *"Convene the council on the integration — Phase 5, High stakes. Vision + Plan are in councils/<topic>/."* → 4 first-pass seats dispatched same turn (2 strong-reasoning subagents + 2 cross-model backgrounded + watchers), independent first passes, 1 cross-exam round, THEN the Proportionality Skeptic alone on artifact + all findings (verdicts every addition), MAX-severity consolidation with verdicts inline → `consolidated-findings.md`, advisory.
 2. *"Run Gate A on this Vision — no Plan yet, Medium stakes."* → degrades to vision-only; 3 seats (Premise Skeptic strong-reasoning + Feasibility Skeptic cross-model + Proportionality Skeptic cross-model — Systems Critic is gutted with no Plan); no plan-targeted findings; under-tagging check skipped; the Proportionality seat's pricing check converts to a named plan-phase obligation.
 3. *"The council came back with a High that the Human rejects."* → logged as a waived finding; the Council never forces a loop-back; the Orchestrator records the disposition.
 

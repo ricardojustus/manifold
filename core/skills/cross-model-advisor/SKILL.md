@@ -53,6 +53,15 @@ shape. The operator's correction created this skill.)*
 anything currently inside an audit-cycle or council sitting (those gates own their own lenses).
 Invoked often ≠ invoked always.
 
+**Operator-question precedence (added 2026-07-16).** When the question on the table came FROM the
+operator as a system-question — "is this overengineering?", "do we need this?", "why does this
+exist?" — the plain-terms whole-system explanation to the operator comes BEFORE any consult (the
+operator-translation principle's audit-question trigger). Their answer, informed by context no
+advisor has, may dissolve the consult entirely. *(Receipt: an agent consulted the advisor on a
+question the operator had asked, got argued onto the heavier option, and ran a ~4-hour campaign;
+the operator, finally given the system map, resolved it in seconds — the consult answered a
+question nobody should have been asking yet.)*
+
 ## The three modes
 
 ### 1. `think-with` (default) — blind-first deep consult
@@ -110,6 +119,16 @@ Every consult prompt carries these, adapted:
 ## Authority + the consolidation duty
 
 The main session keeps authority — the advisor is never prescriptive. But **listen ≠ skim**:
+
+- **Name the advisor's structural bias when weighing machinery questions.** An advisor asked
+  about a guard, a wall, or a process step skews toward MORE of it — depth-maximizing is the
+  safe answer for a consultant who doesn't pay the cost. When its position adds machinery,
+  weigh it against the YAGNI doctrine and the operator's simplify instinct explicitly, and when
+  relaying the position, say the bias out loud ("the advisor leans protective here, as advisors
+  do"). Being argued OFF a simplify instinct by an advisor is a flag to re-check, not a
+  reconciliation. *(Receipt: same 2026-07-16 arc — the advisor's security-depth push moved the
+  agent off its own correct simplify lean; the operator later killed the layers the advisor
+  defended.)*
 
 - **Engage every substantive point** — adopt it, or say why not. A consult you don't engage with
   was a wasted call and a pretend process.

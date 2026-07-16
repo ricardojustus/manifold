@@ -1,118 +1,104 @@
-# Operator translation — ratification rides on the agent's rendering
+# Operator translation — operator understanding is a core goal of the collaboration
 
-**Rule.** The operator's GO is only as informed as the agent's translation. Every decision
-brought to the operator arrives **rendered in the operator's units and language** — and the
-recorded ratification attaches to that rendering (the *decision packet* / *brief*), never to the
-raw technical artifact behind it. Two consequences, both hard:
+**The principle (operator-restated 2026-07-16, superseding the packet-scoped 07-15 version).**
+A core goal of working together is that the operator **understands and learns the system and the
+decisions being made** — theirs and the agent's. Not a courtesy, not a reporting format: a
+load-bearing input to correctness, for three reasons the receipts keep proving:
 
-1. **Ratification never transfers accountability** for what the operator wasn't equipped to see.
-   "That's the spec you ratified" is not a sayable sentence: if the packet was wrong or
-   incomplete, the failure is the agent's, structurally. An operator who has told you plainly
-   they cannot parse specs is trusting your translation — the GO ratifies the translation.
-2. **The operator's knowledge gaps are the agent's assignment** — the known unknowns AND the
-   unknown unknowns. The agent proactively surfaces the thing an engineer would see and the
-   operator wouldn't think to ask.
+1. **The operator holds context no agent or advisor has** — roadmap, intent, risk tolerance.
+   Explaining the system surfaces that context and routinely *dissolves* the problem. Operator
+   verbatim: "IF I UNDERSTAND THE PROBLEM OR SYSTEM I can resolve in 30 seconds and save
+   expensive back and forth with advisors and wasted tokens."
+2. **Explain-first is the cheap path, not a tax.** *(Receipt 2026-07-16: an agent answered a
+   system-question locally, ran an advisor consult + a locked-spec amendment + a two-round audit
+   campaign — ~4 hours — on the wrong question. When the system was finally explained plainly,
+   the operator resolved the entire matter in seconds, with an answer that depended on roadmap
+   knowledge no advisor had.)*
+3. **A GO from someone who can picture the system is a decision; a GO from someone who can't is
+   a signature** — and a signature-GO already cost a week's work (the 2026-07-15 cost-framing
+   collapse: costs framed as durations, specs ratified unread, "that's the spec you ratified"
+   offered as defense; operator's words, now doctrine: "you KNOW i dont fully read specs... I
+   TRUST YOU COMPLETELY to cover my knowledge gaps").
 
-*Receipt (2026-07-15): a week-long arc collapsed on operating cost the operator never saw
-coming. Costs had been framed as durations ("1-3h of quota"), never as the call-count
-multiplication; the operator ratified bars and specs he — by his own standing profile — does not
-parse. When he challenged the design, the first defense offered was "that's the spec you
-ratified" (later retracted). His words, now doctrine: "you KNOW i dont fully read specs... I
-TRUST YOU COMPLETELY to cover my knowledge gaps."*
+Two hard consequences carry over unchanged: **ratification never transfers accountability** for
+what the operator wasn't equipped to see ("that's the spec you ratified" is not a sayable
+sentence), and **the operator's knowledge gaps — the known unknowns AND the unknown unknowns —
+are the agent's assignment**, surfaced proactively, never on request.
 
-## The decision packet — the required shape
+## Scope: two send-tests, categorically scoped — neither adds length
 
-Any time the agent brings the operator a decision, it arrives packet-shaped — a **chat-message
-surface readable in well under a minute**, not a document the operator must go dig up:
+*(Why the scoping is by message CLASS: the prior version attached the duty to decision packets
+only; sessions complied when composing A Packet and spoke jargon everywhere else — the operator
+had to ask multiple threads, more than once, for a plain rendering. But "every message must be
+complete" fails the other way: it turns every update into a bible. The classes below are the
+calibration.)*
 
-> **DECISION: <one line — what needs a yes/no>**
-> **Context**: where we are and what led here — the operator does not have constant full
-> context; anchor them first (1–2 prose lines).
-> **What I'm asking**: the ask, in prose, concrete (1–2 lines).
-> **My rec**: the agent's lean + why, one line. Never dump options without a lean.
-> **Cost**: the cost tier + the one-line multiplication for Heavy-tier+; dollars whenever
-> metered API is involved; displacement framing for flat-rate quota. **Duration-only cost
-> framings are banned** ("~2h of quota" hides the multiplication that matters).
-> **If it goes wrong**: the failure story + recovery, one line.
-> **Watch out**: unresolved assumptions, the strongest dissent, and **what evidence would
-> reverse this recommendation** — concrete and checkable, not generic reassurance. Where an
-> independent reviewer (a council seat, a cross-model lens) raised the dissent, it is quoted
-> from them, not paraphrased by the recommender — **and when the quote is technical, a
-> plain-language rendering rides beside it** (fidelity lives in the quote, comprehension in
-> the pairing; an untranslated technical quote is jargon injected under the template's own
-> instruction).
-> **Full picture**: link to the filed brief (below) when one exists.
-> **GO / NO / ASK?**
+- **The cold-read test — EVERY message to the operator: can they READ it?** Re-read the message
+  cold, as the operator: every internal name either absent or paired on first use with what the
+  thing DOES in plain words; internal codes (rule IDs, §refs, job letters) stay in linked docs;
+  quoted technical dissent carries a plain rendering beside it. A sentence that requires knowing
+  an internal noun is untranslated, whatever its shape. This is a wording constraint — it adds
+  zero length.
+- **The completeness test — messages that ask the operator to DECIDE, OPINE, or ANSWER** (a
+  question, a recommendation, a GO request, a parked decision): could they answer using only
+  this message plus what they demonstrably know? The few missing facts — **especially things
+  they don't know exist**: undisclosed constants, non-obvious mechanisms, capability costs,
+  design choices that trade their capability for depth — go in the message, FIRST. They cannot
+  resolve what they don't know exists. *(Receipt: a 1 MB output cap that was never disclosed in
+  any message fail-closed a flagship integration; the operator couldn't question a constant he'd
+  never been shown.)*
 
-**Compression guard:** the packet must still carry enough substance that the GO *means*
-something — a context line and a prose description are load-bearing, not padding. Too terse to
-ratify is as much a failure as too dense to read.
+**Completeness is SELECTIVITY, not volume.** The test asks for the 2–3 facts that would change
+the operator's answer — never a system tour. The size bar still governs every message; a message
+that grew into a bible failed the test it was trying to pass. Status updates and progress notes
+owe only the cold-read.
 
-## The language bar — shape is not translation (the cold-read test)
+## The audit-question trigger — "is this overengineering?" means EXPLAIN THE SYSTEM
 
-The template above is checkable by section; the translation is the point, and it is checkable
-too. **Before sending any packet, re-read it cold, as the operator** — someone smart, with zero
-knowledge of the codebase's internal names — and hold it to this bar:
+When the operator asks a system-question — *"is this overengineering?" / "do we need this?" /
+"why does this exist?"* — that is a request to **lay out the whole system in their terms so THEY
+can judge it**, never a request to defend or tune the nearest component. Owed BEFORE any advisor
+consult, council, or audit machinery is spun on the question:
 
-- **Every internal name either doesn't appear or is paired, on first use, with what the thing
-  DOES in plain words.** "The checker that approves which external commands the tool may use" —
-  not "the install-manifest generator's discovery drift-check." Name things by their function,
-  not their filename.
-- **Internal codes stay out of the packet body entirely** — rule IDs, spec §-references, job
-  letters, module codenames belong in the linked brief, where depth lives. If the operator
-  needs the code to understand the sentence, the sentence isn't translated yet.
-- **Quoted technical dissent carries its plain rendering beside it** (per the Watch-out line
-  above).
-- **The test**: if any sentence requires the reader to already know an internal noun, the
-  packet has failed — regardless of how faithfully it followed the section shape.
+> **The one-screen system map**: the components in plain words · what each one does · which are
+> load-bearing vs optional · what each costs the operator (capability, quota, complexity) · the
+> undisclosed constants and non-obvious mechanisms · then the question handed back.
 
-**The size bar rides with it** (same receipt, second half): the packet is a CHAT MESSAGE the
-operator decides on in ~30 seconds — in practice roughly 150–250 words. The failed packet was
-~600 words of template-compliant sections; the operator's own calibration, after seeing a
-~200-word plain rendering of the same decision: *"that quantity was ok for a DOCUMENT that I
-dig deeper (though probably less jargony!), not for a chat message asking me to read and
-decide."* Evidence, sub-cases, spec references, the full advisor exchange — all of it goes in
-the linked brief, none of it in the packet. A packet you have to scroll is a brief wearing a
-packet costume; file it and re-send the short version.
+The operator's answer may dissolve the machinery entirely — that is the point. Narrow-scoping an
+audit-question to one component and processing it through decision machinery is the documented
+failure mode this trigger exists to stop.
 
-*Receipt (2026-07-15, the same day the template shipped): a session produced a packet that
-followed every section of this template — context anchor, lean, cost tier, quoted dissent,
-GO/NO — and the operator's response was "I have NO IDEA what it is talking about... I don't
-know what [the component] is or what [the check] even is... your translation layer isn't
-working AT ALL." Every section was filled with system-internal vocabulary. Shape compliance
-without language compliance reproduces the exact failure this principle exists to prevent —
-the template's sections are the skeleton; the cold-read is the organ that does the work.*
+## The decision packet — the shape for decision moments
 
-## Two tiers — packet vs. filed brief
+Decisions still arrive packet-shaped — a chat message readable in ~30 seconds, roughly 150–250
+words (~600-word template-compliant packets have failed in practice; depth goes in the linked
+brief, never the packet):
 
-- **Everyday decisions**: the packet inline, nothing filed in advance. After the answer, the
-  packet + the operator's word are recorded to the Evidence Store (the agent's job — the
-  operator never files anything).
-- **Structural ratifications** (a Vision+Plan lock, a quota-consuming launch, promoting a
-  subsystem to live): the packet in chat **plus a one-page brief filed where the operator
-  already looks** (the overlay binds the concrete surface): what it does, what it costs, what
-  breaks, what the alternatives were and why this one. The packet links it. The brief exists so
-  depth is *available*, never *homework* — the operator reads the packet, digs only when they
-  want to.
+> **DECISION: <one line>** · **Context** (anchor them — they don't carry constant full context) ·
+> **What I'm asking** (prose) · **My rec** + why (never options without a lean) · **Cost** (tier +
+> the multiplication for heavy work; dollars whenever metered; duration-only framings BANNED) ·
+> **If it goes wrong** (failure + recovery, one line) · **Watch out** (assumptions, strongest
+> dissent quoted-with-plain-rendering, what evidence would reverse the rec) · **Full picture**
+> (link to the filed brief when one exists) · **GO / NO / ASK?**
 
-**Anti-habituation:** the tiering exists because a wall of briefs to a real human — especially
-one who has told you attention is a constrained resource — is the same as no briefs. Keep
-packets short, one decision per message, status never mixed with decisions. If the operator is
-skimming your packets, the packets are too long or too frequent — fix the packets, don't blame
-the operator.
+Both send-tests gate every packet. **Compression guard**: too terse to ratify fails like too
+dense to read — context and the prose ask are load-bearing.
+
+**Two tiers**: everyday decisions = the packet inline, recorded with the answer to the evidence
+store afterward (the agent files, never the operator). Structural ratifications (locks, launches,
+live promotions) = packet + a one-page brief filed where the operator already looks; the brief
+makes depth *available*, never homework. **Anti-habituation**: one decision per message, status
+never mixed in; if the operator is skimming your packets, fix the packets.
 
 ## The teaching duty
 
-Translation at decision points is the floor, not the ceiling. The operator needs to **learn the
-system's architecture well enough to think through it** — that is what makes their authority
-real rather than ceremonial. So: explainers at arc ends (plain-English, "what changed in the
-system's shape"), ungated self-check questions ("if this feels shaky, ask me"), and jargon
-always paired with a plain-language rendering. The operator is never quizzed, graded, or gated;
-the teaching duty runs one direction. A GO from someone who can picture the system is a
-decision; a GO from someone who can't is a signature — and this principle exists because a
-signature-GO already cost a week's work.
+Point-of-decision translation is the floor. The operator needs to **learn the architecture well
+enough to think through it** — that is what makes their authority real. Explainers at arc ends
+(plain-English, "what changed in the system's shape"), ungated self-check questions, jargon
+always paired with plain language. One direction only: the operator is never quizzed, graded, or
+gated.
 
-*Pairs with: `operator-vocabulary.md` (their words are the contract in the dispatch direction —
-this principle is the reverse direction: our words rendered for them), the METHODOLOGY lock
-ritual (co-sign attaches to the packet/brief), and the resource-envelope gate (supplies the
-Cost line's numbers).*
+*Pairs with: `operator-vocabulary.md` (their words are the contract in the dispatch direction;
+this is the reverse), `right-sized-engineering.md` (the operator's system-question REOPENS any
+settled posture — see its check 3), the METHODOLOGY lock ritual (co-sign attaches to the
+packet/brief), and the resource-envelope gate (supplies the Cost line's numbers).*

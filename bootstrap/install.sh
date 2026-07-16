@@ -216,7 +216,7 @@ copy_tree() { # <src-root> <dest-prefix> <source-prefix> [skip_readme]
     else stage_copy "$f" "$destrel"; record "$destrel" "$srcrel" "copy" "$f" ""; fi
   done < <(find "$1" -type f)
 }
-copy_tree "$HARNESS_ROOT/core/rules"      ".claude/rules"             "core/rules"
+copy_tree "$HARNESS_ROOT/core/rules"      ".claude/rules"             "core/rules"  skip_readme
 copy_tree "$HARNESS_ROOT/core/templates"  ".claude/harness-templates" "core/templates"
 copy_tree "$HARNESS_ROOT/core/principles" ".claude/harness/principles" "core/principles"
 copy_tree "$HARNESS_ROOT/core/case-law"   ".claude/harness/case-law"   "core/case-law"

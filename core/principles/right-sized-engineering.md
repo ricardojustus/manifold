@@ -12,6 +12,16 @@ machinery at all (a guard, an abstraction, a config surface, a process step), ru
 3. **Was this already litigated?** Waivers, coverage notes, decision logs, and stated postures are
    *settled*. Inherit them. Re-deriving a threat model or a design tradeoff that a prior decision
    already closed burns budget and — worse — can silently reverse a deliberate call.
+   **Two boundaries on this check (added 2026-07-16, after both were violated in one arc):**
+   (a) **inherit exactly what was litigated, no more** — a receipt that defended one component (a
+   security wall) does not settle the layers built around it; read what the prior decision
+   actually closed before citing it. (b) **The OPERATOR asking "is this needed / is this
+   overengineering?" REOPENS the posture** — inherit-don't-relitigate binds agents and advisors,
+   never the operator. Answering their system-question by citing the settled posture back at them
+   inverts the authority this check protects. *(Receipt: an advisor consult cited a prior
+   sandbox-wall receipt to defend an entire cage of restrictions the receipt had never litigated,
+   argued the agent off its own correct simplify instinct, and the operator's direct
+   overengineering question got processed as a component-tuning decision — ~4 wasted hours.)*
 
 **Proportionality of process.** Process weight scales with the **stakes rubric** — size, novelty,
 design-choice, complexity, knowledge gaps, blast radius, security/privacy, external commitment
