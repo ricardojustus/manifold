@@ -155,9 +155,11 @@ EOF
 
 cp "$INSTALL" "$CORE/bootstrap/install.sh"
 cp "$DOCTOR"  "$CORE/bootstrap/doctor.sh"
-chmod +x "$CORE/bootstrap/install.sh" "$CORE/bootstrap/doctor.sh"
+cp "$HERE/update.sh" "$CORE/bootstrap/update.sh"
+chmod +x "$CORE/bootstrap/install.sh" "$CORE/bootstrap/doctor.sh" "$CORE/bootstrap/update.sh"
 INST="$CORE/bootstrap/install.sh"
 DOC="$CORE/bootstrap/doctor.sh"
+UPD="$CORE/bootstrap/update.sh"
 
 # ---------------------------------------------------------------------------
 # case 1: clean copy install
@@ -433,6 +435,22 @@ T14="$SCRATCH/target14"; mkdir -p "$T14"
 "$INST" "$T14" --overlay _selftest --profile full >"$SCRATCH/i14.log" 2>&1 || cat "$SCRATCH/i14.log"
 assert '[ -f "$T14/.claude/skills/inter-session/SKILL.md" ]'  "full: module skill installed"
 assert 'grep -q "^modules: .*inter-session" "$T14/.claude/manifold-manifest.yaml"' "full: manifest records the modules"
+
+# ---------------------------------------------------------------------------
+# case 18: update.sh — reconstructs the install from the target's own manifest
+# ---------------------------------------------------------------------------
+echo "== case 18: update.sh reconstructs from manifest =="
+T15="$SCRATCH/target15"; mkdir -p "$T15"
+"$INST" "$T15" --overlay _selftest --profile base >"$SCRATCH/i15.log" 2>&1 || cat "$SCRATCH/i15.log"
+assert 'grep -q "^harness_repo: " "$T15/.claude/manifold-manifest.yaml"' "manifest records harness_repo"
+assert 'grep -q "bootstrap/update.sh" "$T15/.claude/manifold-manifest.yaml"' "manifest carries the update breadcrumb"
+if "$UPD" "$T15" --no-pull >"$SCRATCH/u1.log" 2>&1; then ok "update.sh over a clean install exits 0"; else no "update.sh over a clean install exits 0"; cat "$SCRATCH/u1.log"; fi
+assert 'grep -q "^profile: base" "$T15/.claude/manifold-manifest.yaml"' "update preserved the recorded profile"
+assert '[ ! -e "$T15/.claude/skills/inter-session/SKILL.md" ]'          "update did not widen base to full"
+assert '[ -f "$T15/.claude/skills/alpha/SKILL.md" ]'                    "core skill still present after update"
+T16="$SCRATCH/target16"; mkdir -p "$T16"
+if "$UPD" "$T16" --no-pull >"$SCRATCH/u2.log" 2>&1; then no "update.sh on a non-install fails"; else ok "update.sh on a non-install fails"; fi
+assert 'grep -q "not a manifold install" "$SCRATCH/u2.log"'             "non-install error names the problem"
 
 # ---------------------------------------------------------------------------
 echo "======================================================"

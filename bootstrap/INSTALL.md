@@ -6,9 +6,17 @@
 bootstrap/install.sh <target-repo> --overlay <name-or-path> [--link]
                      [--profile base|full] [--modules m1,m2]
                      [--allow-placeholder-template] [--overwrite-local]
+bootstrap/update.sh  [<target-repo>] [--no-pull] [--overwrite-local]
 bootstrap/doctor.sh  <target-repo> [--harness <harness-repo-path>]
 bootstrap/maintenance-check.sh <artifact-root> [--days N]
 ```
+
+**Updating.** `update.sh` is the one-command update for an installed project: it reads the
+project's own `.claude/manifold-manifest.yaml` (overlay, mode, profile, modules — recorded at
+install), fast-forwards the harness clone when it has an upstream (`--no-pull` skips), and
+re-runs `install.sh` with the recorded settings — so nobody has to remember the original
+flags. Run it from the harness clone; with no argument it updates the project you're standing
+in. All the re-install safety semantics below apply unchanged.
 
 **Profiles.** `--profile base` installs the core discipline set; `--profile full` adds the
 optional modules — `inter-session` (peer-session messaging bus + its Python runtime) and

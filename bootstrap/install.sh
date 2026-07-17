@@ -345,7 +345,10 @@ fi
 mkdir -p "$STAGE/.claude"
 MANIFEST="$STAGE/.claude/manifold-manifest.yaml"
 {
+  echo "# Manifold install manifest. To update this install: run bootstrap/update.sh from the"
+  echo "# harness clone (harness_repo below) — it re-reads this file and reconstructs the install."
   echo "harness_version: $HARNESS_VERSION"
+  echo "harness_repo: $HARNESS_ROOT"
   echo "mode: $MODE"
   echo "overlay: $OVERLAY_RECORD"
   echo "profile: $PROFILE"
