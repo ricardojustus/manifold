@@ -226,6 +226,37 @@ you share a checkout; flag before touching repos you were told to flag). A loop 
 hours of work and commits once at the end loses everything to a crash and gives the operator
 nothing to review incrementally. Commit small, commit often, message clearly.
 
+## Close at completion — sweep while the cache is warm
+
+The moment the run reaches done and is ready to report, run the **`session-end`** sweep —
+*immediately, before going idle*, not deferred to when the operator returns. This is a cost
+precaution, not only hygiene.
+
+A long autonomous run accumulates a large context, and while the finished run sits idle waiting
+for the operator — often hours — the prompt cache expires (its TTL is a short idle window, far
+under that wait). Defer the sweep and the operator's eventual "wrap up" forces a full-price
+**uncached** re-read of that whole context to produce it — the single most expensive thing a
+finished run can do. Sweeping at completion pays that same large read at warm cache-read rates
+instead, roughly an order of magnitude cheaper.
+
+session-end persists everything durably to files (state, memory, kickoff, log), so it is safe
+whatever the operator decides next: if they `/clear`, nothing is lost and the close cost them
+nothing; if they keep the session and continue, the sweep was cheap (warm) and merely left the
+state current — re-running it at the true end is fine. **Run it as a precaution even when a
+`/clear` is not certain** — capturing the durable record warm at the idle boundary is exactly
+what makes a later `/clear` always free and always safe.
+
+This relaxes no STOP boundary: session-end only commits to the working branch, updates docs, and
+writes the handoff — it never merges to a protected branch, force-pushes, or runs an owner-gated
+promotion; those stay parked in QUESTIONS. It applies equally to a run that *halted at a STOP*
+rather than completing — a parked run about to sit idle for hours carries the same cold-cache
+cost, so sweep before going idle either way.
+
+*Receipt: an overnight run finished, posted its report, and sat idle at 700k+ tokens; by the
+time the operator asked to close it the cache window was hours gone, so the session-end sweep
+re-read the whole context at full uncached price. Sweeping at completion — while the run's own
+context was still warm — avoids that entirely.*
+
 ## Morning presentation
 
 When the operator returns (or you reach done), lead with the three files as the handoff surface:

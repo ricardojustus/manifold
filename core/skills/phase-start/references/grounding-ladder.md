@@ -38,12 +38,20 @@ Grep the project's lessons store for the topic keywords and read **every match e
 This is a hard rule, not a nicety — lessons capture hard-won findings that rescue you from
 re-deriving a solved problem. (Binding names the lessons path.)
 
-### 4. Memory — grep the always-loaded store
+### 4. Memory — grep the always-loaded store, then query the recall system
 Grep the project's memory store for topic-relevant entries. It is always loaded, but
 topic-specific entries still warrant active consultation:
 - behavioral-rule / feedback entries that apply to the work shape you're about to do
 - decision entries that constrain the design space
 - project-fact entries with current state
+
+Where the project has a queryable memory system beyond the always-loaded store (a recall
+tool, a belief graph — the overlay binding names it), run ONE query on the subsystem +
+mechanism you're entering: **"prior operator rulings on <mechanism class>"**. Operator
+rulings are often captured thread-local and never promoted — the recall system is the only
+surface that sees across threads. *(Receipt: a "no wall-clock progress gates" ruling sat in
+one thread's files for 6 days while another thread locked a spec violating it — the ruling
+was in the graph the whole time; nothing queried it.)*
 
 ### 5. State snapshot — the sections that touch this work
 Read the live state snapshot's relevant sections. Confirm the boundary isn't already resolved;

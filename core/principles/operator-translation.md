@@ -82,7 +82,11 @@ brief, never the packet):
 > (link to the filed brief when one exists) · **GO / NO / ASK?**
 
 Both send-tests gate every packet. **Compression guard**: too terse to ratify fails like too
-dense to read — context and the prose ask are load-bearing.
+dense to read — context and the prose ask are load-bearing. **Already-ruled check**: before
+sending, one query against the project's recall system (where the overlay names one) on the
+decision topic — the operator may have already ruled this in another thread; re-asking a ruled
+question costs their trust, and the ruling constrains your rec. Found ruling = cite it in
+Context (or don't ask at all).
 
 **Two tiers**: everyday decisions = the packet inline, recorded with the answer to the evidence
 store afterward (the agent files, never the operator). Structural ratifications (locks, launches,

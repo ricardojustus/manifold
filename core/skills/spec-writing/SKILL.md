@@ -93,6 +93,11 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - (HEAVY) Step-1 trace done, insertion point on the **live** path confirmed?
 - (HEAVY) Axis-2 scope validated with the owner before the body was written?
 - Gate-attestation block filled: Constitution PASS, Clarification ≤3, Coverage walked, Complexity rows justified, Success criteria measurable, Visual-surface seen-or-N/A, **Resource envelope priced-or-N/A (unpriced = cannot lock; Heavy+ carries caps + canary + halt rule)**?
+- **Prior-rulings recall gate**: for every pinned constant and every process gate (waits,
+  windows, thresholds, retry/promotion policies), ONE query against the project's recall
+  system (where the overlay names one) for prior operator rulings on that mechanism class —
+  operator doctrine is often thread-local; the recall system sees across threads. A ruling
+  found = inherit it or surface the conflict; never silently re-derive convention.
 - Goals **and** Non-Goals explicit?
 - (Amendment) delta-scoped + sibling-coordination section present + no audit-trail in body?
 - Concrete code references grep-verified (per `brief-authoring`) — existence is necessary even though it isn't sufficient?
