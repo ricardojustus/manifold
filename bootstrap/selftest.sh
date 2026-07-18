@@ -64,12 +64,19 @@ printf '# Changelog\n\n## v0.0.1-test\n' > "$CORE/CHANGELOG.md"
 printf '# Field Guide (fixture)\nRead me once end-to-end. See core/METHODOLOGY.md.\n' > "$CORE/FIELD_GUIDE.md"
 
 cat > "$CORE/core/CLAUDE.scaffold.md" <<'EOF'
+<!--
+  Constitution scaffold. Authoring-only header — the installer must DROP this block
+  from the assembled output.
+-->
 # Constitution (fixture)
 Intro line.
+<!-- SLOT slot_one: what slot one should contain — authoring description the installer
+     must REDUCE to a bare marker. -->
 {{HARNESS:slot_one}}
 Middle line.
 {{HARNESS:slot_two}}
 Artifacts under <artifact-root>/audits.
+<!-- an unrelated comment that must survive untouched -->
 End line.
 EOF
 
@@ -180,6 +187,10 @@ assert '[ -f "$T1/.claude/rules/r1.md" ]'                    "rule installed"
 assert '[ -f "$T1/.claude/harness-templates/t1.md" ]'        "template installed"
 assert '! grep -q "{{HARNESS:" "$T1/CLAUDE.harness.md"'      "no unfilled placeholder in assembled constitution"
 assert 'grep -q "FILLED-ONE" "$T1/CLAUDE.harness.md"'        "slot_one content substituted"
+assert '! grep -q "Constitution scaffold" "$T1/CLAUDE.harness.md"' "authoring header comment dropped from assembly"
+assert 'grep -q "^<!-- SLOT slot_one -->$" "$T1/CLAUDE.harness.md"' "slot comment reduced to bare boundary marker"
+assert '! grep -q "SLOT slot_one:" "$T1/CLAUDE.harness.md"'  "slot description text gone from assembly"
+assert 'grep -q "an unrelated comment that must survive untouched" "$T1/CLAUDE.harness.md"' "non-scaffold comment passes through"
 assert 'grep -q "Project bindings" "$T1/.claude/skills/alpha/SKILL.md"'          "alpha binding section appended"
 assert 'grep -q "alpha project binding line" "$T1/.claude/skills/alpha/SKILL.md"' "alpha binding content present"
 assert '! grep -q "Project bindings" "$T1/.claude/skills/beta/SKILL.md"'         "beta (no binding) left untouched"

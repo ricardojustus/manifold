@@ -298,6 +298,33 @@ if [ -d "$OVERLAY_DIR/claude-slots" ]; then
     scaffold="${scaffold//"$token"/$content}"   # quoted search = literal; replacement not re-interpreted
   done
 fi
+# Strip authoring-only scaffold comments from the ASSEMBLED file (they cost ~1.3k always-on
+# tokens per session and serve only scaffold authors): the header block ("Constitution
+# scaffold...") is dropped; each "<!-- SLOT name: description -->" reduces to the bare
+# boundary marker "<!-- SLOT name -->" (the marker is load-bearing — it is what lets a
+# maintainer back-port live edits to the right slot source). Any other comment — including
+# ones inside slot CONTENT — passes through untouched. Source scaffold keeps the full text.
+scaffold="$(printf '%s\n' "$scaffold" | awk '
+  function emit(b, name) {
+    b = buf; sub(/^[[:space:]]*<!--[[:space:]]*/, "", b)
+    if (b ~ /^SLOT[[:space:]]/) {
+      name = b; sub(/^SLOT[[:space:]]+/, "", name); sub(/[:[:space:]].*/, "", name)
+      print "<!-- SLOT " name " -->"
+    } else if (b ~ /^Constitution scaffold/) { }
+    else print buf
+  }
+  {
+    if (!inc) {
+      if ($0 ~ /^[[:space:]]*<!--/) {
+        buf = $0; inc = 1
+        if ($0 ~ /-->/) { inc = 0; emit() }
+        next
+      }
+      print; next
+    }
+    buf = buf "\n" $0
+    if ($0 ~ /-->/) { inc = 0; emit() }
+  }')"
 printf '%s\n' "$scaffold" > "$STAGE/CLAUDE.harness.md"
 record "CLAUDE.harness.md" "assembled" "copy" "" ""
 
