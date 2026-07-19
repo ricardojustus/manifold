@@ -13,7 +13,8 @@ Record the decision and its rationale in the decisions log; surface it in the op
 - **live-production blast radius** (the change reaches a running system the operator depends on),
 - **genuine intent-unknown** (something you didn't create, whose purpose you can't establish — someone's config, a file with unclear ownership),
 - **destructive / irreversible** (data loss, a one-way migration, a force-push),
-- **explicitly operator-reserved** (they said "we do X together").
+- **explicitly operator-reserved** (they said "we do X together"),
+- **a reserved-authority call** — criticality, downtime tolerance, security-machinery depth, or residual-risk acceptance (`operator-owns-criticality-and-complexity`): the operator's, never decide-and-park, even when reversible and engineering-unambiguous.
 
 ## Why
 

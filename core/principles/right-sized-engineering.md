@@ -87,6 +87,11 @@ This principle cuts speculation. It does not cut:
 
 - **Security invariants where one violation is irreversible** (ENFORCEMENT.md's invariants, exfiltration
   posture). Their existence is settled by the irreversibility test, not by "have we needed it yet."
+  **"Settled" means the invariant remains binding absent an explicit informed operator exception, and
+  cannot be silently WEAKENED — NOT that its enforcement DEPTH is the agent's to select.** How much
+  machinery enforces it, and any residual-risk acceptance, is the operator's call
+  (`operator-owns-criticality-and-complexity`); the invariant's existence never authorizes unbounded
+  assurance machinery unasked.
 - **The block-path test for any guard that exists.** A guard too trivial to test is a guard that
   fails open (see ENFORCEMENT.md's exit-code footgun).
 - **Receipts and WHYs on rules.** Deleting the why is how the next confident junior deletes the
