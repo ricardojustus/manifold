@@ -1,10 +1,14 @@
 <!--
   STATE.md — the live snapshot. Read at session start, updated at session end.
-  RULE: current-state + pointers ONLY. Never stack dated "## Update 2026-xx-xx" blocks
-  here — dated narrative goes in SESSION_LOG; live backlog goes in OPEN_ITEMS; stale
-  structural detail goes in archive/STATE_ARCHIVE. If STATE is growing past ~120 lines,
-  it's accreting history that belongs in one of those siblings. STATE answers "where are
-  we RIGHT NOW", not "how did we get here".
+  RULE: current-state + pointers ONLY. STATE is an INDEX, not the document — each line is
+  either live status, a do-not-regress framing, or a POINTER; it never paraphrases a source
+  inline (a paraphrase drifts from its source — the confabulation trap). Deep detail (constants,
+  schemas, commit-hash lists) lives in its OWN file (spec / audit / plan) even when current —
+  STATE points to it. Never stack dated "## Update 2026-xx-xx" blocks — dated narrative → SESSION_LOG;
+  live backlog → OPEN_ITEMS; stale structural detail → archive/STATE_ARCHIVE. Soft smell-target
+  ~50 lines (a review-trigger, NOT a truncation): over it, STATE is accreting detail or history
+  that should be a pointer — the test is "is every line live-status, a framing, or a pointer?",
+  not the raw count. STATE answers "where are we RIGHT NOW", not "how did we get here".
 -->
 
 # STATE — <project>

@@ -62,6 +62,13 @@ open-items, the archive, the log, or a memory/lesson/plan (state is git-tracked;
 verbatim is in history). State is typically the one file you edit + commit without asking, and
 that autonomy **includes** this routing.
 
+**STATE is an index, not the document.** A kept line is live status, a do-not-regress framing, or
+a pointer — it never paraphrases its source inline (a paraphrase drifts from the source; a pointer
+can't — the confabulation trap). Deep detail (constants, schemas, hash lists) lives in its own file
+even when current — STATE points to it. Soft smell-target **~50 lines** (a review-trigger, not a
+truncation): over it, find what's accreting — paraphrased detail, a dated block, a hash list — and
+route it out. The test is "every line is live-status / framing / pointer", not the raw count.
+
 ### 3. Memory-save triggers — check the four types
 Save at triggers (≈5 decisions accumulated, phase/topic done, compaction warning, session end),
 not every turn. The four types are **user / feedback / project / reference**; write structure and
