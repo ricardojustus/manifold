@@ -1,13 +1,14 @@
 ---
 name: plan-update
-description: Update a project's plan docs when design INTENT shifts — a new milestone, an architectural decision, a blocking design issue discovered, empirical or research findings folded in. Plans are versioned design-intent documents (r1, r2, ...) with audit-trail lines; this skill updates them without losing history or creating plan-vs-runtime drift. Where a plan has an authored short/overview version, updating the two is a strict paired operation. Use when the operator says "update the plan", "add this to the plan", "revise the X plan", "/plan-update", or proactively when a session produces a design change that must outlive it. Plans capture design INTENT; current-state reference docs capture what's actually running — when they disagree, the reference doc wins for current state and the plan wins for direction. NOT for current-state docs (use `reference-doc-writing`), NOT for deciding where a doc belongs (use `doc-placement`), NOT for session progress (that's the state snapshot).
+description: >-
+  Updates versioned design-intent plan docs when intent shifts — new milestone, architectural decision, findings folded in — bumping the revision + audit trail and syncing any paired plan-short. Use on "update the plan", "revise the X plan", "/plan-update". Intent, not what runs (reference-doc-writing).
 ---
 
 # Plan update
 
-Plan docs are living design-intent documents. They're versioned, carry audit-trail lines, and reflect architectural decisions at the phase/milestone level. This skill is the protocol for updating them without losing the design history or creating plan-vs-runtime drift.
+Plan docs are living design-intent documents: versioned, carrying audit-trail lines, reflecting architectural decisions at the phase/milestone level. This skill updates them without losing design history or creating plan-vs-runtime drift.
 
-**Which plan doc covers which scope is project-specific** — the project binding carries the current table (which plan owns system-wide sequencing, which owns a given subsystem, which are superseded). Confirm against the live plan set before editing, rather than trusting a remembered mapping; a stale "which plan" table has sent edits to the wrong doc.
+**Which plan doc covers which scope is project-specific** — the project binding carries the current table (which plan owns system-wide sequencing, which owns a given subsystem, which are superseded). Confirm against the live plan set before editing rather than trusting a remembered mapping; a stale "which plan" table has sent edits to the wrong doc.
 
 ## When to update a plan
 
@@ -33,7 +34,7 @@ Before editing, read the relevant section fully. Plan docs carry context you'll 
 
 - **Additions**: add the new section or subsection. Include a dated note if substantive: `(added <DATE> — reason)`.
 - **Changes to existing content**: edit in place, but preserve prior context if it's historically useful. Don't wholesale-rewrite a section that captured valid prior reasoning.
-- **Findings land IN the section they affect**, not appended at the end. Append-only "Updates" sections bloat the doc and hide conflicts between old and new intent — an appendix gets ignored.
+- **Findings land IN the section they affect**, not appended at the end. Append-only "Updates" sections bloat the doc and hide conflicts between old and new intent.
 - **Blocking design issues**: use a banner callout at the top of the affected section:
 
 ```markdown
@@ -67,7 +68,7 @@ Plans describe design INTENT. Current-state reference docs describe what's actua
 - The **plan is right for direction** (what we're heading toward).
 - The **reference doc is right for current state** (what's actually running).
 
-Don't "fix" the plan to match current runtime — that loses the forward-looking intent. Don't "fix" the reference doc to match the plan — that misrepresents current state. If the runtime has diverged from intent in a way that suggests the plan was *wrong*, flag it with a banner, discuss with the operator, and decide which catches up to which.
+Don't "fix" the plan to match current runtime — that loses forward-looking intent. Don't "fix" the reference doc to match the plan — that misrepresents current state. If the runtime has diverged from intent in a way that suggests the plan was *wrong*, flag it with a banner, discuss with the operator, and decide which catches up to which.
 
 ### 5. Cross-reference the ripple
 
@@ -79,22 +80,20 @@ If the update affects other docs, handle them in the same session (notice the ri
 
 ## Plan ↔ short-version pairing
 
-Some projects author a **short/overview version** of a plan (an llms.txt-shaped digest read end-to-end at session start, whose section list maps 1:1 into the full plan's headings). A short is *authored, not auto-generated* — so the only thing keeping it in sync with the full plan is this skill. **Where a plan has a short, editing one without reconciling the other is a violation** — update both in the same operation, keep their stamps in step, and preserve section-list parity (same headings, same order) if you added/removed/renamed/reordered a section. The **concrete sync mechanism (which plans have shorts, which stamps to bump, how anchors are derived) is project-specific — the project binding owns it.**
+Some projects author a **short/overview version** of a plan (an llms.txt-shaped digest read end-to-end at session start, whose section list maps 1:1 into the full plan's headings). A short is *authored, not auto-generated* — so this skill is the only thing keeping it in sync. **Where a plan has a short, editing one without reconciling the other is a violation** — update both in the same operation, keep their stamps in step, and preserve section-list parity (same headings, same order) if you added/removed/renamed/reordered a section. The **concrete sync mechanism (which plans have shorts, which stamps to bump, how anchors are derived) is project-specific — the project binding owns it.**
 
-## Example: integrating research findings
-
-A research pass returns with library picks, a threat-model correction, and implementation details. Integration pattern: add the **library picks** as a new subsection where they belong (versioned specifics); add a **banner callout** where a finding invalidates a premise (blocking); add **implementation notes** at the end of the sections they touch; bump the revision with an audit-trail note ("research pass integrated + blocking-issue callout"). Each finding goes in the section it's relevant to — never as a trailing appendix.
+**Worked example** (integrating a research pass): library picks → a new subsection where they belong; a finding that invalidates a premise → a banner callout; implementation notes → the end of the sections they touch; then bump the revision with an audit-trail note ("research pass integrated + blocking-issue callout"). Each finding lands in the section it affects, never as a trailing appendix.
 
 ## Don't do
 
 - **Append-only updates** — new intent lands in the section it affects, not at the end.
 - **Silent rewrites** — substantive content removal needs an audit-trail note explaining why.
-- **Mixing runtime status with design intent** — runtime status is the state snapshot's job; the plan is intent only.
+- **Mixing runtime status with design intent** — runtime status is the state snapshot's job.
 - **Skipping the revision bump when you changed intent** — it degrades the audit trail.
 
 ## Related
 
-- `reference-doc-writing` — the current-state docs that plans are allowed to disagree with (different role, different truth).
+- `reference-doc-writing` — the current-state docs that plans are allowed to disagree with.
 - `doc-placement` — deciding whether a doc is a plan at all, versus a spec / reference / research artifact.
 - `session-end` — invokes this skill at session close if design intent shifted.
 - `research` — produces findings that frequently trigger a plan update.

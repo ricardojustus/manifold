@@ -1,35 +1,11 @@
 ---
 name: subsystem-grounding
 description: >-
-  Re-derive your model of a WHOLE subsystem from its sources before working on or
-  advising about it, and CAPTURE the result as a durable dated grounding doc so the
-  next session reads instead of re-derives (each pass shrinks the doc-corpus debt).
-  Fires when: (1) starting work on a subsystem that lacks a fresh current-state doc
-  and wasn't read this session — phase-start's deep-grounding arm; (2) CIRCUIT
-  BREAKER: corrected twice on the same subsystem in a session — stop advising,
-  declare the stale model, re-ground (a correction about system behavior is never
-  just a fact-patch); (3) the operator says "ground yourself on X". Depth is
-  proportional: single-lane read for a narrow touch; parallel fan-out (cheap readers,
-  cross-check agent, forced status vocabulary RUNNING/GATED/RETIRED/SPEC-ONLY,
-  citation per claim) for whole-subsystem grounding. NOT a single-assertion doc
-  lookup, NOT compact-resume (checkpoint working set), NOT research (open questions).
+  Re-derives your model of a WHOLE internal subsystem from its own sources via cited fan-out lane reads, and captures a dated grounding doc. Fires on "ground yourself on X", a subsystem lacking a fresh current-state doc, or being corrected twice on one subsystem in a session. Not a single-fact lookup (atlas-search).
 allowed-tools: Read, Grep, Glob, Bash, Write, Agent, Workflow
 ---
 
 # Subsystem grounding — re-derive the model, capture the doc
-
-## Why this exists (the receipt)
-
-2026-07-06: after a context compaction, a session carried a lossy paraphrase of a memory
-subsystem's architecture **with full confidence** — a summary feels like memory. Over one
-evening it advised at architecture level while factually wrong about which fixes were built
-vs parked, which pipelines were live vs retired vs gated, what a running daemon actually did,
-and whether a nightly worker existed. The killer wasn't any single wrong fact — it was the
-**correction-patch-continue loop**: each operator correction got patched as one local fact
-and the advising continued, never generalizing to "my entire model of this subsystem is
-stale." It took an explicit operator order ("FULLY ground yourself — no more surface greps")
-to break the loop. The single-assertion lookup rules never fired, because no single assertion
-was the problem — the *model* was.
 
 ## The standing rule
 
@@ -105,7 +81,7 @@ File it per `doc-placement`: a **stable** subsystem's capture folds into (or bec
 proper current-state reference doc (`reference-doc-writing`); a **mid-churn** subsystem gets
 a dated grounding capture in the project's workspace, **pointed at from the subsystem index's
 gap entry** so the next session finds it instead of re-deriving. Either way the doc-corpus
-debt shrinks — if the corpus were complete and fresh, this skill would rarely fire.
+debt shrinks.
 
 **Freshness protocol for an existing capture:** read it end-to-end, check the as-of date
 against the subsystem's recent commits, spot-verify the RUNNING claims your work depends on.

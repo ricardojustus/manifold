@@ -8,14 +8,12 @@ project rules. Two tiers:
   touched; use it for rules that apply to one subsystem.
 
 Conventions for a core rule: it must be **project-agnostic** (project concretes live in the
-overlay's `rules/` or in a binding), it carries its **WHY and a receipt** (a rule without its
-why gets deleted by the next confident reader), and where it needs project values it names a
+overlay's `rules/` or in a binding), it states the rule CLEAN per `rule-writing.md` (the WHY is diarized at capture, retrieved on
+challenge — not inlined), and where it needs project values it names a
 **binding contract** (e.g. `threads.md` → the overlay's threads binding) rather than
 hard-coding any project's paths.
 
-**Receipt WEIGHT (operator ruling 2026-07-16 — the always-on diet):** rules are always-loaded,
-so every byte rides every session. The WHY stays inline as ONE line; the full receipt body —
-the dated war story, verbatim quotes, incident trail — lives in the project's **receipts
-store** (the overlay names its location; it is NOT installed into the loaded rules dir), with
-the rule carrying a pointer. A multi-paragraph receipt inline in a rule file is a defect, not
-diligence. This README itself is never installed (`skip_readme`).
+**Capture format (Ric ruling 2026-07-20 — see `rule-writing.md`):** rules are always-loaded,
+so every byte rides every session. State the rule, its scope, its enforcement — nothing else;
+no inline receipts. The WHY is diarized at capture time and lives in the memory graph, retrieved
+on challenge. Target ≤1.5 KB per rule. This README itself is never installed (`skip_readme`).

@@ -1,17 +1,14 @@
 ---
 name: doc-placement
-description: Decide WHERE a new or implemented doc belongs, by rule, so durable knowledge is never lost and the searchable doc corpus stays clean. Routes any doc — a design decision, an implementation contract/spec, a current-state subsystem doc, a durable plan, or exploratory research — to the correct folder via a first-match-wins procedure keyed on genre. Also owns the spec→reference promotion (close-out) checklist and the one-time relocation rules (link-fix live pointers; never rewrite immutable history). Use when you're about to create a doc and aren't sure which folder, when a spec finishes implementation, when relocating a misfiled doc, or when the operator says "where does this go" / "/doc-placement". Pairs with `reference-doc-writing` (writes the reference doc the promotion folds into), `plan-update` (maintains plan + short), and the `session-end` freshness sweep (the backstop checks). NOT for writing the doc's content, NOT for the freshness sweep itself.
+description: >-
+  Decides WHERE a doc belongs — routes an ADR, spec, reference doc, plan, or research spike to the correct folder by a first-match-wins genre rule; owns the spec-to-reference promotion checklist and relocation link-fixes. Use on "where does this go", "/doc-placement", when a spec ships, or when relocating a misfiled doc.
 ---
 
 # Doc placement
 
-A placement taxonomy + lifecycle so durable knowledge is never lost and the search corpus stays clean. Only a subset of folders is indexed into the searchable corpus; everything else is on-disk-but-unsearchable, discoverable via the forward pointers a reference doc carries. **Which index the project uses, and which folders feed it, is project-specific — the binding names them.**
-
-The failure this prevents: a doc lands in the wrong folder (a spec rotting in a research folder; a decision that evaporates because it was never recorded; an implemented spec whose durable behavior never reached a searchable reference doc). Place by rule, not by habit.
+A placement taxonomy + lifecycle. Only a subset of folders is indexed into the searchable corpus; everything else is on-disk-but-unsearchable, discoverable via the forward pointers a reference doc carries. **Which index the project uses, and which folders feed it, is project-specific — the binding names them.** Place by rule, not by habit.
 
 ## The taxonomy (folder → genre → searchable?)
-
-The genre of a doc determines its folder and whether it's indexed. The standard layout:
 
 | Folder | Genre | Indexed? | Contents |
 |---|---|---|---|
@@ -56,7 +53,7 @@ When a spec finishes implementation, this is **part of definition-of-done in the
 - Archived spec banner: `reference: reference/<file>.md#<anchor>` (required) + `adr: specs/adr/<name>.md` (if written).
 - Reference doc, in the promoted section: `<!-- provenance: spec specs/archive/<name>.md; adr specs/adr/<name>.md -->`.
 
-The `session-end` freshness sweep flags an archived spec whose `reference:` link doesn't resolve or whose target lacks the matching `provenance:` back-pointer (pointer presence only; semantic coverage stays human-reviewed). Every spec that reaches `specs/archive/` via this loop carries a resolving `reference:` pointer — that's the close-out contract. If a genuine future case can't promote (a spent spec whose owning subsystem is being decommissioned with no reference doc), amend the locked placement spec with a narrow, machine-readable exemption field rather than a broad text match.
+The `session-end` freshness sweep flags an archived spec whose `reference:` link doesn't resolve or whose target lacks the matching `provenance:` back-pointer (pointer presence only; semantic coverage stays human-reviewed). Every spec reaching `specs/archive/` via this loop carries a resolving `reference:` pointer — that's the close-out contract. If a genuine future case can't promote (a spent spec whose owning subsystem is being decommissioned with no reference doc), amend the locked placement spec with a narrow, machine-readable exemption field rather than a broad text match.
 
 ## ADR template (Nygard, short)
 

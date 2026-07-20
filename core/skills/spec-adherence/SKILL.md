@@ -1,18 +1,16 @@
 ---
 name: spec-adherence
 description: >-
-  The spec-conformance gate — run it after implementing code against a LOCKED spec and BEFORE the multi-model `audit-cycle`. A fan-out verification that every spec requirement — each §section, decision, acceptance criterion, invariant, state transition, error/crash-recovery path — is implemented AS WRITTEN, decomposed to CLAUSE granularity and scored CONFORMS / DEVIATION / MISSING / EXCESS / UNVERIFIABLE with spec-quote + code-cite evidence. Fix deviations (or amend the spec for genuinely-stale wording, owner-gated). Only a clean PASS proceeds to audit. Trigger: "verify spec adherence" / "conformance pass" / "does the impl match the spec" — and PROACTIVELY as the first step before dispatching `audit-cycle` on fresh code. Code implementations ONLY. NOT for spec-LOCK cycles (no impl → `audit-cycle`). Distinct from `audit-cycle`'s spec-vs-reality confab check (verifies the SPEC's claims about code; this verifies the CODE's fidelity to the spec) and its contract-fidelity spot-check (this is exhaustive per-clause coverage).
+  Verifies exhaustively, clause by clause, that new code implements its LOCKED spec AS WRITTEN — every section, decision, acceptance criterion, invariant and error path scored CONFORMS/DEVIATION/MISSING/EXCESS. Run as Gate 0 before audit-cycle, or on "conformance pass" / "does the impl match the spec".
 ---
 
 # Spec-adherence — the conformance gate before the audit
 
-`audit-cycle` is adversarial: it hunts **defects** in the code that's there. It can pass clean while the code quietly **fails to implement the contract** — a decision never wired, an invariant enforced at one site but not another, an acceptance criterion unmet, a branch silently dropped, a helper that does *almost* what the spec says. Bug-hunting doesn't reliably catch divergence-from-spec, because the code is internally consistent and reads as correct — it's just not what the spec ordered.
-
-This gate closes that axis. It is a **conformance/coverage pass**: walk *every* requirement in the LOCKED spec and confirm the implementation does exactly that — exhaustively, not by spot-check. Run it FIRST, so the multi-model audit then operates on contract-conformant code and its findings are real defects.
+`audit-cycle` hunts **defects**; it can pass clean while the code quietly **fails to implement the contract** (a decision never wired, an invariant enforced at one site but not another, a branch silently dropped). This gate closes that axis: walk *every* requirement in the LOCKED spec and confirm the implementation does exactly that — exhaustively, not by spot-check — so the multi-model audit then operates on contract-conformant code.
 
 Two distinctions keep it from blurring into `audit-cycle`:
 - **vs the audit's spec-vs-reality check** ("does the *spec* describe reality?"): this asks "does the new *code* obey the spec?" Opposite direction.
-- **vs the audit's contract-fidelity rubric item** ("does code realize spec verbatim?", the reviewer's first rubric category): that is an *adversarial spot-check* inside a bounded category budget; this gate is *exhaustive, enumerated, per-clause coverage* that guarantees every requirement got a verdict. If the downstream audit's fidelity check finds a conformance gap, that means **this gate's checklist was incomplete** — a lesson, not a duplication.
+- **vs the audit's contract-fidelity rubric item** ("does code realize spec verbatim?"): that is an *adversarial spot-check* inside a bounded category budget; this gate is *exhaustive, enumerated, per-clause coverage* that guarantees every requirement got a verdict. If the downstream audit's fidelity check finds a conformance gap, **this gate's checklist was incomplete** — a lesson, not a duplication.
 
 ## Where it sits
 
@@ -26,23 +24,13 @@ implement → commit → [SPEC-ADHERENCE GATE: decompose → fan-out verify → 
 ## The procedure
 
 ### 1 — Decompose the spec into a CLAUSE-level requirement checklist
-Read the LOCKED spec **end-to-end** (no surface traces — the full spec, plus the sibling specs it amends). Extract every **independently-falsifiable clause** into a numbered checklist. **Clause granularity, not heading granularity: a checklist line that summarizes a multi-clause section is a coverage defect** — each MUST / MUST NOT / NEVER / ALWAYS, each "every/all" quantifier, each state-transition arrow, each error/crash-recovery branch, each named helper/schema element is its OWN line. Tag each item by type, because the type changes how it's verified:
+Read the LOCKED spec **end-to-end** (no surface traces — the full spec, plus the sibling specs it amends). Extract every **independently-falsifiable clause** into a numbered checklist. **Clause granularity, not heading granularity: a checklist line that summarizes a multi-clause section is a coverage defect** — each MUST / MUST NOT / NEVER / ALWAYS, each "every/all" quantifier, each state-transition arrow, each error/crash-recovery branch, each named helper/schema element is its OWN line. (Calibration example: `references/worked-decomposition.md` — one heading-level line hiding five clauses.) Tag each item by type, because the type changes how it's verified:
 - **feature** — a single behavior implemented in one place.
-- **invariant** — a property that must hold at MANY sites ("before first await", "outside the atomic transaction", "every return path spreads", "fail-closed at every call site"). Record it as one item but verified across all sites (step 2).
+- **invariant** — a property that must hold at MANY sites ("before first await", "outside the atomic transaction", "every return path spreads", "fail-closed at every call site"). One item, verified across all sites (step 2).
 - **test-obligation** — an acceptance criterion that says "test X" / is itself an acceptance test.
 - **preserved-invariant** — for a LOCKED-spec amendment: each sibling-spec contract the amendment claims to keep intact. Derive these from the spec's "Coordination with sibling specs" / delta section; the dangerous hole in an amendment is a sibling invariant it silently broke, not the new clause.
 
 Write the checklist down — it is the gate artifact and the coverage contract. A clause that was never enumerated is a clause that was never checked.
-
-> **Worked decomposition** (a heading-level line hides 5 clauses). A spec paragraph:
-> *"§4.2 On ingest, the writer MUST validate the payload before the transaction opens, MUST reject any record whose `source_id` is unknown, and MUST write exactly one ledger row per accepted record. On a duplicate `source_id` it returns the existing row without a new write. Every write path spreads a fresh record."*
-> decomposes to five independently-falsifiable clauses:
-> 1. `validate(payload)` runs **before** the transaction opens — *invariant* (ordering; verify where the await/BEGIN sits).
-> 2. unknown `source_id` → reject — *feature*.
-> 3. exactly one ledger row per accepted record — *feature* (assert the count, not just "a row").
-> 4. duplicate `source_id` → return existing row, **no new write** — *feature* (the no-write half is separately falsifiable).
-> 5. every write path returns a freshly-spread record — *invariant* (enumerate ALL return paths, not one).
-> A single checklist line "§4.2 ingest validation" would have collapsed all five and hidden whichever one the code missed.
 
 ### 2 — Fan out the conformance verification (dynamic Workflow)
 Partition the checklist across N verifier agents (see `## Dispatch`). Each agent, per clause: read the spec clause **verbatim** → locate the implementing code first-hand (grep + read the path **end-to-end**, not a signature glance) → render a verdict via structured output:
@@ -52,14 +40,18 @@ Partition the checklist across N verifier agents (see `## Dispatch`). Each agent
 - **EXCESS** — the code does something the spec did NOT ask for (an extra branch, side effect, unrequested feature, behavior contradicting a Non-Goal). Caught by a reverse-pass: walk the *changed surface* (new exports / touched files) and flag any behavior with no backing requirement. (Surgical-Changes axis — the gate is otherwise blind to scope creep.)
 - **UNVERIFIABLE** — couldn't determine from the code; must be resolved, never passed.
 
-**Invariants** (tagged in step 1): the verifier MUST enumerate ALL governed call sites (grep the operation class, not one instance) and render the verdict over the FULL set — CONFORMS only if every site holds; a single-site citation is insufficient. **Ordering/atomicity invariants** (before-await, outside the atomic transaction, single-writer): trace the actual control/transaction ordering as evidence — reading a function top-to-bottom is not verifying an ordering property. **Test-obligations**: CONFORMS requires the test exists, exercises the specified scenario (cite the assertion lines), AND is **non-vacuous** — would FAIL if the behavior regressed (the audit-cycle vacuous-coverage bar applies here too). **Error-handlers / catch-blocks / branches**: verify the handler is not **BROADER** than the clause authorizes — enumerate what it ALSO catches/handles beyond the named case. A clause "X → fallback" implemented as a catch-all that ALSO swallows an unauthorized failure (especially an error a fail-loud contract requires to propagate) is a **DEVIATION** — the code does MORE than the spec ordered. Checking only that the authorized case is handled is insufficient; check what else the handler swallows. *(Receipt: in one gate a `catch {}` matched a clause's "missing → recompute" prose but ALSO swallowed a tamper error the contract required to propagate — the gate's first miss, because it verified the authorized case, not the over-broad swallow.)*
+Per-type verification rules:
+- **Invariants** (tagged in step 1): enumerate ALL governed call sites (grep the operation class, not one instance) and render the verdict over the FULL set — CONFORMS only if every site holds; a single-site citation is insufficient.
+- **Ordering/atomicity invariants** (before-await, outside the atomic transaction, single-writer): trace the actual control/transaction ordering as evidence — reading a function top-to-bottom is not verifying an ordering property.
+- **Test-obligations**: CONFORMS requires the test exists, exercises the specified scenario (cite the assertion lines), AND is **non-vacuous** — would FAIL if the behavior regressed (the audit-cycle vacuous-coverage bar applies here too).
+- **Error-handlers / catch-blocks / branches**: verify the handler is not **BROADER** than the clause authorizes — enumerate what it ALSO catches beyond the named case. A clause "X → fallback" implemented as a catch-all that ALSO swallows an unauthorized failure (especially an error a fail-loud contract requires to propagate) is a **DEVIATION**: the code does MORE than the spec ordered. Checking only the authorized case is insufficient.
 
-A single-model fan-out is fine: conformance is **mapping**, not the adversarial defect-hunt where cross-model diversity earns its keep — but the evidence requirement above is what substitutes for an adversarial counter-party.
+A single-model fan-out is fine: conformance is **mapping**, not the adversarial defect-hunt where cross-model diversity earns its keep — the evidence requirement above substitutes for an adversarial counter-party.
 
 ### 3 — Completeness critic (mandatory, context-less agent)
 A **dedicated, context-less agent** (not the lead — the lead authored the checklist and is worst-positioned to catch its own omissions) confirms full coverage. Two axes, because requirements hide in two places:
 - **Structural**: every §heading, decision, and acceptance criterion maps to a checklist item with a verdict.
-- **Normative (the one that catches cross-cutting requirements)**: grep the spec **body** for the imperative/prohibition vocabulary — MUST / MUST NOT / NEVER / ALWAYS / every / all / before / outside / invariant / atomic — and confirm EACH hit maps to a checklist clause with a verdict. Cross-cutting NEVER/invariant requirements live in prose, not headings, so a heading-only check is blind to exactly them.
+- **Normative (catches cross-cutting requirements)**: grep the spec **body** for the imperative/prohibition vocabulary — MUST / MUST NOT / NEVER / ALWAYS / every / all / before / outside / invariant / atomic — and confirm EACH hit maps to a checklist clause with a verdict. Cross-cutting NEVER/invariant requirements live in prose, not headings, so a heading-only check is blind to exactly them.
 
 Any uncovered clause → back to step 1–2 for that slice.
 
@@ -78,23 +70,23 @@ Apply fixes; re-run the fan-out on the **blast radius**, not just the failed ite
 ONLY on PASS: record in the audit's `audit-state-notes.md`: **"spec-adherence PASSED @ `<sha>`"** + a pointer to the gate artifact. Frame the handoff as **"conformance coverage verified at clause granularity per the attached checklist — auditors still run the contract-fidelity + spec-vs-reality checks and spot-check; a conformance gap you find is evidence the checklist was incomplete."** Do NOT tell auditors "conformance is established, focus only on defects" — that lulls the audit into lowering its own contract guard on the strength of a single-model attestation.
 
 ## Dispatch
-The fan-out is a **dynamic Workflow** (the `Workflow` tool — `agent(prompt, {schema})` returns a validated verdict object). Partition by **code-module / data-flow cluster** (not by spec section number), budget **~15–25 clauses or one cohesive module per agent** (capped so the agent can read its code paths end-to-end in-context), and **double-cover the seams**: any clause that spans two slices (a cross-section invariant, a transition whose error-path lives in another module) is assigned to BOTH agents or to a dedicated cross-cutting-invariants slice — never dropped between partitions. Each `agent()` call uses the `references/verifier-prompt-template.md` brief + the per-clause verdict schema; the completeness critic (step 3) is a final stage in the same Workflow. A failed/empty slice is re-dispatched — never accepted as "all conform". *(Fallback if not using the Workflow tool: N parallel `Agent({subagent_type:'general-purpose', run_in_background:true})`, each writing `<artifact-root>/audits/<topic>/spec-adherence/slice-<k>.md` against the template.)*
+The fan-out is a **dynamic Workflow** (the `Workflow` tool — `agent(prompt, {schema})` returns a validated verdict object). Partition by **code-module / data-flow cluster** (not by spec section number), budget **~15–25 clauses or one cohesive module per agent** (capped so the agent can read its code paths end-to-end in-context), and **double-cover the seams**: any clause that spans two slices (a cross-section invariant, a transition whose error-path lives in another module) is assigned to BOTH agents or to a dedicated cross-cutting-invariants slice — never dropped between partitions. Each `agent()` call uses the `references/verifier-prompt-template.md` brief + the per-clause verdict schema **and pins `opts.model` to the dispatch model the project binding names — never omitted** (an omitted pin silently inherits the main-loop model); the completeness critic (step 3) is a final stage in the same Workflow, same pin. A failed/empty slice is re-dispatched — never accepted as "all conform". *(Fallback if not using the Workflow tool: N parallel `Agent({subagent_type:'general-purpose', run_in_background:true})`, each writing `<artifact-root>/audits/<topic>/spec-adherence/slice-<k>.md` against the template.)*
 
 ## PASS criteria + artifacts
 PASS is anchored to reproducible artifacts, not lead attestation alone: the checklist with every clause CONFORMS-or-resolved, the **acceptance criteria mapped 1:1 to a passing test** (or an explicit "no test for criterion N" admission, which blocks PASS or is owner-flagged), and the captured `test-output.txt` + `typecheck-output.txt` (the same the audit-cycle pre-flight needs). Per the specs-describe-current-state HARD RULE these live in `<artifact-root>/audits/<topic>/spec-adherence/` — **never in the spec body**. If an amendment lands, the spec is EDITED and a CHANGELOG line points at the artifact.
 
 ## Anti-patterns
-1. **Dispatching the multi-model audit before this gate PASSES** — defeats the gate; the audit burns rounds on conformance gaps it's the wrong tool to find.
-2. **A heading-level checklist** — under-decomposing a multi-clause section to one line (see the worked decomposition above). Clause granularity; the completeness critic's normative sweep is the backstop.
-3. **A single-site verdict for an invariant** — "found one conforming site → CONFORMS" while another site violates. Verify across ALL governed sites.
-4. **Passing with open UNVERIFIABLE** — resolve them; don't launder uncertainty into a PASS.
-5. **Rubber-stamp CONFORMS** — a verdict without the code-span actually-read + why-trace + would-break line. Auto-downgrade to UNVERIFIABLE.
-6. **Surface-trace verification** — a grep hit proves a symbol exists, never that the code path matches. Read end-to-end (the no-surface-traces HARD RULE applies to verification too).
-7. **Amending OR "documenting" a real deviation to go green** — an amendment is for genuinely-stale wording (owner-gated on LOCKED); "documented deviation" is for non-locked notes only and is CHALLENGE-able forward, never suppressed.
-8. **Scope-creep blindness** — forgetting the EXCESS reverse-pass; the gate is otherwise blind to code the spec never asked for.
-9. **The completeness critic run by the lead** — self-review can't catch the checklist's own omissions; use a context-less agent.
-10. **A stale PASS** — a PASS is bound to its sha; any commit after it (a piggybacked Low, a "quick" fix, a rebase) invalidates it. Re-verify the blast radius before the audit.
-11. **Running it on a spec-LOCK cycle** — there's no impl to conform; that's `audit-cycle` + the spec-vs-reality check.
+1. **Dispatching the multi-model audit before this gate PASSES** — the audit burns rounds on conformance gaps it's the wrong tool to find.
+2. **A heading-level checklist** — a multi-clause section collapsed to one line. Clause granularity; the normative sweep is the backstop.
+3. **A single-site verdict for an invariant** while another site violates. Verify across ALL governed sites.
+4. **Passing with open UNVERIFIABLE** — don't launder uncertainty into a PASS.
+5. **Rubber-stamp CONFORMS** — no code-span actually-read + why-trace + would-break line. Auto-downgrade to UNVERIFIABLE.
+6. **Surface-trace verification** — a grep hit proves a symbol exists, never that the path matches. Read end-to-end.
+7. **Amending OR "documenting" a real deviation to go green** — amendment is for genuinely-stale wording (owner-gated on LOCKED); "documented deviation" is non-locked-only and CHALLENGE-able forward, never suppressed.
+8. **Scope-creep blindness** — forgetting the EXCESS reverse-pass.
+9. **The completeness critic run by the lead** — self-review can't catch the checklist's own omissions.
+10. **A stale PASS** — bound to its sha; any commit after it (a piggybacked Low, a "quick" fix, a rebase) invalidates it. Re-verify the blast radius before the audit.
+11. **Running it on a spec-LOCK cycle** — no impl to conform; that's `audit-cycle` + the spec-vs-reality check.
 
 ## When to invoke / skip
 **Invoke** the moment a code implementation against a spec/contract is complete + committed and is heading for audit — it is GATE-0 of every impl audit. **Skip** for spec-LOCK cycles (no impl), pure-clerical edits, and non-spec'd throwaway code.

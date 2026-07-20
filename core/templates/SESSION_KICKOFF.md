@@ -3,6 +3,11 @@
   end of each session for the start of the next one. NOT append-only (that's SESSION_LOG),
   NOT a backlog (that's OPEN_ITEMS). It holds only "when you next sit down, do THIS first".
   The session-start routine reads this before anything else. Clear/replace it each time.
+
+  QUALITY BAR: every slot below is MANDATORY (an empty slot is a broken handoff, not a lean
+  one). LEAN BAR: ~2 KB budget — pointers and deltas only, never content that lives in STATE
+  or a plan. Self-check before writing: could a stranger with zero session context start
+  correctly from this file alone?
 -->
 
 # Session kickoff — for the next session
@@ -27,3 +32,8 @@ _Written: <YYYY-MM-DD> · for the session that picks up next._
 <!-- Guardrails: things a fresh session might wrongly do — a relitigation, a wrong target,
      a premature action. -->
 - <guardrail>
+
+## Operational state
+<!-- In-flight facts a stranger can't infer: background jobs out, branches mid-merge,
+     credentials/keys state, anything armed (timers, watchers, pending GOs). "None" is valid. -->
+- <fact or "None">

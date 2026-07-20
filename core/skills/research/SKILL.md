@@ -1,56 +1,63 @@
 ---
 name: research
 description: >-
-  Run the research protocol before acting on any hypothesis, building a non-trivial feature, starting a new phase, or committing to an architectural decision — dispatch a research subagent pre-fed with the project's own knowledge so it doesn't re-derive settled facts. Honors a strict source-priority order: the project's knowledge base and plans first, official docs of the stack next, vetted community sources after, empirical testing last (say so when you switch to it). Use when the operator asks "how should we X" / "is it worth Y" / "research Z" / "look into W", at any phase-start, before proposing a design change, or when a third-party claim (a video, a blog, another model's advice) needs primary-source verification — third-party claims are hypotheses to verify, not conclusions to adopt. NOT adversarial code review (use scoped-adversarial-audit); NOT whole-subsystem inventory (use system-audit).
+  Runs the research protocol before acting on a hypothesis, starting a phase, or committing to an architectural decision — dispatches a pre-fed research subagent honoring strict source priority, empirical testing last. Use for "how should we X", "research Z", "look into W", or verifying a third-party claim.
 ---
 
 # Research
 
-The core discipline: **hypothesize, then research to validate, THEN act.** This skill operationalizes the Cardinal Rule (the constitution's `HYPOTHESIZE → RESEARCH → PRESENT → IMPLEMENT`) plus the pre-feed rule for dispatched agents.
-
-Most of the worst failures come from skipping research: forming a theory, treating it as fact, acting on it, then wasting hours fixing the wrong thing. The Cardinal Rule is a structural fix for that, not a vibe.
+**Hypothesize, then research to validate, THEN act.** This operationalizes the Cardinal Rule
+(`HYPOTHESIZE → RESEARCH → PRESENT → IMPLEMENT`) plus the pre-feed rule for dispatched agents.
+Skipping it is how sessions spend hours fixing the wrong thing.
 
 ## When to invoke
 
-### Always — before any of these
+**Always, before**: a **phase start** (new milestone, subsystem, component, skill file — before
+forming any design hypothesis) · **architectural decisions** (library picks, integration patterns,
+security-posture or permission-model changes) · **third-party claims** (video demos, blog posts,
+another model's recommendation, "someone said" — all hypotheses until primary-sourced) ·
+**updates** to the runtime/CLI, SDKs, language deps, any tool (the
+*never-update-without-assessment* rule) · **debugging something unfamiliar** (research before
+theorizing).
 
-- **Phase start**: new milestone, new subsystem, new component, new skill file. Before forming any hypothesis about design.
-- **Architectural decisions**: library picks, integration patterns, security-posture changes, permission-model changes.
-- **Third-party claims**: video demos, blog posts, another model's recommendation, "someone said" — all hypotheses until primary-sourced.
-- **Updates**: the runtime/CLI, SDKs, language deps, any tool (the *never-update-without-assessment* rule).
-- **Debugging something unfamiliar**: when you don't immediately know the cause, research before theorizing.
+**Useful, before**: proposing a significant refactor · recommending an approach the operator hasn't
+directed · any "I think this is probably X" moment — catch yourself, stop, research.
 
-### Useful — before many of these
-
-- Proposing a significant refactor
-- Recommending an approach the operator hasn't explicitly directed
-- Any "I think this is probably X" moment — catch yourself, stop, research
-
-### Skip when
-
-- The operator has explicitly directed the action ("just do X") — respect the direction; don't research to second-guess.
-- The answer is definitely in existing project code / docs you can read directly in under two minutes.
-- The question is about the project's *own* current state — run `git log`, read the state snapshot, grep the lessons store. That's not research, that's reading.
+**Skip when**: the operator explicitly directed the action ("just do X") — respect it · the answer
+is definitely in project code/docs readable in under two minutes · the question is about the
+project's *own* current state (`git log`, the state snapshot, the lessons store — that's reading,
+not research).
 
 ## Source priority (strict order)
 
-Research happens top-down. Don't skip to web sources until the project-internal layers are exhausted. The **project binding names the concrete sources at each rung** (which lesson store, which plan docs, which official-doc URLs); the order itself is universal:
+Top-down; don't skip to web sources until the project-internal layers are exhausted. The **binding
+names the concrete sources at each rung**; the order is universal.
 
-1. **Project knowledge base** — prior lessons, distilled solutions, the security baseline. Grep for the topic FIRST; a solved problem shouldn't be re-solved.
-2. **Project plans + current-state docs** — architecture decisions, phase intent (plans), and what's *actually running* now (reference/current-state docs). When these disagree, current-state wins for "what is", plan wins for "where we're headed".
-3. **Official docs of the project's stack** — the runtime, the SDK, the API, the language/framework the project is built on. Primary source beats memory.
-4. **Vetted community sources** — repos with meaningful stars/activity, authoritative technical writeups, upstream issue trackers. Weight by provenance + date.
-5. **Empirical testing** — ONLY after exhausting docs and finding no authoritative answer. **State explicitly when you shift into this mode** ("docs don't cover this; switching to an empirical probe").
+1. **Project knowledge base** — prior lessons, distilled solutions, the security baseline. Grep the
+   topic FIRST; a solved problem shouldn't be re-solved.
+2. **Project plans + current-state docs** — architecture decisions and phase intent (plans), and
+   what's actually running now (reference docs). When these disagree, current-state wins for "what
+   is", plan wins for "where we're headed".
+3. **Official docs of the project's stack** — runtime, SDK, API, language/framework. Primary source
+   beats memory.
+4. **Vetted community sources** — repos with meaningful stars/activity, authoritative writeups,
+   upstream issue trackers. Weight by provenance + date.
+5. **Empirical testing** — ONLY after exhausting docs with no authoritative answer. **State
+   explicitly when you shift into this mode** ("docs don't cover this; switching to an empirical
+   probe").
 
-**When docs contradict observed behavior**: trust what the system actually does. Flag the discrepancy; verify with the operator before acting on either.
+**When docs contradict observed behavior**: trust what the system actually does. Flag the
+discrepancy; verify with the operator before acting on either.
 
-## How to dispatch a research subagent
+## Dispatching a research subagent
 
-Research is almost always a subagent task — it protects the main context from being flooded with raw source material and lets you do other work in parallel.
+Research is almost always a subagent task — it protects the main context from raw source material
+and lets you work in parallel.
 
-### The pre-feed rule (non-negotiable)
-
-ALWAYS include the relevant rank-1 project sources (lesson paths, plan-doc sections with line numbers, memory entries, current-state docs) in the subagent's brief as the sources to read FIRST. Otherwise the subagent re-derives settled knowledge — wastes time and often misses project-specific nuance the internal sources already captured.
+**The pre-feed rule (non-negotiable)**: ALWAYS include the relevant rank-1 project sources (lesson
+paths, plan-doc sections with line numbers, memory entries, current-state docs) in the brief as the
+sources to read FIRST. Otherwise the subagent re-derives settled knowledge and misses
+project-specific nuance the internal sources already captured.
 
 ### Brief template
 
@@ -79,45 +86,43 @@ Research <specific question>. I'll act on the findings; this is not exploratory 
 <paste raw content verbatim when it's going to be the primary reference>
 ```
 
-### Briefing principles
+**Briefing principles**: specific > broad ("RSS parsing libraries for Node in 2026" beats "RSS") ·
+say what you'll do with the findings (focuses it on what's decision-relevant) · cap the output
+("under 500 words" forces prioritization) · require URLs + version numbers (defeats
+plausible-sounding guesses) · ask for **flagged unknowns** — what it could NOT verify.
 
-- **Specific > broad.** "RSS parsing libraries for Node in 2026" beats "RSS". The more specific, the higher the signal.
-- **Say what you'll do with the findings.** "I'm building X, weighing Y vs Z, need the tradeoff." Lets the subagent focus on what's decision-relevant.
-- **Cap the output.** "Under 500 words" forces prioritization. Unbounded outputs are harder to read and often lower quality.
-- **Require URLs + version numbers.** Defeats plausible-sounding guesses.
-- **Ask for "flagged unknowns"** — what the subagent could NOT verify. Better to know the gaps than read confident prose over a shaky foundation.
-
-### When to run in background
-
-Background the research when it's substantial and you have other work to do in parallel, or you're at a decision point where you'd otherwise idle. Don't background when the next step depends entirely on the outcome (just wait), or the research is short (under a minute).
+**Background it** when the research is substantial and you have parallel work, or you'd otherwise
+idle at a decision point. Don't background when the next step depends entirely on the outcome (just
+wait), or the research is short (under a minute).
 
 ## Output discipline
 
-When findings come back, before acting:
+Before acting on findings: **read critically** — subagent output is not trusted; spot-check any
+load-bearing claim against a primary source. **Separate facts from recommendations** — facts cite
+sources, recommendations name the tradeoff. **Present findings to the operator before implementing**
+(Cardinal Rule step 3).
 
-- **Read critically.** Don't treat subagent output as trusted. Spot-check any claim that feels load-bearing — reproduce it against a primary source.
-- **Separate facts from recommendations.** Facts cite sources. Recommendations should name the tradeoff.
-- **Present findings to the operator before implementing** (Cardinal Rule step 3). Let them redirect if their priors differ.
+## Failure modes this prevents
 
-## Common failure modes this prevents
-
-- **First-hypothesis trap**: forming theory X, acting on it, discovering hours later it was wrong. The research step catches this before the investment. *Receipt: sessions have burned hours fixing the wrong thing because the first plausible cause was treated as the answer instead of the start of the search.*
-- **Third-party claim adoption**: believing a video / another model / "someone said" without checking primary sources. Verify BEFORE acting.
-- **Re-deriving solved problems**: building something the knowledge base already has a solution for. The pre-feed step defeats this.
-- **Stale information**: acting on years-old advice as if current. Source priority puts docs over blog posts; dates matter.
-- **Empirical-first when docs exist**: running experiments to discover what the docs already say — slower and less reliable than reading them.
+First-hypothesis trap (acting on theory X, discovering hours later it was wrong) · third-party claim
+adoption without primary sources · re-deriving solved problems (the pre-feed defeats this) · stale
+information treated as current (dates matter) · empirical-first when docs exist.
 
 ## Honest about uncertainty
 
-If research returns conflicting sources, inconclusive data, or simply no authoritative answer: SAY SO. Confident prose over a shaky foundation is worse than explicit uncertainty.
+Conflicting sources, inconclusive data, or no authoritative answer: SAY SO. Confident prose over a
+shaky foundation is worse than explicit uncertainty.
 
-- "Research found X, Y, and Z, which disagree. I can't resolve this without an empirical test or your input."
-- "The docs don't specify this; the most-starred community implementation does X, but I can't verify that's officially endorsed."
-- "No primary source available — here's what I inferred from `<secondary signal>`, flagged as unverified."
+- "Research found X, Y, and Z, which disagree. I can't resolve this without an empirical test or
+  your input."
+- "The docs don't specify this; the most-starred community implementation does X, but I can't
+  verify that's officially endorsed."
+- "No primary source available — here's what I inferred from `<secondary signal>`, flagged as
+  unverified."
 
 ## Related
 
-- **`phase-start`** — invokes this skill as part of its reading order before any new phase.
-- **`scoped-adversarial-audit`** — the sibling pre-fed-subagent pattern, but for *adversarial review* of a code surface, not knowledge-gathering.
-- **`brief-authoring`** — the full discipline for any dispatched-agent brief (GIVEN block, grep-verified references, ambiguity protocol); a research brief is one instance of it.
-- The constitution's **Cardinal Rule** + **Grounding Claims in Source** — the doctrine this skill enforces.
+`phase-start` (invokes this in its reading order before any new phase) · `scoped-adversarial-audit`
+(the sibling pre-fed-subagent pattern, for adversarial review of a code surface) · `brief-authoring`
+(the full dispatched-brief discipline — a research brief is one instance) · the constitution's
+**Cardinal Rule** + **Grounding Claims in Source**.

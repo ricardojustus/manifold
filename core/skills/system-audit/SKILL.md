@@ -1,11 +1,12 @@
 ---
 name: system-audit
-description: Run a structured audit of a whole subsystem — inventory the surface area, identify findings by severity (Critical / High / Medium / Low / Defer), propose a fix for each, and sequence the fixes for implementation. Produces a canonical audit artifact under the audits directory. Use when the operator says "audit X", "do a systemic pass on Y", "find the bugs in Z", "hardening pass", "/system-audit", or proactively when a subsystem has accumulated 3+ incidents of the same class, the operator has corrected the same class of issue twice, or a subsystem is about to absorb new load. NOT for a single change / PR (use the runtime's PR-review tool), NOT a scoped adversarial pass on a security-sensitive surface (use `scoped-adversarial-audit`), NOT a pre-merge multi-round lock-gate cycle (use `audit-cycle`). This is a systemic thinking pass on one whole subsystem with no specific pending change.
+description: >-
+  Audits one whole subsystem when no specific change is pending — inventory the surface, rate findings Critical to Defer, propose and sequence fixes into a dated audit artifact. Use on "systemic pass on Y", "hardening pass", "find the bugs in Z". Not the pre-merge gate (audit-cycle).
 ---
 
 # System audit
 
-A generic PR-review tool handles single-change reviews. This skill covers the different pattern: a STRUCTURED audit of a *whole subsystem*, producing a severity-sorted finding list + proposed fixes + implementation sequence. The output shape (severity matrix + detailed findings + execution sequence) is what makes an audit ACTIONABLE instead of aspirational — without the structure, audits produce vague concerns that never convert to commits.
+A STRUCTURED audit of a *whole subsystem*, producing a severity-sorted finding list + proposed fixes + implementation sequence. The output shape is what makes an audit ACTIONABLE instead of aspirational — without it, audits produce vague concerns that never convert to commits.
 
 ## When to invoke
 
@@ -15,9 +16,7 @@ A generic PR-review tool handles single-change reviews. This skill covers the di
 - Before a subsystem absorbs new load (a new consumer, a cut-over, a major dependency bump touching it).
 - The operator has corrected the same class of issue across sessions — a systemic root cause is likely.
 
-**Weak signals** (use judgment):
-- "This feels fragile" — maybe, maybe not worth a full audit.
-- After a successful run — usually NOT audit-time; audits are triggered by friction, not success.
+**Weak signals** (use judgment): "this feels fragile" — maybe, maybe not worth a full audit. After a successful run — usually NOT audit-time; audits are triggered by friction, not success.
 
 **Don't use for**:
 - A single change / PR → the runtime's PR-review tool.
@@ -74,60 +73,11 @@ Build an execution order. Group fixes that touch the same file + similar scope i
 
 ### 6. Produce the audit artifact
 
-Write to `<audits-dir>/<subsystem>-audit-<YYYY-MM-DD>.md`. Structure:
+Write to `<audits-dir>/<subsystem>-audit-<YYYY-MM-DD>.md`, on the template in `references/artifact-template.md`. Required structure: scope / out-of-scope / horizon header · a **severity matrix** table (# · finding · severity · where) · **detailed findings** (each with Impact, Where, Detection, Fix, Risk, Verification) · an **execution sequence** by block.
 
-```markdown
-# <Subsystem> audit — <YYYY-MM-DD>
+### 7. Optional: adversarial subagent pass
 
-**Scope**: <what's in>
-**Out of scope**: <what's out>
-**Horizon**: <pre-X / post-Y>
-
-## Severity matrix
-
-| # | Finding | Severity | Where |
-|---|---------|----------|-------|
-| 1 | <short> | P0 | <file/module> |
-| 2 | ... | P1 | ... |
-
-## Findings (detailed)
-
-### 1. <Finding title> [P0]
-
-**Impact**: <concrete failure mode>
-**Where**: <file:line or concept>
-**Detection**: <how found>
-**Fix**: <what to change>
-**Risk**: <regression surface>
-**Verification**: <how we'll know>
-
-## Execution sequence
-
-Block 1 (P0): Fix #1 + Fix #3 (same file, ship together); Fix #7 (independent)
-Block 2 (P1): Fix #2 (depends on #1)
-Deferred (P2/P3): Fix #4, #5, #6, #8 — backlog
-```
-
-## Optional: adversarial subagent pass
-
-For subsystems where audit rigor matters (security-sensitive, architectural, pre-production): after your draft, dispatch a context-less adversarial subagent, pre-fed with the same sources you read, to critique the audit *itself*.
-
-```
-Review this draft audit of <subsystem>. Your job is to find what the audit MISSED.
-
-Audit draft: <path or inline>
-Pre-feed (what the author read): <reference/current-state docs>, <plan docs>, <source files in scope>
-
-Look for:
-- Findings the author downplayed or classified too low
-- Failure modes that would happen under <specific adversarial scenario>
-- Inconsistencies between what the audit claims and what the code actually does
-- Fixes that wouldn't actually address the underlying issue
-
-Output: each gap with a severity + evidence. Under 400 words.
-```
-
-Fold the subagent's findings back into the artifact; flag where its severity differs from your initial read. (The tightly-scoped, security-focused version of this pattern is its own skill — `scoped-adversarial-audit`.)
+For subsystems where audit rigor matters (security-sensitive, architectural, pre-production): after your draft, dispatch a context-less adversarial subagent, pre-fed with the same sources you read, to critique the audit *itself* — brief in `references/artifact-template.md`. Fold its findings back into the artifact; flag where its severity differs from your initial read. (The tightly-scoped, security-focused version of this pattern is its own skill — `scoped-adversarial-audit`.)
 
 ## After the audit
 
