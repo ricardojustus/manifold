@@ -109,7 +109,14 @@ second instance of the same model shares the first's blind spots.
    (mirror `audit-cycle`). Dedup by `(target, claim-class)`. **Each additive finding carries its
    proportionality verdict inline** ("Systems Critic proposes X — Proportionality: demote, because
    Y"); a disagreement between a seat and the Proportionality verdict is surfaced as-is, both
-   sides, never resolved by the Orchestrator.
+   sides, never resolved by the Orchestrator. Finally, **tag any finding that would violate a
+   standing operator ruling** (a wall-clock / calendar gate; an unreceipted criticality /
+   security-depth classification treated as settled; an exfiltration trade) with the ruling it
+   breaks — e.g. `⚠ conflicts: no-wall-clock-gates` — so the operator's disposition is a glance,
+   not a re-derivation. This tag is a LABEL, never a filter and never a pre-brief to the seats: the
+   finding reaches the operator intact, and the seats are deliberately NOT told the rulings in
+   advance — their un-anchored independence is the panel's whole value, so the ruling-check lives
+   HERE, at consolidation, where it cannot taint the review.
 6. **Hand to the Orchestrator.** Write the session record (below). The Orchestrator + Human
    disposition; the Council does not.
 
