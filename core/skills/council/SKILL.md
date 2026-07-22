@@ -92,6 +92,10 @@ second instance of the same model shares the first's blind spots.
    root). `mkdir -p "$COUNCIL_DIR"`. Write `$COUNCIL_DIR/briefing.md` (artifacts + phase + stakes +
    topic). Compose each seat's prompt from `references/seat-mandates.md` + the briefing into
    `$COUNCIL_DIR/seat-<name>-prompt.md` — **one tailored prompt per seat, never a shared prompt**.
+   At Phase 5 the briefing names the plan's **Security Posture section** as an explicit review
+   target: seats challenge it in BOTH directions (gold-plated protections in, uncovered gaps
+   out) — this is the one place the operator's accepted-risk lines get adversarial eyes; the
+   downstream audit gate only *enforces* the posture, it never re-derives it.
 2. **Independent first pass — dispatch all seats EXCEPT the Proportionality Skeptic in the SAME
    turn** (see Dispatch). Each seat produces findings WITHOUT seeing any other seat's. Every
    finding carries `assumptions`, `confidence`, and a `steelman` (the strongest counter the seat

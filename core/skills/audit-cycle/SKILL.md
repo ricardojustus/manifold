@@ -64,6 +64,47 @@ invoke it, don't re-derive it.
   commits first. The round-1 brief carries `spec-adherence PASSED @ <sha>` as a note that does NOT
   relax the fidelity/confab checks — reviewers still run both and flag any gap.
 
+## Finding authority — the anti-ratchet rule
+
+Adversarial review has a structural bias: a reviewer's job is finding what's MISSING, so every
+finding proposes an addition and none proposes a deletion — and each round under a lock gate
+converts reviewer preference into contract text. Ungoverned, this compounds into pure accretion
+(the receipt: a spec arc that ran 8 rounds and locked ~11,000 lines of spec+code around a task
+honestly needing ~1,000, including a mechanism its governing plan had explicitly killed).
+The counterweight is an authority discipline on findings:
+
+**Every finding carries an `Authority:` line answering "what EXISTING requirement does this
+enforce?"** Two classes:
+
+- **Defect finding** — enforces something already required: a spec MUST/SHALL clause the code
+  violates, a constitution / security-floor rule, a governing-plan decision, the plan's
+  Security Posture section, OR a concrete reproducible failure of intended behavior ("crashes
+  on valid input X", repro pasted). Correctness of intended behavior is always already
+  authorized. → Blocks lock at its severity, exactly as always.
+- **Machinery finding** — its remedy would EXPAND the contract: a new guard, gate, freeze,
+  denial, attestation, validation layer, config knob, or process step no current clause
+  demands. → It must cite the plan / vision / posture clause that calls for it. **No citation →
+  the finding is ADVISORY**: reported, logged in the consolidated findings, carried to the
+  operator with the lock report — but it does NOT block lock and does NOT drive a fix-pass.
+  "A reviewer thought of it" is not authority.
+
+The practical tell at disposition time: *closing a defect finding changes the code to match the
+contract; closing a machinery finding changes the contract itself.*
+
+- **Posture-gap escalation (the escape valve).** A reviewer who believes they found a GENUINE
+  security hole the posture never anticipated reports it `Authority: POSTURE-GAP` + the
+  concrete attack path. It rides the lock report as a flagged escalation — the OPERATOR decides
+  whether the posture grows; a reviewer never expands it unilaterally. Floor invariants (the
+  project's enforcement invariants — e.g. a zero-exfiltration directive) are themselves citable
+  authority: a genuine floor violation is a defect finding, never a posture gap.
+- **Ambiguous classification → default ADVISORY + flagged to the operator.** That's the
+  recoverable error side: a wrongly-advisory finding is a guard added later by the operator's
+  word; a wrongly-blocking finding is machinery locked into a contract.
+- **The lead classifies at consolidation.** Reviewers self-classify; the lead verifies the
+  `Authority:` citation actually resolves (a citation to a clause that doesn't exist is Cat #15
+  material). A classification either side disagrees with routes through **Reject-per-plan**
+  (see Disposition paths) — never through silent re-rating.
+
 ## The lock gate
 
 **A subject LOCKs / merges when BOTH hold, for BOTH reviewers:**
@@ -76,12 +117,41 @@ invoke it, don't re-derive it.
    fixed-everything pass. New Lows triaged into the registries, waived findings, and dismissed
    disputes do NOT count against convergence.
 
+**Only findings WITH AUTHORITY count against the gate** (see Finding authority): an advisory
+machinery finding never blocks lock, and a Reject-per-plan'd finding blocks nothing while it
+awaits the operator's ratification.
+
 Lows never block lock at the default floor. Every Low gets TRIAGED — triage is mandatory, fixing
 is not.
 
-**Loop cap: max 5 audit-fix cycles per subject.** Not converged after 5 → STOP, escalate to the
-owner with the open-findings table and your read on why. Findings typically halve per round; a
-flat or rising curve means the fold-ins aren't landing — surface it rather than grinding.
+**Loop cap: max 5 audit-fix cycles per subject — round 6 CANNOT DISPATCH until a convergence
+diagnosis exists in the audit dir and the owner has ruled on it.** Not a permission ask ("may we
+run round 6?") but an explanation of WHY five rounds haven't converged:
+1. **The curve** — findings per round (C/H/M/L, new vs carryover). Findings typically halve per
+   round; a flat or rising curve is the anomaly being explained.
+2. **The cause, named honestly** — which story is it: reviewers raising NEW demands each round
+   (a REVIEW problem — check the authority discipline is being applied); fix-passes introducing
+   fresh defects (a BUILDER problem); or a spec ambiguous enough that each round exposes another
+   reading (a SPEC problem — more rounds will never fix it)?
+3. **A recommendation** — round 6 / lock with the tail triaged / stop and reopen the spec.
+
+## Spec-vs-plan gate (spec-LOCK cycles + LOCKED-spec amendments)
+
+The audit rounds check a spec against reality and against itself — nothing checks it against
+what's ABOVE it. This gate is the missing comparison up the chain: **after the rounds converge
+and before LOCK is declared, the LEAD full-reads the governing plan + vision and walks the spec
+against them** — every Decision, Non-Goal, rejected alternative, kill ruling, and vision-guard
+invariant. It runs LAST deliberately: fix-passes are where a spec mutates, so a pre-round check
+would inspect text about to be rewritten five times.
+
+- **Any contradiction = a LOCK blocker routed to the operator**: either the spec changes, or the
+  plan is amended by the operator's explicit word — never a silent spec-side override. The plan
+  outranks the spec; a subordinate artifact cannot repeal a ratified decision.
+- Write the result to `AUDIT_DIR/spec-vs-plan-gate.md`: governing docs read, clauses checked,
+  contradictions + dispositions. A clean pass is a few lines per governing doc.
+- *Receipt: the gap this closes shipped a boot-time freeze mechanism its governing plan had
+  killed in four separate places — every existing gate passed, because none compared spec to
+  plan.*
 
 ## Low triage (mandatory per Low)
 
@@ -115,7 +185,7 @@ re-report findings listed in these files." One carve-out keeps waivers honest: a
 against unchanged code is re-reporting (a no-op). A valid challenge reopens that entry for
 re-triage; it is not a new finding.
 
-## Disputed findings (cross-model adjudication)
+## Disputed findings (cross-model adjudication — FACTUAL grounds only)
 
 A finding with **no concrete, reproducible failure scenario** may be disputed by the coder (lead /
 fix-pass author) with WRITTEN justification. Adjudication goes to the **OTHER reviewer** — the
@@ -123,17 +193,25 @@ model that did NOT raise it. **Uphold** → fix at its severity. **Dismiss** →
 `disputed-findings.md`; does not block lock. **The coder never self-adjudicates.** A dispute
 without written justification is not a dispute. Dismissed findings join the do-not-re-report feed.
 
+Dispute is for **factual** disagreements (the claimed failure cannot reproduce; the cited code
+doesn't do what the finding says). An **authority** conflict — the finding demands something the
+plan never authorized or contradicts a ruling — routes through **Reject-per-plan** to the
+operator, never to the other reviewer (a peer with the same additive mandate is the wrong judge
+of whether machinery is wanted).
+
 ## The pattern
 
 ```
 implement → commit → [code impls: spec-adherence Gate 0 → PASS @ sha (see `spec-adherence`)] → dispatch round-1 (parallel primary + cross-model)
   → wait for BOTH (consolidating after one reviewer is a recurring waste)
   → consolidate findings MAX-severity with empirical-truth carve-out
-  → triage Lows (waive / backlog / promote) · adjudicate disputes
+  → classify authority (defect / cited machinery block; uncited machinery → ADVISORY)
+  → triage Lows (waive / backlog / promote) · adjudicate disputes · log Reject-per-plan entries
   → fix-pass commit (C/H/M + piggybacked trivial Lows) OR Path A spec amendment OR Path C bounded change
   → dispatch round-2 with disposition table + R2-A/B/C dimensions
-  → lock gate met (C/H/M = 0 + no new C/H/M) → MERGE → push → cleanup
-  → otherwise: round-3+ (cap 5; scope should decrease per round)
+  → [spec-LOCK cycles + amendments: spec-vs-plan gate CLEAN]
+  → lock gate met (C/H/M = 0 with standing + no new C/H/M) → MERGE → push → cleanup
+  → otherwise: round-3+ (cap 5; round 6 needs the convergence diagnosis + owner ruling)
 ```
 
 **Convergence expectation**: findings typically halve each round until clean. Budget 2-4 rounds for
@@ -179,6 +257,10 @@ Round-1:
    env vars) · `typecheck-output.txt` (the typecheck run, target 0 errors).
 3. Write `AUDIT_DIR/audit-state-notes.md`:
    - Subject + scope (file allowlist; "implementation as a whole" framing — anti-pattern 1)
+   - **Governing plan + vision paths** — mandatory FULL reads for every reviewer, and the
+     authority sources machinery findings must cite (a reviewer can't cite what it never saw;
+     plan kill-rulings scatter across Non-Goals / decision tables / section text, so excerpts
+     are not enough)
    - Pre-known notes (PK#1, PK#2, … — flagged by the implementer/prior layers; reviewers MUST NOT
      re-flag)
    - **Registry feed**: paths to `audit-waivers.md` + `audit-backlog.md` + `disputed-findings.md`
@@ -265,13 +347,26 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
 - **Waive** — Low with no realistic failure condition → `audit-waivers.md`
 - **Backlog** — Low with a foreseeable trigger → `audit-backlog.md`
 - **Promote** — Low whose failure condition exists/is imminent → Medium, blocks lock
-- **Dispute** — no concrete reproducible failure scenario → written justification →
-  other-reviewer adjudication → fix or `disputed-findings.md`
+- **Dispute** — no concrete reproducible failure scenario (FACTUAL grounds) → written
+  justification → other-reviewer adjudication → fix or `disputed-findings.md`
+- **Reject-per-plan** — the writer/lead rejects a finding ON THE RECORD by citing the governing
+  plan / vision / posture clause or standing operator ruling it conflicts with. Logged in the
+  consolidated findings' rejections table; surfaced to the operator with the lock report as a
+  ⚠ line (mirror of the council's ruling-conflict tags). **The lock PROCEEDS**; the operator
+  ratifies or overturns asynchronously — an overturn becomes a normal follow-up fix-pass. A
+  rejection without a citation is not a rejection (it's a Dispute at best).
+- **Advisory** — a machinery finding with no authority citation (see Finding authority) →
+  recorded in the consolidated findings' advisory table, carried to the operator with the lock
+  report; never blocks, never drives a fix-pass
 
 **Consolidated findings output shape** — write to
 `<AUDIT_DIR>/round-<N>-consolidated-findings.md`:
 - **Per-lens summary table** — primary row, cross-model row, merged row × C/H/M/L counts
+  (blocking vs advisory counted separately)
 - **Verdict** — LOCK / NEEDS-FIX-PASS / NEEDS-ROUND-N+1 / ESCALATE (cycle-5 cap)
+- **Advisory + rejections tables** — every advisory machinery finding, every Reject-per-plan
+  entry (finding × the clause/ruling cited × status: awaiting-operator / ratified / overturned),
+  every posture-gap escalation — these ride the lock report to the operator as ⚠ lines
 - **Disposition table** — every finding × reviewer source × MAX severity × disposition ×
   commit-SHA-once-applied (or registry entry ID)
 - **Low-triage table** — each Low × its realistic-failure-condition answer × bucket (waive /
@@ -351,6 +446,13 @@ corrected shape.
 16. **Dispatching this multi-model audit on freshly-implemented code before spec-adherence Gate 0
     PASSES** (code impls) — conformance is a separate axis; a contract-divergent impl reads as
     correct and slips the bug-hunt. Run `spec-adherence` first (see Gate 0).
+17. **Treating an authority-free machinery finding as lock-blocking** — the one-way ratchet in a
+    single move; classify it ADVISORY and let the operator see it in the lock report.
+18. **Declaring a spec LOCK without the spec-vs-plan gate artifact** (spec-LOCK cycles +
+    amendments) — the gate is the only comparison up the chain; skipping it is how a spec
+    quietly repeals a ratified plan decision.
+19. **Dispatching reviewers without the governing plan + vision as mandatory full reads** — the
+    authority discipline is unenforceable by reviewers who never saw the authority sources.
 
 ## Cat #15 — Spec-vs-Reality Confab Check
 

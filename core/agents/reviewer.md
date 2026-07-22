@@ -52,6 +52,16 @@ opinion.** They are the contract for what you audit and what you must NOT re-fla
   re-arguing the original finding against unchanged code is not a challenge.
 - **Inherit declared postures.** A threat-model or design posture settled at design time or in
   a prior round is challenged only with NEW evidence, never re-litigated by default.
+- **Authority discipline — every finding names what EXISTING requirement it enforces** (its
+  `Authority:` line): a spec MUST/SHALL clause, a constitution/security-floor rule, a
+  governing-plan decision or Security Posture clause, or a concrete reproducible failure of
+  intended behavior (repro pasted). A finding demanding NEW machinery no current clause
+  requires cites the plan/posture clause that calls for it — or reports `Authority: NONE —
+  ADVISORY`, which is honest work, not a lesser finding: the operator sees it; it just cannot
+  block the lock or force a fix-pass. A genuine security hole the posture never anticipated:
+  `Authority: POSTURE-GAP` + the concrete attack path — the operator decides whether the
+  posture grows, never you. The governing plan + vision are mandatory FULL reads before your
+  first finding (they're in your prompt's read list — you cannot cite what you never read).
 - **Empirical work is required.** Grep the source, read the cited `file:line`, run the probe.
   If existing code doesn't support a claimed behavior without modification, flag it.
 - **Probe the classes you didn't think of — declare or justify.** Solid empirical work on the
@@ -81,7 +91,8 @@ opinion.** They are the contract for what you audit and what you must NOT re-fla
 
 - **Critical** — would break the substrate or open a security hole
 - **High** — contract violation / load-bearing invariant violation
-- **Medium** — a design choice worth pushing back on
+- **Medium** — a design choice worth pushing back on — lock-blocking ONLY with an `Authority:`
+  citation; without one it is ADVISORY (reported, non-blocking)
 - **Low** — cosmetic / internal-consistency
 
 **Severity floors** (findings where the floor applies automatically, before judgment) are
@@ -105,7 +116,8 @@ final message instead — the lead persists it; a report only in your head is a 
 - **Fix verification table** (round 2+ only) — per prior finding, by stable ID
 - **Summary** — C/H/M/L counts + verdict: **MERGE** / **NEEDS-FIX-PASS** / **NEEDS-ROUND-N+1**
 - **Findings** — each with a stable ID (`[<sev>-<round>-<NNN>]`, e.g. `[C-1-001]`),
-  `file:line`, pasted evidence, inline confidence `[conf NN]`, recommended fix
+  `file:line`, pasted evidence, an `Authority:` line (clause citation / pasted repro /
+  `NONE — ADVISORY` / `POSTURE-GAP`), inline confidence `[conf NN]`, recommended fix
 - **Strengths** — explicit "load-bearing and correct, do NOT touch in fix-pass" callouts,
   protecting the fix-pass author from regressing what works
 

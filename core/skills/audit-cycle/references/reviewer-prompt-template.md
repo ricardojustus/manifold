@@ -20,6 +20,8 @@ Files in scope (read end-to-end):
 
 - <AUDIT_DIR>/audit-state-notes.md (round-N disposition table + pre-known notes + special dimensions)
 - <the spec / implementation contract>
+- <the governing PLAN — FULL read, not excerpts: its Decisions, Non-Goals, rejected alternatives, and Security Posture section are the authority your findings must cite; kill-rulings scatter across sections>
+- <the governing VISION — FULL read, where one exists>
 - <related lessons / memory files>
 
 # Threat model (from the project binding)
@@ -93,11 +95,25 @@ Rate each finding 0-100. **Only report ≥80** (this filters noise; calibrated f
 - **76-90**: important issue requiring attention → REPORT
 - **91-100**: critical bug or explicit spec violation → REPORT
 
+# Finding authority (mandatory line per finding)
+
+Every finding carries an `Authority:` line answering "what EXISTING requirement does this
+enforce?" — a spec MUST/SHALL clause, a constitution/security-floor rule, a governing-plan
+decision or Security Posture clause, or a concrete reproducible failure of intended behavior
+(paste the repro). A finding whose remedy would EXPAND the contract — a new guard, gate,
+freeze, denial, attestation, config knob, or process step no current clause demands — must
+cite the plan/vision/posture clause that calls for it; if you cannot, report it as
+`Authority: NONE — ADVISORY`. Advisory findings are real work and reach the operator, but they
+do not block lock and do not drive fix-passes. "I thought of it" is not authority. A genuine
+security hole the posture never anticipated: `Authority: POSTURE-GAP` + the concrete attack
+path — the operator decides whether the posture grows, never you.
+
 # Severity rubric
 
 - **Critical**: would break the substrate or open a security hole
 - **High**: contract violations / load-bearing invariants
-- **Medium**: design choices worth pushing back on
+- **Medium**: design choices worth pushing back on — lock-blocking ONLY with an `Authority:`
+  citation (see Finding authority); without one the finding is ADVISORY
 - **Low**: cosmetic / internal-consistency
 
 # Evidentiary discipline
@@ -113,6 +129,7 @@ Write to `<AUDIT_DIR>/reviewer-<primary|cross-model>-round-<N>.md`:
 - **Critical / High / Medium / Low sections** — each finding includes:
   - file:line
   - pasted-evidence (the grep output or excerpt that backs the claim)
+  - `Authority:` line (clause citation / pasted repro / `NONE — ADVISORY` / `POSTURE-GAP`)
   - inline confidence score 0-100 (e.g., `[conf 92]`) so consolidation can trace MAX-severity decisions
   - recommended fix
 - **Strengths section** — explicit "what's load-bearing and correct; do NOT change in the fix-pass" callouts. Signals to the fix-pass author what NOT to touch. Especially valuable when the audit is mostly clean — prevents accidental regressions during banner amendments or test-stub updates.
