@@ -45,19 +45,19 @@ it that way.
 
 ## Gate 0 — spec-adherence runs FIRST (code implementations)
 
-For **code implementations**, a conformance gate runs BEFORE round-1: verify the code implements
-its LOCKED spec AS WRITTEN — every §section / decision / acceptance-criterion / invariant /
-state-transition / error-path — fix the deviations, and dispatch the multi-model audit only on a
-clean PASS. Conformance ("does the code obey the contract?") is a different axis from
-defect-finding ("is the code correct/safe/robust?"): divergent code is internally consistent and
-reads as correct, so it slips a bug-focused audit. Procedure lives in **`spec-adherence`** —
-invoke it, don't re-derive it.
+For **code implementations**, a light conformance TRIPWIRE runs BEFORE round-1: one pass over
+the spec's RATIFIED surface (acceptance criteria + Decisions + amendment deltas), at most one
+fix-pass, then dispatch the multi-model audit only on a PASS. Conformance ("does the code obey
+the contract?") is a different axis from defect-finding ("is the code correct/safe/robust?"):
+divergent code is internally consistent and reads as correct, so it slips a bug-focused audit.
+Procedure lives in **`spec-adherence`** — invoke it, don't re-derive it; it is a tripwire, not
+a proof (never an agent fleet, never a loop — the operator killed that shape 2026-07-22).
 
 - Does NOT apply to spec-LOCK cycles (no impl to conform).
 - Distinct from Cat #15 (which checks the *spec's* claims about existing code) and from the
-  reviewer rubric's **contract-fidelity** category (an adversarial spot-check inside the rubric
-  budget, whereas Gate 0 is exhaustive per-clause coverage — a round-1 fidelity finding surfacing
-  a conformance gap means Gate 0's checklist was incomplete).
+  reviewer rubric's **contract-fidelity** category — which stays FULLY live: a round-1 fidelity
+  finding surfacing a conformance gap is the net catching what the tripwire missed, expected
+  occasionally by design.
 - **Round-1 pre-flight binds the gate to a sha**: record the PASS as `PASS @ <sha>`; before
   dispatching round-1, assert `git rev-parse HEAD` equals it. Differ (a piggybacked Low, a "quick"
   fix, a rebase after the gate) → the PASS is **STALE**; re-run spec-adherence scoped to the new
