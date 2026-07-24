@@ -123,11 +123,19 @@ are published in Anthropic's skills repo; `karpathy-guidelines` is a Claude Code
 | `skill-creator` | Create / edit / eval skills | Anthropic (`anthropics/skills`) |
 | `doc-coauthoring` | Co-author docs | Anthropic (`anthropics/skills`) |
 | `karpathy-guidelines` | Coding-guidelines depth for the constitution's Implementation Discipline section | `karpathy-skills` Claude Code plugin marketplace (`~/.claude/plugins/marketplaces/karpathy-skills/`) |
+| `ponytail` | Minimality mode: a plan-blind YAGNI lens over CODE — session persona plus `ponytail-review` (diff) and `ponytail-audit` (whole repo) | `ponytail` Claude Code plugin marketplace (`dietrichgebert/ponytail`) |
 
 `karpathy-guidelines` is **optional**: the constitution's Implementation Discipline section
 states its four principles inline and refers to "the project's coding-guidelines skill, if one
 is installed" generically (core names no specific repo — a purity requirement). Install this
 plugin to get the fuller worked-examples depth; skip it and the four principles still apply.
+
+`ponytail` is **optional** and, if installed, is governed by `core/rules/minimality-mode.md`
+(written generically, per the same purity requirement). Two install-time steps, both needed:
+pin the default mode off — `~/.config/ponytail/config.json` = `{"defaultMode":"off"}`, or
+`PONYTAIL_DEFAULT_MODE=off` (**its native default is `full`**, i.e. persona injection in every
+session AND every dispatched subagent, which taints reviewer seats) — and leave it off the
+cross-model counterparty CLI, which occupies implementer and reviewer seats only.
 
 Provenance: the Anthropic-published skills ecosystem (`anthropics/skills` + the Anthropic
 plugin marketplace). **Install from upstream, never fork** — a fork drifts from Anthropic's
