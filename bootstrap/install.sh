@@ -197,13 +197,16 @@ if [ -d "$HARNESS_ROOT/core/skills" ]; then
           record "$destrel" "$srcrel" "copy" "$f" ""
         fi
       fi
-    done < <(find "$skdir" -type f)
+    done < <(find "$skdir" -type f ! -path '*/__pycache__/*' ! -name '*.pyc')
   done
 fi
 
 # --- plain trees: copy (or link) every file under a core dir to a target prefix ---
 # Optional 4th arg "skip_readme" drops any file named README.md (a directory placeholder /
 # authoring doc that should not be installed into the target). Used for overlay trees.
+# Python bytecode caches are excluded here and in the skills walk above: the harness ships
+# runnable .py (inter-session), so running it writes __pycache__ INTO the harness clone, and
+# a plain -type f walk would then install that build junk into every target.
 copy_tree() { # <src-root> <dest-prefix> <source-prefix> [skip_readme]
   [ -d "$1" ] || return 0
   local f rel destrel srcrel skip="${4:-}"
@@ -214,7 +217,7 @@ copy_tree() { # <src-root> <dest-prefix> <source-prefix> [skip_readme]
     srcrel="$3/$rel"
     if [ "$MODE" = link ] && ! file_has_artifact_token "$f"; then stage_link "$f" "$destrel"; record "$destrel" "$srcrel" "link" "$f" ""
     else stage_copy "$f" "$destrel"; record "$destrel" "$srcrel" "copy" "$f" ""; fi
-  done < <(find "$1" -type f)
+  done < <(find "$1" -type f ! -path '*/__pycache__/*' ! -name '*.pyc')
 }
 copy_tree "$HARNESS_ROOT/core/rules"      ".claude/rules"             "core/rules"  skip_readme
 copy_tree "$HARNESS_ROOT/core/templates"  ".claude/harness-templates" "core/templates"
