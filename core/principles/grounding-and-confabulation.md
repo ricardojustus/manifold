@@ -26,3 +26,27 @@ Recovery when caught: stop, acknowledge cleanly, re-verify, replace with the gro
 - **"I don't know without checking `<source>`"** is always the correct move — an escape hatch to use freely. Plausible hedges ("I believe…", "if I recall…") are confabulation in polite costume.
 - Before *any* claim about a file, system, prior decision, or number: re-read/re-probe this turn and paste the evidence. For a claim that something in the operator's world is "fabricated," check the authoritative roster *first* — calling a real entity invented is inverse-confabulation.
 - Match the defense to the mode; don't rely on one check to catch all three.
+
+## Instruments — a probe's output is only as good as the probe (7 buffered instances, graduated 2026-07-25)
+
+A zero, an empty result, or a "still running" from an UNVALIDATED instrument is not a finding:
+
+- **Positive control before trusting any zero**: prove the instrument finds a known-present case
+  before believing its absence claim (a grep that can't find anything returns the same nothing).
+- **An empty result with no error is a lie shaped like an answer** — wrong filter values, skipped
+  files, and dead pipes all return clean emptiness. For name-keyed filters, prove a positive row
+  first. In pipelines, assert input count > 0 before trusting a 0-hit pass branch (the proven
+  recipe: extract changed lines with `awk '/^\+/ && !/^\+\+\+/'` — `grep -v '^+++'` dies under
+  ugrep; any gate whose pass branch is `|| echo OK` needs the N>0 assert).
+- **Absence claims need a raw instrument**: wrapper greps silently skip files they deem binary —
+  one NUL byte hides a symbol entirely. `/usr/bin/grep` / `rg --text` for any absence claim; a
+  presence hit from any grep is still trustworthy. A count-flag printing NOTHING instead of `0` is
+  the tell that the file was skipped, not searched.
+- **Liveness: never `pgrep` alone, never a frozen output file, never a progress-log grep** — use
+  `ps -eo pid,etime,command`, match machine-readable status FIELDS (broker jobs: `status --json` →
+  `.job.status`, never the progress log's prose), and validate the extractor against a known-alive
+  case before killing anything on its say-so.
+- **Exclude yourself from your own measurement**: a transcript/log grep finds the probe you just
+  typed; identical counts across supposedly-independent sources means the instrument, not the world.
+- **Query the LIVE source of record** — a dead config file that looks authoritative beats nothing
+  but loses to the store the runtime actually reads.

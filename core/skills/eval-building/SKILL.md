@@ -190,3 +190,11 @@ a judge rewarding verbosity — you only see it in the traces.
 - `references/pitfalls-and-sources.md` — the full pitfalls canon (rule + numbers + source URL),
   the framework-abstractions table, and all source URLs.
   `.claude/harness-templates/eval-scorecard.md` — the run artifact.
+
+## The freeze protects comparability, not correctness (graduated 2026-07-25)
+
+Check eval CONTENT against the operator's-world ground-truth sources before trusting a frozen
+artifact — a frozen question can encode a transcription garble and then measure a phantom.
+Same discipline for the freeze itself: **a verify tool must NEVER mutate what it verifies** —
+freeze sealed captures at capture time (`chmod 0444`), split capture-once from verify-only so the
+verify path cannot re-fetch; same revision string ≠ same bytes — compare actual bytes.

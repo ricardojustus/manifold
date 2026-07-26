@@ -106,3 +106,12 @@ gated.
 this is the reverse), `right-sized-engineering.md` (the operator's system-question REOPENS any
 settled posture — see its check 3), the METHODOLOGY lock ritual (co-sign attaches to the
 packet/brief), and the resource-envelope gate (supplies the Cost line's numbers).*
+
+## Graduated instances (buffer sweep 2026-07-25 — the class fired 5+ times)
+
+- **A cost/consequence line in the operator's terms IS a claim** — verify it against the spec/source
+  text before sending; translation is where inference sneaks in dressed as fact.
+- **Incident reports START with the story in the operator's terms** — what they saw · what happened ·
+  what it means · what you need. Internals come after. Pressure is when this matters most.
+- **A batch ratification is N decisions, not one**: a lock packet covering N amendments owes a plain
+  one-liner per behavior-changing amendment; a label list is not an explanation.

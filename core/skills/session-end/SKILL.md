@@ -140,3 +140,11 @@ pauses, after a single mid-session commit, or while the operator is still propos
 - `compact-prep` — the lighter mid-arc checkpoint when work continues across a compaction.
 - `memory-discipline` owns step 3's saves · `plan-update` owns step 4 · `reference-doc-writing`
   owns step 5's doc authoring.
+
+## Closure reconciliation (graduated 2026-07-25)
+
+The close-out artifacts must carry the operator's FINAL-turn dispositions — when they settled or
+dismissed something late in the session, STATE/KICKOFF reflect that, or the next session grounds on
+stale artifacts and relitigates a settled thing at them (the transcript is ground truth, not the
+continuity files). Same pass: a ruling closes EVERY surface stating its question (packet, park
+entry, KICKOFF, STATE) — one surviving stale copy re-opens the decision.

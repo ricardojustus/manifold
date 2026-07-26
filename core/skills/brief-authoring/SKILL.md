@@ -131,3 +131,9 @@ If any answer is no, the brief is not ready to dispatch.
   governs implementer briefs + ad-hoc dispatches without a templated locus.
 - **Self-discipline** (the Cardinal Rule's "research FIRST") — the constitution owns that. This
   skill governs briefs you WRITE, not your own behavior.
+
+## Read-only dispatches cover the FILESYSTEM (graduated 2026-07-25)
+
+A "read-only" instruction to a subagent must say: no writes anywhere — no files, no redirects, no
+temp artifacts; scratch = <named tmp dir> — and the dispatcher asserts the live tree clean at
+dispatch AND at harvest.

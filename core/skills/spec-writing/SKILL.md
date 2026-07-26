@@ -103,3 +103,12 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - **doc-placement** — *where* the spec file belongs in the corpus.
 - **audit-cycle** — the reviewer gate that runs *after* the spec is written. This skill gets the spec to the point it's worth auditing.
 - **spec-adherence** — the impl-side conformance gate that verifies the *code* obeys this spec, after implementation and before audit-cycle. Step-5 self-review here is the author-side analogue.
+
+## Graduated grounding lessons (buffer sweep 2026-07-25)
+
+- **A third-party service gets a half-day REAL-CONTENT spike before any spec locks around it** —
+  verdict shape + fitness/false-positive rate on real inputs, never the vendor's docs alone (a
+  locked-and-built integration was torn out when first real content refuted the documented behavior).
+- **A multi-surface protocol is designed by walking its lifecycle END-TO-END before writing** —
+  every creation path × file→surface→act→clear→complete. Reviewers verify a design; audit rounds
+  are the expensive way to finish one.

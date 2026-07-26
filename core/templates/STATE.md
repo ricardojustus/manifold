@@ -5,7 +5,8 @@
   inline (a paraphrase drifts from its source — the confabulation trap). Deep detail (constants,
   schemas, commit-hash lists) lives in its OWN file (spec / audit / plan) even when current —
   STATE points to it. Never stack dated "## Update 2026-xx-xx" blocks — dated narrative → SESSION_LOG;
-  live backlog → OPEN_ITEMS; stale structural detail → archive/STATE_ARCHIVE. Soft smell-target
+  live backlog → the project's open-items surface (the binding names it — a file or a tracker);
+  stale structural detail → archive/STATE_ARCHIVE. Soft smell-target
   ~50 lines (a review-trigger, NOT a truncation): over it, STATE is accreting detail or history
   that should be a pointer — the test is "is every line live-status, a framing, or a pointer?",
   not the raw count. STATE answers "where are we RIGHT NOW", not "how did we get here".
@@ -13,7 +14,7 @@
 
 # STATE — <project>
 
-_As of: <YYYY-MM-DD>. Snapshot only; see SESSION_LOG for history, OPEN_ITEMS for backlog._
+_As of: <YYYY-MM-DD>. Snapshot only; see SESSION_LOG for history, the open-items surface for backlog._
 
 ## Now
 <!-- One short paragraph: what's the current focus, what phase/milestone are we in. -->
@@ -32,6 +33,6 @@ _As of: <YYYY-MM-DD>. Snapshot only; see SESSION_LOG for history, OPEN_ITEMS for
 <!-- The canonical locations a returning session needs. -->
 - Plan / design intent: <path>
 - Reference docs (current-state truth): <path>
-- Open backlog: OPEN_ITEMS.md
+- Open backlog: <open-items surface — file path, or tracker + board name>
 - Session history: SESSION_LOG.md
 - Next-session directives: SESSION_KICKOFF.md

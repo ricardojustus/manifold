@@ -13,3 +13,7 @@
 **Bounding**: trigger on operator-visible consequence, not keywords. A recorded ruling counts as "asked" for its exact scope; a class-wide ruling is a standing receipt for its class; re-ask only when the recovery story changes or a materially different protection class is added. A receipt whose story is ungrounded, or whose cheap alternative was never named, does not count — even with a GO.
 
 Pairs with: `right-sized-engineering` (simplicity kernel + classification check) · `operator-translation` (packet completeness; criticality and security-depth are the facts most often withheld) · `ask-vs-decide` (reserved-authority calls are a halt trigger, never decide-and-park).
+
+**Ratification is not authority for machinery** (operator ruling, quotable): a prior LOCK is NULL
+AND VOID as justification for any mechanism not directly connected to plan and vision — only a
+vision/plan clause authorizes machinery; never cite "you ratified this spec" to justify it.

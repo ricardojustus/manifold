@@ -78,3 +78,9 @@ asks.
 - `phase-start` — same grounding ladder, different trigger (phase boundary vs fresh session).
 - `session-end` — the counterpart; its outputs (state, memory, plan updates) are this skill's inputs.
 - `compact-resume` — the compaction-aware sibling (you have a lossy summary, not a cold start).
+
+## Park reconciliation (graduated 2026-07-25)
+
+Orientation reconciles open parks against the kickoff and state: a park a later ruling answered, or
+a kickoff directive contradicting a standing park, is a DISAGREEMENT — flag it in the orientation
+report; never silently pick one side.

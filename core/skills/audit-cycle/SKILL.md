@@ -474,8 +474,10 @@ described in the current codebase.
 - Line count → `wc -l <file>`
 - **Normative-oracle claim** (a spec cell that *drives* impl + golden tests — an exact field list,
   a bound, a decoding/encoding behavior) → the symbol resolving is NOT enough. Read the cited
-  handler **body end-to-end** and verify every claimed field / bound / behavior against it; a
-  name-level "anchor exists" check gives false confidence on an oracle table.
+  handler **body end-to-end** and verify every claimed field / bound / behavior against it — and
+  where the claim is behavioral and the path is executable, RUN it (or mark the claim
+  `[unverified]`): reading a source once has passed claims that execution refuted. A name-level
+  "anchor exists" check gives false confidence on an oracle table.
 
 **Reporting shape** (in consolidated findings):
 ```
@@ -510,3 +512,21 @@ unrelated, they don't apply.
 - `research` — the pre-feed dispatch shape this cycle reuses
 
 Skill-eval test prompts: `references/test-prompts.md`.
+
+## Graduated verification lessons (buffer sweep 2026-07-25)
+
+- **A fix-pass disposition is verified against the CODE, not the intent** — re-read the applied hunk
+  and assert the claimed post-state before recording it. An aggregate ("N fixed") is a CLAIM; only
+  per-item checks are evidence — verify each, or record the count as the builder's claim.
+- **A named defect CLASS gets an independent repo-wide sweep**, not just fixes to the listed items —
+  the identical unlisted sibling is the one that ships.
+- **Amending N surfaces of one contract → audit the SET, never per-file** — cross-surface defects
+  (a state undone by a merged sibling; one term with two meanings across files; a new file breaking
+  the invariant an old file protects) are structurally invisible to per-file review. Re-check every
+  NEW surface against the invariant itself, not your memory of having protected it.
+- **Cross-lens split on the same text: fix it if the remedy is smaller than the argument** — MAX
+  severity stands unless the evidence is provably wrong; widen the protection, never narrow it.
+- **A builder's self-disclosed limitation is a CLAIM** — check whether the failure mode it describes
+  is the one the code has (unclassified-and-failing vs invisible-and-passing are opposite properties).
+- **Release verification exercises EACH admitted call shape** end-to-end (bodyless AND body-bearing,
+  read AND write), never one representative — the unexercised shape is the silently-broken one.

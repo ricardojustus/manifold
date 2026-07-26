@@ -7,7 +7,7 @@ description: >-
   in it — full-implementation scope on round 1, fix-diff scope on rounds 2+. Reports
   C/H/M/L findings with pasted evidence and confidence scores, and a MERGE /
   NEEDS-FIX-PASS / NEEDS-ROUND-N+1 verdict. Never modifies code.
-model: inherit
+model: claude-opus-5
 effort: xhigh
 tools: Read, Grep, Glob, Bash, Write
 ---

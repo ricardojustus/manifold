@@ -15,12 +15,14 @@ Grounding: the 2026-07-06 research capture (official docs + Anthropic's shipped 
   its tool restrictions or standing doctrine are worth enforcing structurally. Keep the
   roster SMALL (community consensus: 4–8 max) and prune abandoned roles — every description
   costs context in every session.
-- **Model/effort doctrine**: pin in frontmatter ONLY settled per-role economics (the reviewer
-  pins `effort: xhigh` — a receipted, role-stable choice). Anything that varies per dispatch
-  stays UNSET: the dispatcher's per-invocation `model` parameter beats frontmatter (resolution:
-  env `CLAUDE_CODE_SUBAGENT_MODEL` > invocation param > frontmatter > session model), which is
-  how a spec's dispatch-triage stays in charge. ⚠ Model pins have known runtime-reliability
-  bugs — verify a pin on a real invocation before trusting cost assumptions.
+- **Model/effort doctrine**: pin in frontmatter the settled per-role economics (the reviewer
+  pins `effort: xhigh`; both roles pin the operator's named review/build tier as the model
+  DEFAULT — operator ruling 2026-07-25, so an unpinned dispatch can never silently inherit the
+  session's frontier model). The dispatcher's per-invocation `model` parameter beats frontmatter
+  (resolution: env `CLAUDE_CODE_SUBAGENT_MODEL` > invocation param > frontmatter > session
+  model), which is how a spec's dispatch-triage stays in charge per invocation. ⚠ Model pins
+  have known runtime-reliability bugs — verify a pin on a real invocation before trusting cost
+  assumptions.
 - **Tools are least-privilege + prose**: restrict to the role's actual needs (a reviewer gets
   no Edit) AND state the constraint in the body — Anthropic's own agents do both.
 - **Dispatch is explicit.** These roles are named by skills (`subagent_type: "reviewer"`), not

@@ -97,3 +97,8 @@ Some projects author a **short/overview version** of a plan (an llms.txt-shaped 
 - `doc-placement` — deciding whether a doc is a plan at all, versus a spec / reference / research artifact.
 - `session-end` — invokes this skill at session close if design intent shifted.
 - `research` — produces findings that frequently trigger a plan update.
+
+## Obligation laundering (graduated 2026-07-25)
+
+A plan claiming an obligation ANSWERED must contain the substance IN the plan; "carried to a named
+accountable event" is the honest label for everything else.

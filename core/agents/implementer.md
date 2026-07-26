@@ -6,9 +6,11 @@ description: >-
   subagent (the brief-authoring skill's conventions assume this role). Builds exactly
   what the brief's GIVEN block and the governing spec say — surfacing ambiguity instead
   of silently resolving it, verifying against the stated success criteria before
-  declaring done, and returning a structured handoff. Deliberately carries NO model or
-  effort pin: the spec's implementation-dispatch triage supplies the model per
-  invocation, and effort inherits the session.
+  declaring done, and returning a structured handoff. Frontmatter pins the Opus-tier
+  default (operator ruling 2026-07-25); a spec's implementation-dispatch triage may
+  still override per invocation (the `model` parameter beats frontmatter). Effort
+  inherits the session.
+model: claude-opus-5
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 

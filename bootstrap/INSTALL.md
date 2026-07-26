@@ -129,6 +129,9 @@ are published in Anthropic's skills repo; `karpathy-guidelines` is a Claude Code
 states its four principles inline and refers to "the project's coding-guidelines skill, if one
 is installed" generically (core names no specific repo — a purity requirement). Install this
 plugin to get the fuller worked-examples depth; skip it and the four principles still apply.
+**Exception: an overlay that wires this plugin into its authoring junctions (via its skill
+bindings) makes it REQUIRED for that overlay's installs** — such an install without the plugin
+leaves junctions ordering a nonexistent skill.
 
 `ponytail` is **optional** and, if installed, is governed by `core/rules/minimality-mode.md`
 (written generically, per the same purity requirement). Two install-time steps, both needed:

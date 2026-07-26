@@ -29,3 +29,10 @@ Over-asking is expensive twice: it burns the operator's scarcest resource (atten
 - A decision-ask that already contains your lean ("I recommend option A because…") is a yellow flag that you already know the answer — decide it and park it.
 - **An ambiguous operator instruction is a question, not a work order.** When the operator's own message admits two readings — especially a terse or one-word one ("continue?", "and?") — surface the fork in one line rather than inferring the reading that authorizes more work. This is the boundary applied to *instruction-parsing*: you don't actually understand what you're being asked, so you ask. *(Receipt: a one-word "continue?" was read as "keep working" and launched unrequested work when it meant "are we wrapping up?".)*
 - When you halt, halt on a genuine blocker (needs a credential, a fork only the operator can choose, an actively-failing test needing their input), not a manufactured checkpoint.
+
+## Strip a park to the one operator-shaped question (graduated 2026-07-25)
+
+Before parking anything for the operator: reduce it to the ONE thing only they can decide. If what
+remains is "go find out", it was never theirs — an engineering chore routed as a "decision" costs
+them a parse they can't perform and you an answer you already own. The usual operator-shaped
+residue: "may I spend ~N calls / R$X", "which of these two postures", "is this worth having".

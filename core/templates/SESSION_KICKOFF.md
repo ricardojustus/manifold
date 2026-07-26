@@ -1,7 +1,7 @@
 <!--
   SESSION_KICKOFF.md — next-session-ONLY directives. A stable filename, rewritten at the
   end of each session for the start of the next one. NOT append-only (that's SESSION_LOG),
-  NOT a backlog (that's OPEN_ITEMS). It holds only "when you next sit down, do THIS first".
+  NOT a backlog (that's the open-items surface). It holds only "when you next sit down, do THIS first".
   The session-start routine reads this before anything else. Clear/replace it each time.
 
   QUALITY BAR: every slot below is MANDATORY (an empty slot is a broken handoff, not a lean

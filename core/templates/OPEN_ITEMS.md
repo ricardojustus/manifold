@@ -1,4 +1,9 @@
 <!--
+  NOT FOR PROJECTS ON A TRACKER: this template is the FILE form of the open-items surface.
+  Where the project binding names an issue tracker as the backlog, that tracker replaces this
+  file entirely — do not create it, and do not keep a second copy of the backlog here (two
+  backlogs means neither is trusted). Everything below applies only to the file form.
+
   OPEN_ITEMS.md — the live backlog of open threads. Distinct from STATE (current snapshot),
   SESSION_LOG (dated history), and QUESTIONS-FOR-OPERATOR (things needing a human decision).
   An open item is work that's KNOWN and PENDING but not actively in flight. This is a

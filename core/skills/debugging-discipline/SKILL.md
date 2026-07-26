@@ -102,3 +102,13 @@ The constitution's error-triage rule ("an error code is not a cause" — parent 
 1) · the **fix-the-class** principle (`.claude/harness/principles/`, phase 4's sweep) · the **bugfix
 artifact** (the contract this fills) · `audit-cycle` / `spec-adherence` (the pre-merge gates that
 verify the finished fix).
+
+## Graduated diagnosis lessons (buffer sweep 2026-07-25)
+
+- **Diagnosis grounds in the spec's NORMATIVE text before any design-intent claim** — code artifacts
+  (dead tables, retained modules, pinned constants) are never evidence of intent.
+- **A test that goes red after a change: run the project's OWN canonical command with NOTHING added**
+  before blaming the environment — your workaround env must not become the measurement.
+- **A verify step runs INSIDE the transaction whose work it verifies** — a post-commit check
+  mutates-then-reports (a corrupt store migrates irreversibly, throws once, passes on reopen);
+  an in-transaction check rolls back.
