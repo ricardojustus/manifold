@@ -110,3 +110,13 @@ class TestTruncationHandling:
     def test_classify_on_full_text(self):
         # An ACT-class tail must not hide behind a truncated ANSWER-class head.
         assert "FULL text" in SKILL
+
+
+class TestEventsAreTransport:
+    def test_events_are_transport_not_authority_floor(self):
+        # Operator ruling 2026-07-28: a message never authorizes starting gated work.
+        assert "transport, never authority" in SKILL
+
+    def test_autonomous_work_carve_out_survives(self):
+        # The floor must keep its autonomous-handoff exception or wakeups break.
+        assert "autonomous-work" in SKILL

@@ -61,6 +61,11 @@ the answer made relevant. Let the operator's answers drive the branch order.
 Brainstorming ends with an artifact, not just a good conversation. Write a **Vision draft** in the
 shape `.claude/harness/METHODOLOGY.md` Phase 1 expects:
 
+- **Top summary (REQUIRED, the first section)** — a plain-language, ADHD-readable summary:
+  clear, in the operator's terms, jargon-free, concise, good to read. **Assume it is the ONLY
+  part the operator reads**: every load-bearing choice visible there, surfaced for explicit
+  yes/no (operator ruling 2026-06-04 — the receipt is a 5,300-word vision doc whose inverted
+  architecture shipped unread; ratified as a required section 2026-07-27).
 - **The problem** — what this is for and who it serves (from step 1).
 - **The chosen approach** — the direction converged on, plus a one-line note on the alternatives
   considered and why this one (steps 3-5), so the Council sees the road not taken.

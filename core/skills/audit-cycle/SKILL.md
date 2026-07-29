@@ -124,6 +124,13 @@ awaits the operator's ratification.
 Lows never block lock at the default floor. Every Low gets TRIAGED — triage is mandatory, fixing
 is not.
 
+**Parent-contract back-prop (close-out duty)**: a finding in any round that surfaces a defect in
+the PARENT contract (the governing full-system spec above the audited child) is folded into the
+parent BEFORE the cycle closes — edit the affected parent section + a one-line top-of-doc
+CHANGELOG entry pointing at this cycle's audit artifact. A corrected child beside a stale parent
+forces two contradictory mental models on every future reader. Child-scoped refinements (tests,
+naming, file structure) do NOT back-prop.
+
 **Loop cap: max 5 audit-fix cycles per subject — round 6 CANNOT DISPATCH until a convergence
 diagnosis exists in the audit dir and the owner has ruled on it.** Not a permission ask ("may we
 run round 6?") but an explanation of WHY five rounds haven't converged:
@@ -249,6 +256,12 @@ lens becomes reachable before the stakes justify shipping on one. Recorded, neve
 
 ## Pre-flight (lead does this BEFORE dispatching reviewers)
 
+Every round, step 0: **where a minimality-mode tool is installed, assert the mode is OFF by the
+tool's own state** (the `minimality-mode` rule; the binding names the concrete check) — its
+subagent injection reaches dispatched reviewers and scoping filters fail open. Re-assert before
+EVERY round's dispatch, not just round 1: a fix seat may legitimately have run with the mode on
+in between.
+
 Round-1:
 
 1. Create `AUDIT_DIR` (= `<artifact-root>/audits/<topic>/round-1/`).
@@ -340,7 +353,9 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
    closure), or (c) dispatch a focused round-N+1 with fresh artifacts (architectural divergence).
 
 **Disposition paths** (every finding gets exactly one):
-- **Direct fix-pass** — code change, commit on feature branch (C/H/M; trivial Lows piggyback)
+- **Direct fix-pass** — code change, commit on feature branch (C/H/M; trivial Lows piggyback).
+  Where a minimality-mode tool is installed, a dispatched fix seat runs with the mode ON at
+  standard intensity (`minimality-mode` rule) — asserted back OFF before the next round's dispatch
 - **Path A — spec amendment** — the implementer's choice was deliberate-and-correct but the spec
   wording diverged; amend the spec (clerical ratification, not relitigation)
 - **Path C — bounded code change** — a small additive change closes the finding + a related concern

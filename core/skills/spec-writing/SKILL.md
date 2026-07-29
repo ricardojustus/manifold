@@ -63,14 +63,15 @@ The named gates:
 
 ## Step 4 — Write the spec on the skeleton
 
-Use the recommended section-set in `references/spec-skeleton.md`. It's a menu, not a mandate — take what the spec needs. Four pieces always earn their place:
+Use the recommended section-set in `references/spec-skeleton.md`. It's a menu, not a mandate — take what the spec needs. Five pieces always earn their place:
 
+- **Top summary (REQUIRED, the FIRST section of the doc).** A plain-language, ADHD-readable summary at the top of the same doc: clear, in the operator's terms, jargon-free, concise, good to read. **Assume it is the ONLY part the operator reads** — it must be self-sufficient: every load-bearing architectural choice and decision visible there, surfaced plainly for explicit yes/no, any necessary term paired with a one-line explanation. Renderable diagrams (Mermaid / clean indented lists), never ASCII art. This is where the operator audits the SHAPE before it locks (operator ruling 2026-06-04, ratified as a required section 2026-07-27 — the receipt is a 5,300-word vision doc whose inverted architecture shipped because it was too long to audit).
 - **Gate-attestation block + Complexity-Tracking table** (Step 3) — the named gates, checked, with a row per complexity deviation.
 - **Goals / Non-Goals.** Non-Goals is where "module A is out of scope, because it's being retired" gets *forced into writing* — it doubles as a scope-correctness backstop.
 - **Decisions (with rationale + rejected alternatives).** Capture *why* each non-obvious choice was made so audits and future readers don't relitigate it.
 - **Implementation dispatch (fill at LOCK).** The skeleton's dispatch-triage section: implementer tier + reasoning-effort + lane shape + cross-model role, with a one-line rationale. You — the author who just spent the most time inside this work's complexity — make the recommendation; the dispatcher honors it or overrides it *with a stated reason*. Locked-spec implementations default to **medium–high effort**, not the top (the model-economy principle carries the receipt); raise only for genuine coupling/novelty.
 
-**Amendments to LOCKED specs** (HEAVY by definition) get the brownfield treatment: spec the **delta** against the locked source-of-truth (what changes / what's preserved), and add a **"Coordination with sibling specs"** section naming every other spec the change touches and how they stay consistent. Honor the HARD RULE: **no audit-trail / fix-pass log / round-N findings in the spec body** — those live in `<artifact-root>/audits/<topic>/`; a top-of-doc CHANGELOG line points at the artifact.
+**Amendments to LOCKED specs** (HEAVY by definition) get the brownfield treatment: spec the **delta** against the locked source-of-truth (what changes / what's preserved), and add a **"Coordination with sibling specs"** section naming every other spec the change touches and how they stay consistent. Honor the HARD RULE: **no audit-trail / fix-pass log / round-N findings in the spec body** — those live in `<artifact-root>/audits/<topic>/`; a top-of-doc CHANGELOG line points at the artifact. Note the reverse direction too: when a CHILD spec's audit cycle surfaces a defect in this spec as the PARENT contract, the fold-in happens before that cycle closes (`audit-cycle` close-out duty) — a parent is never left stale beside a corrected child.
 
 ## Step 5 — Self-review: "unit tests for English"
 
@@ -79,6 +80,7 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 ## Pre-flight checklist (before handing the spec to audit-cycle)
 
 - Regime declared on line 1?
+- Top summary present as the FIRST section — self-sufficient, plain-language, every load-bearing choice surfaced for yes/no?
 - (If the runtime has an advisor) one advisor consult on the finished draft — fresh eyes on wrong-target framing before audit rounds are paid for?
 - **System understood FULLY from the actual specs (LOCKED + stale/archived) + the documentation-retrieval system + end-to-end code — not surface traces? Can you explain the design's reasoning + rejected alternatives from the sources?**
 - (HEAVY) Step-1 trace done, insertion point on the **live** path confirmed?

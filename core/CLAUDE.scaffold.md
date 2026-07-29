@@ -124,6 +124,7 @@ When a registered skill matches the task, **INVOKE IT** — skill bodies encode 
 2. **Minimum change that solves the ASKED problem** (full law + floor: Right-Sized Engineering below).
 3. **Surgical** — every changed line traces to the request; match the surrounding style; mention unrelated dead code, never delete it. **LOCKED layers: amendment process, never an in-place tweak.**
 4. **Define verifiable success criteria and loop until they pass.**
+5. **Comment hygiene — a code comment serves the NEXT READER, never carries a receipt.** A comment states a constraint or non-obvious WHY the code itself can't show. NEVER in comments: where a change came from (an audit round, a fix-pass, a review finding, a ruling), what the diff changed, or why the change is correct — that is the author talking to the reviewer; receipts live in commit messages, audit artifacts, and the memory store. Pre-ship sweep: a comment naming a finding, a round number, a date, or reading "fixed/changed/now does X" is a receipt — delete it.
 
 Where a coding-guidelines skill is installed (the overlay wires the junctions), it loads at every authoring junction — implementer/drafter briefs, work-item build start, first step of the spec/plan/test-first/debugging skills — mechanically, not at discretion.
 

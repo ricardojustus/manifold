@@ -51,6 +51,17 @@ Before editing, read the relevant section fully. Plan docs carry context you'll 
 
 Use the banner whenever a section's premise is invalidated by new findings but the fix isn't yet committed.
 
+### 2½. Keep the top summary true (required section)
+
+Every plan doc carries a **top summary as its first section** — plain-language, ADHD-readable,
+in the operator's terms, jargon-free and concise; **assume it is the ONLY part the operator
+reads**. It must be self-sufficient: every load-bearing architectural choice and decision
+visible there, surfaced plainly for an explicit yes/no, any necessary term paired with a
+one-line explanation; renderable diagrams (Mermaid / clean indented lists), never ASCII art
+(operator ruling 2026-06-04; required section ratified 2026-07-27). A plan without one gets it added at this update; an
+update that changes design intent re-syncs it in the same pass — a stale top summary misleads
+the exact reader the section exists for.
+
 ### 3. Bump the revision
 
 Plan docs carry a status line with a revision, a date line, and an audit trail. On a substantive edit:
