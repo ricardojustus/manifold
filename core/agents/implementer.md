@@ -8,9 +8,11 @@ description: >-
   of silently resolving it, verifying against the stated success criteria before
   declaring done, and returning a structured handoff. Frontmatter pins the Opus-tier
   default (operator ruling 2026-07-25); a spec's implementation-dispatch triage may
-  still override per invocation (the `model` parameter beats frontmatter). Effort
-  inherits the session.
+  still override per invocation (the `model` parameter beats frontmatter). Frontmatter
+  pins medium effort — the receipted default for specced implementation (operator ruling
+  2026-07-29); a dispatch may still name a different effort per invocation.
 model: claude-opus-5
+effort: medium
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 

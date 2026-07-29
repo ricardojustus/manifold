@@ -44,8 +44,10 @@ successor).
 - **Vision docs, plans, briefs** — every dispatch still gets a full `brief-authoring` brief;
   brief quality is the highest-leverage act in this posture.
 - **Specs** — spec authoring stays home: the spec is where the thinking lives and is the quality
-  lever for everything downstream. (The overlay's cross-model draft/revise pattern remains the
-  sanctioned alternative for implementation-class specs.)
+  lever for everything downstream. The main model authors EVERY spec class by default; a
+  cross-model spec DRAFT runs only on the operator's explicit per-spec word — never
+  agent-selected, and a standing conservation directive from outside the posture does not carry
+  in. (With the posture OFF, the overlay's cross-model draft/revise pattern is unaffected.)
 - **Research consolidation** — research subagents fan out as usual; the synthesis is thinking.
 - **The gates** — spec-adherence, audit-cycle convening, severity dispositions, harvest
   verification: a builder's green is a claim until the main loop re-verifies it.
@@ -66,19 +68,21 @@ successor).
   sweep edits) — that dispatches to the cheap tier per the overlay's dispatch triage.
 
 **The boundary test, when a file edit is on your fingertips**: is this edit AUTHORING
-implementation substance? → dispatch it. Is it a thinking artifact (spec/plan/brief/packet), a
-continuity surface (state/diary/memory), or the trivial mechanical application of something
-already decided? → it stays home.
+implementation substance? → dispatch it — unless it is a stand-alone code edit of one line or
+less with no design judgment, where the operator is ASKED first (dispatch or inline; autonomous →
+always dispatch). Is it a thinking artifact (spec/plan/brief/packet), a continuity surface
+(state/diary/memory), or the trivial mechanical application of something already decided? → it
+stays home.
 
 ## Junction routing
 
 | Junction | Route |
 |---|---|
 | Implementation, specced | Implementer seat per the overlay's model pins — a full brief, the spec, verifiable success criteria |
-| Implementation, un-specced (quick fixes, glue) | Implementer seat, with the minimality-mode seat rules the overlay wires for specless work |
+| Implementation, un-specced (quick fixes, glue — above the trivial-edit threshold below) | Implementer seat, with the minimality-mode seat rules the overlay wires for specless work |
 | Audit fix-pass | Main loop writes the fix brief from the findings; implementer seat applies; the next round re-checks |
 | Bulk mechanical non-code work | Cheap-tier dispatch per the overlay's triage |
-| Spec to write | Main loop authors (impl-class specs MAY use the overlay's cross-model draft/revise pattern) |
+| Spec to write | Main loop authors — always, unless the operator explicitly routes THIS spec to a cross-model draft (their per-spec word; never agent-selected) |
 | Cross-model consult | OPTIONAL, junction-triggered, unchanged by the posture |
 | Review / pre-merge | The project's audit gates, unchanged |
 | Trivial stand-alone code edit (one line or less, no design judgment) | ASK the operator: dispatch or inline? Their answer governs; autonomous → always dispatch |
