@@ -22,6 +22,9 @@ gaps silently.
   current-state docs tell what it IS RIGHT NOW.** Omitting them forces the lane to *discover* live
   shape via audit cycles.
 - **Tools available** — what tools the agent will have, what's out-of-scope by tool roster.
+  **Verify the roster at brief-write time** — never instruct a role to use a tool it does not
+  carry (e.g. an implementer-role dispatch has no `SendMessage` and no `Skill`); where the
+  protocol would need one, write "stop and put the question in your report" instead.
 - **Out-of-scope explicitly** — what NOT to touch / extend / refactor.
 - **Conventions** — paths to convention docs (pitfall catalogs, project conventions) the work must
   honor.
@@ -71,6 +74,12 @@ Probes, before pasting:
   continue. Do NOT silently scope-out or invent. The receiving agent surfaces ambiguity, it does
   not resolve it unilaterally.
 - **Success criteria** — verifiable end state (tests pass / spec §N satisfied / audit gate met).
+- **Deliverables come back INLINE** — never name a report FILE as a subagent deliverable (the
+  harness blocks subagent writes of report-shaped files): the brief asks for the report in the
+  final message; the dispatcher files it.
+- **Read-only / classifier briefs carry an explicit "no subagent spawning" line** — parallelism
+  is the dispatcher's call, made in the brief, never the seat's (receipt: one unbriefed fan-out
+  burned 145k tokens in 5.5 minutes).
 
 ## The handoff triad + status vocabulary
 

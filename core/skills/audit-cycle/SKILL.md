@@ -112,7 +112,9 @@ self-license. When a round finds a defect IN a mechanism (rather than in the fea
 substance), the fix-pass asks IN ORDER: (1) **should this mechanism exist at all** — what
 ratified requirement demands it? (2) **is the problem it guards against real** — which in-scope
 adversary performs it? (3) only then, **fix it**. Deleting the mechanism closes the finding as
-legitimately as fixing it. A finding chain hitting the SAME mechanism's fix in 3 consecutive
+legitimately as fixing it — and a deletion names the SUCCESSOR: what now does the job (or that
+nothing must), and who invokes it; being unreferenced is sometimes the defect itself, not proof
+of disposability. A finding chain hitting the SAME mechanism's fix in 3 consecutive
 rounds forces question (1) explicitly in that round's consolidation — a ladder that can only
 harden, never remove, is the ratchet in its purest form.
 
@@ -429,6 +431,13 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
   recorded in the consolidated findings' advisory table, carried to the operator with the lock
   report; never blocks, never drives a fix-pass
 
+**A finding naming a defect CLASS closes via a ground-truth sweep, never a spot-fix.** Fixing
+the lines the finding names is not fixing the class — and the sweep is constituted from the
+SYSTEM'S OWN DATA (enumerate the affected surface from the authoritative store / config /
+payloads, then adjudicate every member against it), never from the prior round's grep terms,
+which can only re-find what was already found (receipt: one class survived four rounds on
+reused search terms).
+
 **Consolidated findings output shape** — write to
 `<AUDIT_DIR>/round-<N>-consolidated-findings.md`:
 - **Per-lens summary table** — primary row, cross-model row, merged row × C/H/M/L counts
@@ -486,7 +495,9 @@ state, with a one-line CHANGELOG entry at top pointing at the audit artifact. Ca
 adding an audit log to a spec body: stop, move it to `audits/`, edit the spec body to the
 corrected shape.
 
-**Close-out binary check**: before a cycle closes, `LC_ALL=C grep -lc $'\x00' <AUDIT_DIR>/*.md` —
+**Close-out binary check**: before a cycle closes,
+`perl -ne 'if(/\x00/){print "$ARGV\n"; close ARGV}' <AUDIT_DIR>/*.md` (a shell can't pass a NUL
+in argv, so a `grep $'\x00'` form degrades to an empty pattern and flags EVERY file) —
 any hit is re-rendered with escaped bytes (the Evidence Store's value is that claims can be
 re-checked later; a NUL-bearing file silently swallows every future grep with no error). Do not
 rewrite historical arcs' files.
