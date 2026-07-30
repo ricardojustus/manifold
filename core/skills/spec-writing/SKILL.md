@@ -88,6 +88,10 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - Gate-attestation block filled: Constitution PASS, Clarification ≤3, Coverage walked, Complexity rows justified, Success criteria measurable, Visual-surface seen-or-N/A, **Resource envelope priced-or-N/A (unpriced = cannot lock; Heavy+ carries caps + canary + halt rule)**?
 - **Prior-rulings recall gate**: for every pinned constant and every process gate (waits, windows, thresholds, retry/promotion policies), ONE query against the project's recall system (where the overlay names one) for prior operator rulings on that mechanism class — operator doctrine is often thread-local; the recall system sees across threads. A ruling found = inherit it or surface the conflict; never silently re-derive convention.
 - Goals **and** Non-Goals explicit?
+- **Environments enumerated** — build, test, release, runtime, and THE OPERATOR'S OWN MACHINE
+  where the flow differs? Every default path / env-var / host assumption is a concrete claim
+  about a named environment (verify-or-mark-unverified), and the acceptance criteria include
+  one real run in each environment the deliverable's flow serves?
 - (Amendment) delta-scoped + sibling-coordination section present + no audit-trail in body?
 - Concrete code references grep-verified (per `brief-authoring`) — existence is necessary even though it isn't sufficient?
 - Implementation-dispatch triage filled (tier + effort + lane shape + cross-model role + rationale)? (At dispatch, Agent-tool implementations use the `implementer` role with the tier passed as the per-invocation `model` param.)

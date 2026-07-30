@@ -60,6 +60,19 @@ When the operator challenges a recommendation: (1) **read what they actually sai
 
 Applies to ALL outputs — code, briefs, role files, skills, docs, configs. "It's a small artifact" is not a research-skip license.
 
+## The Second Cardinal: NEVER OVERENGINEER — BUILD THE SMALLEST EFFECTIVE SOLUTION (HARD RULE)
+
+*Enforcement: prose — depth + the floor: `.claude/harness/principles/right-sized-engineering.md`; the mechanical ladder tripwires: the `audit-cycle` skill*
+
+**Never overdesign or overengineer. Always choose the simplest solution that actually solves the problem.** At every solution moment — you land on a design, you finish a spec draft or an implementation, you judge an implemented solution or a drafted spec — **pause and ask, about the WHOLE artifact, never just the newest piece**:
+
+1. **Does this need to exist — is the problem even real?** Name who concretely hits it; security machinery names the in-scope adversary that performs the attack.
+2. **If real: is this the smallest effective solution?** Name what could be deleted with no invariant lost — an accumulation of individually-correct additions can still be overdesign.
+
+Before building ANY machinery, three checks: (1) **the need is real and current**; (2) **nothing already provides it** — platform native first, then existing code and rules; (3) **the tradeoff wasn't already litigated** — settled postures are inherited, challenged once with new evidence; **the operator asking "is this needed?" REOPENS the posture.** Process weight scales with the stakes rubric (max-of-dimension — NEVER keyed on reversibility); an irreversibility/blast-radius claim justifying machinery must cite the concrete recovery story from current-state docs; pinned constants carry their cost implication inline; a spec consuming model calls/quota does not LOCK unpriced (the project's cost-tier binding owns the procedure).
+
+**The floor — "simplest" must NOT trim**: irreversibility-class security invariants (ENFORCEMENT.md's), the block-path test for any existing guard, the diarized WHY behind any rule (the memory store is the receipts store — never delete recorded rationale), or small-but-real needs (build the small version). Can't tell speculative from real? Ask or park — never silently drop.
+
 ## Errors — VALIDATE Before Diagnosing (HARD RULE)
 
 *Enforcement: prose — depth + worked examples: `.claude/harness/principles/error-triage.md`*
@@ -121,20 +134,12 @@ When a registered skill matches the task, **INVOKE IT** — skill bodies encode 
 *Enforcement: prose — LOCKED-artifact changes route through the operator-gated amendment process (ENFORCEMENT.md invariant #2). Depth: the project's coding-guidelines skill, if installed — loaded MANDATORILY at authoring junctions, see below.*
 
 1. **State assumptions**; multiple interpretations → present them; a simpler approach exists → say so; unclear → stop and ask.
-2. **Minimum change that solves the ASKED problem** (full law + floor: Right-Sized Engineering below).
+2. **Minimum change that solves the ASKED problem** (full law + floor: the Second Cardinal above).
 3. **Surgical** — every changed line traces to the request; match the surrounding style; mention unrelated dead code, never delete it. **LOCKED layers: amendment process, never an in-place tweak.**
 4. **Define verifiable success criteria and loop until they pass.**
 5. **Comment hygiene — a code comment serves the NEXT READER, never carries a receipt.** A comment states a constraint or non-obvious WHY the code itself can't show. NEVER in comments: where a change came from (an audit round, a fix-pass, a review finding, a ruling), what the diff changed, or why the change is correct — that is the author talking to the reviewer; receipts live in commit messages, audit artifacts, and the memory store. Pre-ship sweep: a comment naming a finding, a round number, a date, or reading "fixed/changed/now does X" is a receipt — delete it.
 
 Where a coding-guidelines skill is installed (the overlay wires the junctions), it loads at every authoring junction — implementer/drafter briefs, work-item build start, first step of the spec/plan/test-first/debugging skills — mechanically, not at discretion.
-
-## Right-Sized Engineering — YAGNI With a Floor (HARD RULE)
-
-*Enforcement: prose — full kernel at `.claude/harness/principles/right-sized-engineering.md`*
-
-Before building ANY machinery, three checks: (1) **the need is real and current**; (2) **nothing already provides it** — platform native first, then existing code and rules; (3) **the tradeoff wasn't already litigated** — settled postures are inherited, challenged once with new evidence; **the operator asking "is this needed?" REOPENS the posture.** Process weight scales with the stakes rubric (max-of-dimension — NEVER keyed on reversibility). An irreversibility/blast-radius claim justifying machinery must cite the concrete recovery story from current-state docs. Pinned constants carry their cost implication inline. A spec consuming model calls/quota does not LOCK unpriced — the project's cost-tier binding owns the procedure.
-
-**The floor — YAGNI must NOT trim**: irreversibility-class security invariants (ENFORCEMENT.md's), the block-path test for any existing guard, the diarized WHY behind any rule (the memory store is the receipts store — never delete recorded rationale), or small-but-real needs (build the small version). Can't tell speculative from real? Ask or park — never silently drop.
 
 ## Operator Understanding (CORE GOAL — HARD RULE)
 

@@ -105,6 +105,49 @@ contract; closing a machinery finding changes the contract itself.*
   material). A classification either side disagrees with routes through **Reject-per-plan**
   (see Disposition paths) — never through silent re-rating.
 
+**Defect authority is not transitive to un-ratified machinery.** A defect finding inherits the
+provenance of the clause or mechanism it targets: material that entered the artifact as a remedy
+nobody ratified generates no authority to harden it further — the contract must not
+self-license. When a round finds a defect IN a mechanism (rather than in the feature's
+substance), the fix-pass asks IN ORDER: (1) **should this mechanism exist at all** — what
+ratified requirement demands it? (2) **is the problem it guards against real** — which in-scope
+adversary performs it? (3) only then, **fix it**. Deleting the mechanism closes the finding as
+legitimately as fixing it. A finding chain hitting the SAME mechanism's fix in 3 consecutive
+rounds forces question (1) explicitly in that round's consolidation — a ladder that can only
+harden, never remove, is the ratchet in its purest form.
+
+**Adversary scoping (lead-owned at consolidation).** A reviewer demonstrating an attack answers
+"is this possible for someone?" — it never answers "is this attacker in scope?", and the lead
+owns that question. A machinery-demanding finding must name WHICH adversary in the round's
+stated threat model performs the repro; a repro performed with capabilities no in-scope
+adversary has (e.g. arbitrary filesystem access against a sandboxed agent) does not establish
+the problem — classify ADVISORY unless re-grounded in the stated threat model.
+
+## The accumulated artifact — ratchet tripwires
+
+The anti-ratchet above governs each finding's ADMISSION; nothing governs what the admissions
+accumulate into — a ladder of individually-legitimate defect fixes can double a contract
+(receipt: a ~100-line LIGHT spec reached 227 lines / 16 ACs / HEAVY in six rounds of correct
+findings). Two lead-owned mechanical checks close the gap:
+
+1. **Trajectory line — one line of arithmetic in every round's consolidated findings**:
+   artifact size + AC count + regime vs the ROUND-1 baseline, and this round's blocking-finding
+   mix — targets ROUND-BORN (material a fix-pass introduced during the ladder) vs ORIGINAL,
+   remedies ADD vs CORRECT vs REMOVE.
+2. **The ratchet signature** (measured, 10-arc sweep 2026-07-30 — healthy ladders converge to
+   CORRECT-dominated tails regardless of length; the accretion incident ran ADD-dominated
+   rounds 2–5): **round ≥3 AND blocking findings majority ROUND-BORN AND remedies
+   ADD-dominated → RED FLAG.** Also RED FLAGS, regardless of arithmetic: a regime upgrade
+   (LIGHT→HEAVY) during the ladder · an operator re-grounding request mid-arc on a small
+   feature (the operator losing the thread of a small artifact IS the legibility alarm).
+
+**RED FLAG = the re-minimization pass before the next dispatch** — a pause with the Second
+Cardinal's two questions applied to the WHOLE artifact against the job the operator ratified,
+never a mandated cut: the lead either cuts (each deletion recorded in the audit dir with its
+no-invariant-lost argument) or states in the round notes why the current size IS the floor.
+(Receipt for cheapness: the incident's simplification pass cut 227→116 lines, zero invariants
+dropped, one sitting.)
+
 ## The lock gate
 
 **A subject LOCKs / merges when BOTH hold, for BOTH reviewers:**
@@ -134,13 +177,24 @@ naming, file structure) do NOT back-prop.
 **Loop cap: max 5 audit-fix cycles per subject — round 6 CANNOT DISPATCH until a convergence
 diagnosis exists in the audit dir and the owner has ruled on it.** Not a permission ask ("may we
 run round 6?") but an explanation of WHY five rounds haven't converged:
-1. **The curve** — findings per round (C/H/M/L, new vs carryover). Findings typically halve per
-   round; a flat or rising curve is the anomaly being explained.
+1. **The curve** — findings per round (C/H/M/L, new vs carryover) PLUS the trajectory data
+   (ROUND-BORN vs ORIGINAL targets; ADD/CORRECT/REMOVE remedies — see Ratchet tripwires).
+   Findings typically halve per round; a flat or rising curve is the anomaly being explained.
 2. **The cause, named honestly** — which story is it: reviewers raising NEW demands each round
    (a REVIEW problem — check the authority discipline is being applied); fix-passes introducing
-   fresh defects (a BUILDER problem); or a spec ambiguous enough that each round exposes another
-   reading (a SPEC problem — more rounds will never fix it)?
-3. **A recommendation** — round 6 / lock with the tail triaged / stop and reopen the spec.
+   fresh defects (a BUILDER problem); a spec ambiguous enough that each round exposes another
+   reading (a SPEC problem — more rounds will never fix it); or **the ratchet** — the artifact
+   accreting mechanism through individually-correct findings (an ARTIFACT problem — more rounds
+   harden it further, never shrink it)?
+3. **A recommendation keyed to the cause**: CORRECT-dominated tail (convergence housekeeping) →
+   one more round / lock with the tail triaged. ADD-dominated ROUND-BORN findings (the
+   ratchet) → **discard-and-restart as the default recommendation**: a fresh cross-model author
+   (the project's model pins name the counterpart tier) receives the JOB, the invariant list,
+   and the findings ledger as problems-encountered — NEVER the old artifact text (inheriting
+   the text inherits the ratchet); restart budget 3 rounds, and a second cap-out means the
+   problem is the problem, not the author — both artifacts go to the owner with that
+   conclusion. SPEC problem → stop and reopen the spec. The owner rules on the packet; the
+   diagnosis rides it.
 
 ## Spec-vs-plan gate (spec-LOCK cycles + LOCKED-spec amendments)
 
@@ -379,6 +433,9 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
 `<AUDIT_DIR>/round-<N>-consolidated-findings.md`:
 - **Per-lens summary table** — primary row, cross-model row, merged row × C/H/M/L counts
   (blocking vs advisory counted separately)
+- **Trajectory line** — artifact size + AC count + regime vs the round-1 baseline; this round's
+  ROUND-BORN vs ORIGINAL targets and ADD/CORRECT/REMOVE remedies (see Ratchet tripwires — the
+  RED-FLAG arithmetic runs here)
 - **Verdict** — LOCK / NEEDS-FIX-PASS / NEEDS-ROUND-N+1 / ESCALATE (cycle-5 cap)
 - **Advisory + rejections tables** — every advisory machinery finding, every Reject-per-plan
   entry (finding × the clause/ruling cited × status: awaiting-operator / ratified / overturned),
@@ -429,6 +486,11 @@ state, with a one-line CHANGELOG entry at top pointing at the audit artifact. Ca
 adding an audit log to a spec body: stop, move it to `audits/`, edit the spec body to the
 corrected shape.
 
+**Close-out binary check**: before a cycle closes, `LC_ALL=C grep -lc $'\x00' <AUDIT_DIR>/*.md` —
+any hit is re-rendered with escaped bytes (the Evidence Store's value is that claims can be
+re-checked later; a NUL-bearing file silently swallows every future grep with no error). Do not
+rewrite historical arcs' files.
+
 ## Anti-patterns (don't regress)
 
 1. **Diff-scoped audit framing** at the pre-merge gate — the subject is the full implementation,
@@ -469,6 +531,9 @@ corrected shape.
     quietly repeals a ratified plan decision.
 19. **Dispatching reviewers without the governing plan + vision as mandatory full reads** — the
     authority discipline is unenforceable by reviewers who never saw the authority sources.
+20. **Hardening a ladder-born mechanism round after round without ever asking whether it should
+    exist** — the mechanism-defect fork (exist? → real? → fix) is mandatory when the defect is
+    IN a mechanism, and its first question is forced at chain length 3 (see Finding authority).
 
 ## Cat #15 — Spec-vs-Reality Confab Check
 

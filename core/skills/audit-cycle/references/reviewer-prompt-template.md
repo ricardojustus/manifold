@@ -23,6 +23,10 @@ Files in scope (read end-to-end):
 - <the governing PLAN — FULL read, not excerpts: its Decisions, Non-Goals, rejected alternatives, and Security Posture section are the authority your findings must cite; kill-rulings scatter across sections>
 - <the governing VISION — FULL read, where one exists>
 - <related lessons / memory files>
+- <the deliverable's ENVIRONMENTS — build, test, release, runtime, and THE OPERATOR'S OWN
+  MACHINE where the flow differs; a default path / env-var / host assumption is a concrete
+  claim about a named environment (Cat #15 treatment), and a gate's acceptance includes one
+  real run in each environment its flow serves>
 
 # Threat model (from the project binding)
 
@@ -76,6 +80,16 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
     - **Invariant Expression** (1-10) — how clearly are invariants communicated through type structure? Compile-time enforcement where possible?
     - **Invariant Usefulness** (1-10) — do the invariants prevent real bugs? Neither too restrictive nor too permissive?
     - **Invariant Enforcement** (1-10) — are constraints actually enforced, or just documented?
+12. **Excess** — the inverse hunt, same rigor as the other eleven: material the job does not
+    demand — machinery no ratified clause calls for, clauses that cannot fire on this system,
+    acceptance criteria satisfiable only by mocking the thing under test, defenses no in-scope
+    adversary can trigger, duplicated guards. Report as findings with the same confidence bar;
+    **a deletion recommendation scores exactly like a gap recommendation** — finding what
+    shouldn't exist counts equally with finding what's missing. Severity: excess that widens
+    attack or maintenance surface on a security-relevant path = Medium+; inert excess = Low.
+    Scope guard: an excess finding against material the OPERATOR ratified routes to the
+    operator (ratified machinery is theirs to keep); against ladder-born material it drives
+    the mechanism-defect fork normally.
 
 # Rubric — project-specific categories (from the binding)
 
@@ -106,7 +120,9 @@ cite the plan/vision/posture clause that calls for it; if you cannot, report it 
 `Authority: NONE — ADVISORY`. Advisory findings are real work and reach the operator, but they
 do not block lock and do not drive fix-passes. "I thought of it" is not authority. A genuine
 security hole the posture never anticipated: `Authority: POSTURE-GAP` + the concrete attack
-path — the operator decides whether the posture grows, never you.
+path — the operator decides whether the posture grows, never you. A finding whose remedy adds
+machinery also names WHICH adversary in this round's stated threat model performs the repro —
+a repro needing capabilities no in-scope adversary has does not establish the problem.
 
 # Severity rubric
 
@@ -118,7 +134,7 @@ path — the operator decides whether the posture grows, never you.
 
 # Evidentiary discipline
 
-When you claim "verified via grep" or "the helper at X:Y exists" — PASTE the grep output / file excerpt inline. Don't just claim it. Reviewers who claim without evidence inherit the confabulation pattern.
+When you claim "verified via grep" or "the helper at X:Y exists" — PASTE the grep output / file excerpt inline. Don't just claim it. Reviewers who claim without evidence inherit the confabulation pattern. Render control bytes in pasted probe evidence as escapes (`\x00`), never raw — a raw NUL byte makes your whole report file silently invisible to grep for every future verifier.
 
 # Output
 
