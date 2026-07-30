@@ -50,14 +50,18 @@ PROFILE="$(mget profile)"
 MODULES="$(mget modules)"
 REC_HARNESS="$(mget harness_repo)"
 
-[ -n "$OVERLAY" ] || { echo "error: manifest records no overlay — cannot reconstruct the install" >&2; exit 2; }
+if [ "$MODE" != "bootstrap" ]; then
+  [ -n "$OVERLAY" ] || { echo "error: manifest records no overlay — cannot reconstruct the install" >&2; exit 2; }
+fi
 if [ -n "$REC_HARNESS" ] && [ "$REC_HARNESS" != "$HARNESS_ROOT" ]; then
   echo "warn: manifest was installed from '$REC_HARNESS'; updating from this clone ($HARNESS_ROOT)" >&2
 fi
+if [ "$MODE" != "bootstrap" ]; then
 case "$OVERLAY" in
   */*) [ -d "$OVERLAY" ] || { echo "error: recorded external overlay '$OVERLAY' no longer exists" >&2; exit 2; } ;;
   *)   [ -d "$HARNESS_ROOT/overlays/$OVERLAY" ] || { echo "error: overlay '$OVERLAY' not found under $HARNESS_ROOT/overlays/" >&2; exit 2; } ;;
 esac
+fi
 
 # fast-forward the harness clone when it has an upstream; a diverged/offline pull is a
 # warning, not a failure — updating from the local state is still a valid update.
@@ -67,6 +71,18 @@ if [ "$NO_PULL" -eq 0 ] && git -C "$HARNESS_ROOT" rev-parse --git-dir >/dev/null
       echo "warn: could not fast-forward $HARNESS_ROOT (offline or diverged) — updating from local state" >&2
     fi
   fi
+fi
+
+# A bootstrap install has no overlay yet — re-run bootstrap mode unchanged (the onboarding kit
+# refreshes; the overlay arrives when the first session runs /harness-onboarding).
+if [ "$MODE" = "bootstrap" ]; then
+  set -- "$TARGET" --bootstrap
+  [ -n "$PROFILE" ] && set -- "$@" --profile "$PROFILE"
+  if [ -n "$MODULES" ] && [ "$MODULES" != "none" ]; then
+    set -- "$@" --modules "$(printf '%s' "$MODULES" | tr ' ' ',')"
+  fi
+  echo "update: re-installing the onboarding kit (bootstrap, profile ${PROFILE:-base}) into $TARGET"
+  exec "$HERE/install.sh" "$@"
 fi
 
 set -- "$TARGET" --overlay "$OVERLAY"

@@ -53,8 +53,10 @@ manifold/
 │   └── _template/         copy this to create a new project's overlay
 └── bootstrap/
     ├── install.sh         the installer (copy or link mode, hash manifest)
+    ├── update.sh          re-runs a recorded install after pulling the harness
     ├── doctor.sh          drift detector (compares installed files against the manifest)
-    ├── selftest.sh        79-case test of the installer itself
+    ├── selftest.sh        the installer's own test suite
+    ├── skills/            the onboarding kit --bootstrap installs (harness-onboarding)
     └── INSTALL.md         install instructions
 ```
 
@@ -93,7 +95,7 @@ Skeletons for every recurring artifact: state snapshots, kickoffs, journals, dec
 
 ### The overlays
 
-An overlay is everything core is forbidden to contain: real paths, real names, concrete model pins, project-specific hooks values, and per-skill **bindings** (short project-specific addenda appended to each installed skill — e.g. an audit-cycle binding that pins exactly how a second-lens reviewer is dispatched for that project). `overlays/_template/` is the starting point — copy it, fill its manifest and slots, fill the steering docs, done.
+An overlay is everything core is forbidden to contain: real paths, real names, concrete model pins, project-specific hooks values, and per-skill **bindings** (short project-specific addenda appended to each installed skill — e.g. an audit-cycle binding that pins exactly how a second-lens reviewer is dispatched for that project). `overlays/_template/` is the starting point — copy it, fill its manifest and slots, fill the steering docs, done. The onboarding interview copies it to `manifold-overlay/` inside the project being onboarded (configuration lives with the project); an overlay kept inside this clone as `overlays/<project>/` — the right home for a meta-project — works identically, `--overlay` takes either.
 
 ### The successor docs
 
@@ -102,7 +104,10 @@ An overlay is everything core is forbidden to contain: real paths, real names, c
 ## 4. Installing it into a project
 
 ```bash
-# from the manifold repo:
+# from the manifold repo — a project with no overlay yet (the usual first time):
+bash bootstrap/install.sh <target-repo> --bootstrap     # then run /harness-onboarding in the project
+
+# a project whose overlay already exists:
 bash bootstrap/install.sh <target-repo> --overlay <your-overlay-name-or-path>
 ```
 
@@ -110,7 +115,7 @@ bash bootstrap/install.sh <target-repo> --overlay <your-overlay-name-or-path>
 - **Link mode (`--link`):** symlinks back to the harness — fixes flow live. Right for the "home" installation where the harness itself is developed.
 - **What lands where:** skills → `.claude/skills/` (with the overlay's bindings appended), rules → `.claude/rules/`, methodology/enforcement/principles/case-law/field-guide/calibration → `.claude/harness/`, templates → `.claude/harness-templates/`, guard scripts → `.claude/harness-hooks/`, and the assembled constitution → `CLAUDE.harness.md` in the project root.
 - **The manifest:** every installed file is recorded with a content hash in `.claude/manifold-manifest.yaml`. Run `bash bootstrap/doctor.sh <target>` any time: it reports `OK` (untouched), `LOCAL-CHANGE` (you deliberately edited your copy — legal and tracked), or `STALE` (upstream moved). Local divergence is sanctioned; *silent* divergence is what the doctor exists to catch.
-- **The one manual step:** hooks land on disk but are **not wired** into the project's settings. You paste the wiring block (given in the hooks README) into `.claude/settings.json` yourself, once. This is a security feature, not an omission — the session must never arm its own guards. After wiring, run the hooks' selftest.
+- **The two manual steps:** (1) the constitution is **not auto-included** — add the line `@CLAUDE.harness.md` at the end of the project's own `CLAUDE.md` (create that file if it has none), or the assembled constitution sits on disk governing nothing. (2) If your overlay ships hooks, they land on disk but are **not wired** into the project's settings: you paste the wiring block (given in the hooks README) into `.claude/settings.json` yourself, once, and run the hooks' selftest after. Both are security features, not omissions — a session must never edit the file that governs it or arm its own guards.
 
 ## 5. Your job vs the agent's job
 
@@ -140,9 +145,8 @@ The harness automates a great deal, but it deliberately keeps a short list of de
 This is the intended shape of a project from empty repo to shipped feature.
 
 **Day zero — setup (once per project):**
-1. Create the project's overlay (copy `overlays/_template/`, fill the slots: name, paths, never-touch directories, model pins).
-2. Install (copy mode), paste the hook wiring, run the doctor and the hooks selftest.
-3. Fill the three steering documents — what this project is, the stack and its rules, where things live. Half an hour that every future dispatch stops re-deriving.
+1. `bash bootstrap/install.sh <target-repo> --bootstrap`, then open a session in the project and run `/harness-onboarding`. It interviews you (identity, project map, security posture, hard rules, model pins), writes the overlay from your answers into `manifold-overlay/` at the root of your own repo (your configuration lives with your project, private with it), offers the optional modules and companion tools, re-installs for real, runs the doctor, and walks you through the include line and any hook wiring — the two steps that stay yours. Filling `overlays/_template/` by hand and installing with `--overlay` is still supported; the interview is the same work with the questions asked out loud.
+2. Fill the three steering documents — what this project is, the stack and its rules, where things live. Half an hour that every future dispatch stops re-deriving.
 
 **For each piece of work — size it first.** The methodology's stakes rubric decides the lane:
 - **Express lane** (reversible, contained, low-novelty): grounding, one-line acceptance criteria, build, quick audit, done. A bug gets the bugfix template.

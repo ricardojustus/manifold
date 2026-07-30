@@ -45,7 +45,8 @@ skill_bindings: []
 skills: []
 
 # Project rules installed to .claude/rules/ (rules/<file>.md).
-rules: []
+rules:
+  - model-pins               # pre-filled with dated public defaults — confirm or remap them
 
 # Enforcement hook bindings for core/ENFORCEMENT.md bright-lines (hooks/<script>.sh).
 # DRAFT on install (not wired into settings.json). exit 2 = block, exit 0 = allow.

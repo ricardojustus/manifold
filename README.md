@@ -54,32 +54,35 @@ half-configured harness can exist.
 
 ```bash
 git clone https://github.com/ricardojustus/manifold ~/manifold
+~/manifold/bootstrap/install.sh /path/to/your-repo --bootstrap
+```
+
+That is the whole setup. `--bootstrap` installs the harness plus an onboarding skill into a
+repo that has no configuration yet; open a Claude Code session in your project and run
+`/harness-onboarding`. It interviews you one question at a time, writes your project's
+overlay from your answers into `manifold-overlay/` in your own repo (your configuration stays
+with your project, private with it), offers the optional modules and companion tools, finishes
+the real install, and walks you through the two steps that stay yours (below). Start with
+[`MANUAL.md`](MANUAL.md) for the guided tour.
+
+Already have an overlay (or prefer to fill one by hand — copy `overlays/_template/`, a fully
+documented blank, wherever you want it):
+
+```bash
 ~/manifold/bootstrap/install.sh /path/to/your-repo --overlay <your-overlay>
 ~/manifold/bootstrap/doctor.sh  /path/to/your-repo   # verify + detect drift later
 ```
-
-**No overlay yet?** Copy `overlays/_template/` to `overlays/<your-project>/` and fill it
-in. It is a fully documented blank: every slot file states its contract, and the installer
-lists anything you missed. Start with [`MANUAL.md`](MANUAL.md) for the guided tour.
 
 Install is **copy mode** by default (a reproducible snapshot, with a hash manifest so
 `doctor.sh` can tell your local edits from upstream drift) or `--link` mode (symlinks that
 live-track the harness repo). `CLAUDE.harness.md` is written but never auto-included; see
 [`bootstrap/INSTALL.md`](bootstrap/INSTALL.md) for the one-line include and full mechanics.
 
-## Give this to your agent
+## The first session
 
 The setup is agent-friendly by design: you answer questions, your agent does the mechanics.
-Clone the repo, open a Claude Code session **in your project**, and paste:
-
-> Read `~/manifold/MANUAL.md` end-to-end. Then set up Manifold for this project: copy
-> `~/manifold/overlays/_template/` to `~/manifold/overlays/<name-my-project>/` and fill it
-> in. For every slot file, **interview me, one question at a time, and use my answers**;
-> never invent facts about me, my project, or my security posture. Where the template's
-> FILL comment offers a sensible default and I have no preference, say so and use it. Then
-> run `~/manifold/bootstrap/install.sh <this repo> --overlay <the overlay path>`, fix
-> anything it names, run `doctor.sh`, and show me the assembled `CLAUDE.harness.md` for
-> review before adding the include line.
+`/harness-onboarding` never invents facts about you, your project, or your security posture —
+it asks, offers written suggestions you accept, edit, or drop, and uses only what you confirm.
 
 **Your side of the interview.** The agent can't invent the slot truths. Have answers ready
 for roughly these five things:
@@ -108,7 +111,7 @@ reviewing what your agent assembled. (2) If you opt into enforcement hooks, you 
 | | |
 |---|---|
 | **27 skills** | The full arc: session lifecycle (`session-start` to `session-end`, compaction prep/resume), the build pipeline (`brainstorming`, `council`, `spec-writing`, `spec-adherence`, `audit-cycle`), dispatch (`brief-authoring`, `parallel-workstreams`, `merge-and-cleanup`), plus `debugging-discipline`, `test-driven-development`, `eval-building`, `research`, `autonomous-work`, `subsystem-grounding`, `inter-session` (peer-session messaging bus), and more |
-| **2 named agent roles** | `reviewer` (the audit's adversarial arm: pinned effort, no Edit tool by design) and `implementer` (dispatched builds: ambiguity protocol, verify-before-done; deliberately no model pin — the spec's dispatch triage decides per job) |
+| **2 named agent roles** | `reviewer` (the audit's adversarial arm: pinned effort, no Edit tool by design) and `implementer` (dispatched builds: ambiguity protocol, verify-before-done; ships pinned to a frontier model at medium effort, which a spec's dispatch triage overrides per job) |
 | **15 principles** | One-page judgment kernels: grounding vs. confabulation, error triage, right-sized engineering (YAGNI with a floor), model economy, ask-vs-decide, fix-the-class, and others |
 | **Case-law** | Precedent for calls rubrics can't make: finding severity, dispatch sizing |
 | **METHODOLOGY.md** | The build pipeline end-to-end: vision, adversarial council review, plan, locked spec, implementation, multi-round audit to a 0-Critical/0-High/0-Medium gate, merge |
@@ -149,7 +152,8 @@ any failure.
 core/            project-agnostic: CLAUDE.scaffold.md, METHODOLOGY.md, ENFORCEMENT.md,
                  SUCCESSOR_CALIBRATION.md, skills/, principles/, case-law/, rules/, templates/
 overlays/        per-project adaptation: _template/ (documented blank) + your overlays
-bootstrap/       install.sh · doctor.sh · selftest.sh · INSTALL.md
+bootstrap/       install.sh · update.sh · doctor.sh · selftest.sh · INSTALL.md +
+                 skills/harness-onboarding/ (the first-session setup interview)
 MANUAL.md        the human operator's guide
 FIELD_GUIDE.md   the incoming agent's orientation
 ```

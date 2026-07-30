@@ -4,6 +4,7 @@
 #
 #   install.sh <target-repo> --overlay <name-or-path> [--link] [--profile base|full]
 #              [--modules m1,m2] [--allow-placeholder-template] [--overwrite-local]
+#   install.sh <target-repo> --bootstrap [--force-bootstrap] [--profile base|full] [--modules m1,m2]
 #
 # Assembles <target>/CLAUDE.harness.md from core/CLAUDE.scaffold.md + the overlay's
 # claude-slots, copies core skills/rules/templates/harness docs into <target>/.claude/,
@@ -33,10 +34,18 @@
 # OR an unfilled `<!-- FILL` template sentinel (unless --allow-placeholder-template),
 # NOTHING is written to the target.
 #
+# BOOTSTRAP MODE (--bootstrap, no --overlay): installs the onboarding kit into a repo that
+# has no overlay yet — core at profile base, plus bootstrap/skills/harness-onboarding/ and a
+# .claude/manifold-onboarding-pending marker naming this harness clone. No constitution is
+# assembled (no overlay -> no slots), so the fail-closed rule is untouched: the constitution
+# simply does not exist yet. The manifest records `mode: bootstrap`; the first session runs
+# /harness-onboarding, which writes a real overlay and re-installs normally over this one.
+#
 # macOS bash-3.2 safe: no associative arrays, no mapfile. shasum -a 256 for hashing.
 set -euo pipefail
 
-usage() { echo "usage: install.sh <target-repo> --overlay <name-or-path> [--link] [--profile base|full] [--modules m1,m2] [--allow-placeholder-template] [--overwrite-local]" >&2; }
+usage() { echo "usage: install.sh <target-repo> --overlay <name-or-path> [--link] [--profile base|full] [--modules m1,m2] [--allow-placeholder-template] [--overwrite-local]
+       install.sh <target-repo> --bootstrap [--force-bootstrap] [--profile base|full] [--modules m1,m2]" >&2; }
 
 HARNESS_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
@@ -47,10 +56,14 @@ PROFILE=""
 MODULES_CLI=""
 ALLOW_PLACEHOLDER=0
 OVERWRITE_LOCAL=0
+BOOTSTRAP=0
+FORCE_BOOTSTRAP=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --overlay) OVERLAY="${2:-}"; shift 2 ;;
+    --bootstrap) BOOTSTRAP=1; shift ;;
+    --force-bootstrap) BOOTSTRAP=1; FORCE_BOOTSTRAP=1; shift ;;
     --link)    MODE="link"; shift ;;
     --profile) PROFILE="${2:-}"; shift 2 ;;
     --modules) MODULES_CLI="${2:-}"; shift 2 ;;
@@ -64,7 +77,12 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$TARGET" ]  || { echo "error: <target-repo> required" >&2; usage; exit 2; }
-[ -n "$OVERLAY" ] || { echo "error: --overlay <name-or-path> required" >&2; usage; exit 2; }
+if [ "$BOOTSTRAP" = 1 ]; then
+  [ -z "$OVERLAY" ] || { echo "error: --bootstrap installs the onboarding kit and takes no --overlay" >&2; usage; exit 2; }
+  [ -d "$HARNESS_ROOT/bootstrap/skills/harness-onboarding" ] || { echo "error: onboarding skill not found at $HARNESS_ROOT/bootstrap/skills/harness-onboarding" >&2; exit 2; }
+else
+  [ -n "$OVERLAY" ] || { echo "error: --overlay <name-or-path> required (or --bootstrap for a repo with no overlay yet)" >&2; usage; exit 2; }
+fi
 [ -d "$TARGET" ]  || { echo "error: target is not a directory: $TARGET" >&2; exit 2; }
 
 # Resolve the overlay. A bare NAME resolves under the harness's overlays/. An argument that
@@ -73,6 +91,13 @@ done
 # An external overlay must look like one: it must contain claude-slots/ or a manifest.yaml.
 # OVERLAY_RECORD = what the manifest records (bare name, or absolute path for an external
 # overlay); OVERLAY_SRCREF = the per-file source prefix recorded for overlay-sourced files.
+# Bootstrap mode has no overlay at all: OVERLAY_DIR points at a path that does not exist, so
+# every overlay-sourced copy_tree/binding lookup below is a no-op.
+if [ "$BOOTSTRAP" = 1 ]; then
+  OVERLAY_IS_PATH=0
+  OVERLAY_DIR="$HARNESS_ROOT/overlays/__none__"
+  OVERLAY_RECORD=""; OVERLAY_SRCREF=""
+else
 case "$OVERLAY" in
   */*) OVERLAY_IS_PATH=1 ;;
   *)   if [ -d "$OVERLAY" ]; then OVERLAY_IS_PATH=1; else OVERLAY_IS_PATH=0; fi ;;
@@ -89,7 +114,23 @@ else
   [ -d "$OVERLAY_DIR" ] || { echo "error: overlay not found: $OVERLAY_DIR" >&2; exit 2; }
   OVERLAY_RECORD="$OVERLAY"; OVERLAY_SRCREF="overlays/$OVERLAY"
 fi
+fi
 TARGET="$(cd "$TARGET" && pwd)"
+
+# Guard: --bootstrap over a NON-bootstrap install stages no constitution and no overlay files, so
+# the prune step below removes the target's CLAUDE.harness.md and every overlay-sourced rule —
+# leaving their CLAUDE.md importing a file that no longer exists. Refuse; --force-bootstrap wins.
+if [ "$BOOTSTRAP" = 1 ] && [ "$FORCE_BOOTSTRAP" != 1 ] && [ -f "$TARGET/.claude/manifold-manifest.yaml" ]; then
+  PRIOR_MODE="$(sed -n 's/^mode:[[:space:]]*//p' "$TARGET/.claude/manifold-manifest.yaml" | head -1)"
+  PRIOR_OVERLAY="$(sed -n 's/^overlay:[[:space:]]*//p' "$TARGET/.claude/manifold-manifest.yaml" | head -1)"
+  # An unreadable/absent mode is NOT 'bootstrap' — a manifest with file records but no usable
+  # mode header (legacy or hand-edited) is exactly the unknown prior state a destructive guard
+  # must refuse for.
+  if [ "$PRIOR_MODE" != "bootstrap" ]; then
+    echo "error: $TARGET already carries a full install (overlay '${PRIOR_OVERLAY:-unknown}', mode ${PRIOR_MODE:-unknown}) — --bootstrap would remove its CLAUDE.harness.md and overlay-sourced rules. Re-install with --overlay ${PRIOR_OVERLAY:-<yours>}, or pass --force-bootstrap if you really mean to strip it back to the onboarding kit." >&2
+    exit 2
+  fi
+fi
 
 # Read a scalar key from the overlay manifest (grep/sed — bash-3.2-safe, no yaml parser).
 manifest_key() { # <key>
@@ -107,8 +148,11 @@ manifest_key() { # <key>
 # Evidence-Store path where audit/council records live). Empty (or a template placeholder
 # like `<fill this>`) -> the substitution below can't fill, and the fail-closed scan aborts
 # the install (same contract as an unfilled slot).
+# Bootstrap mode has no overlay to declare one; core prose still carries the token, so it binds
+# to the target's own root provisionally. The Act-3 install (with the real overlay) rebinds it.
 ARTIFACT_ROOT="$(manifest_key artifact_root)"
 case "$ARTIFACT_ROOT" in '<'*'>') ARTIFACT_ROOT="" ;; esac
+[ "$BOOTSTRAP" = 1 ] && ARTIFACT_ROOT="."
 
 # --- profile + modules resolution: CLI > overlay manifest > default full ---
 ALL_MODULES="inter-session multi-agent"
@@ -120,7 +164,9 @@ skill_module() { # <skill-name> -> module owning it, or ""
   esac
 }
 [ -n "$PROFILE" ] || PROFILE="$(manifest_key profile)"
-[ -n "$PROFILE" ] || PROFILE="full"
+# Default: full for a normal install (back-compat); base for bootstrap (the onboarding
+# interview turns modules on deliberately, and only after asking).
+[ -n "$PROFILE" ] || { [ "$BOOTSTRAP" = 1 ] && PROFILE="base" || PROFILE="full"; }
 case "$PROFILE" in base|full) ;; *) echo "error: --profile must be base or full (got: $PROFILE)" >&2; exit 2 ;; esac
 ENABLED_MODULES=""
 [ "$PROFILE" = "full" ] && ENABLED_MODULES="$ALL_MODULES"
@@ -285,7 +331,21 @@ if [ -f "$HARNESS_ROOT/FIELD_GUIDE.md" ]; then
   else stage_copy "$HARNESS_ROOT/FIELD_GUIDE.md" ".claude/harness/FIELD_GUIDE.md"; record ".claude/harness/FIELD_GUIDE.md" "FIELD_GUIDE.md" "copy" "$HARNESS_ROOT/FIELD_GUIDE.md" ""; fi
 fi
 
+# --- bootstrap kit: the onboarding skill + the PENDING marker; no constitution ---
+if [ "$BOOTSTRAP" = 1 ]; then
+  copy_tree "$HARNESS_ROOT/bootstrap/skills/harness-onboarding" ".claude/skills/harness-onboarding" "bootstrap/skills/harness-onboarding"
+  mkdir -p "$STAGE/.claude"
+  {
+    echo "# Manifold onboarding is not finished yet. Open a Claude Code session in this repo"
+    echo "# and run /harness-onboarding. That skill writes the overlay, re-installs, and"
+    echo "# removes this file. doctor.sh warns while it exists."
+    echo "harness_root: $HARNESS_ROOT"
+  } > "$STAGE/.claude/manifold-onboarding-pending"
+  record ".claude/manifold-onboarding-pending" "generated" "copy" "" ""
+fi
+
 # --- assemble CLAUDE.harness.md (always a real file; slots substituted literally) ---
+if [ "$BOOTSTRAP" = 0 ]; then
 scaffold="$(cat "$HARNESS_ROOT/core/CLAUDE.scaffold.md")"
 if [ -d "$OVERLAY_DIR/claude-slots" ]; then
   for sf in "$OVERLAY_DIR/claude-slots"/*.md; do
@@ -330,6 +390,7 @@ scaffold="$(printf '%s\n' "$scaffold" | awk '
   }')"
 printf '%s\n' "$scaffold" > "$STAGE/CLAUDE.harness.md"
 record "CLAUDE.harness.md" "assembled" "copy" "" ""
+fi
 
 # --- fail closed: any surviving placeholder means an unfilled slot ---
 if grep -RIl '{{HARNESS:' "$STAGE" >/dev/null 2>&1; then
@@ -379,7 +440,7 @@ MANIFEST="$STAGE/.claude/manifold-manifest.yaml"
   echo "# harness clone (harness_repo below) — it re-reads this file and reconstructs the install."
   echo "harness_version: $HARNESS_VERSION"
   echo "harness_repo: $HARNESS_ROOT"
-  echo "mode: $MODE"
+  if [ "$BOOTSTRAP" = 1 ]; then echo "mode: bootstrap"; else echo "mode: $MODE"; fi
   echo "overlay: $OVERLAY_RECORD"
   echo "profile: $PROFILE"
   echo "modules: ${ENABLED_MODULES:-none}"
@@ -478,8 +539,17 @@ if [ -s "$OLDLIST" ]; then
 fi
 
 n_files="$(grep -c '  - path: ' "$MANIFEST" 2>/dev/null || true)"
-echo "INSTALL OK: harness $HARNESS_VERSION, overlay '$OVERLAY_RECORD', mode $MODE, profile $PROFILE (modules: ${ENABLED_MODULES:-none})"
+if [ "$BOOTSTRAP" = 1 ]; then
+  echo "INSTALL OK (bootstrap): harness $HARNESS_VERSION, no overlay yet, profile $PROFILE (modules: ${ENABLED_MODULES:-none})"
+else
+  echo "INSTALL OK: harness $HARNESS_VERSION, overlay '$OVERLAY_RECORD', mode $MODE, profile $PROFILE (modules: ${ENABLED_MODULES:-none})"
+fi
 echo "  target:   $TARGET"
 echo "  manifest: $TARGET/.claude/manifold-manifest.yaml ($n_files files)"
 [ "$PRUNED" -gt 0 ] && echo "  pruned:   $PRUNED retired file(s)"
-echo "  note:     $TARGET/CLAUDE.harness.md is NOT auto-included — see bootstrap/INSTALL.md"
+if [ "$BOOTSTRAP" = 1 ]; then
+  echo "  NEXT:     open a Claude Code session in $TARGET and run /harness-onboarding"
+  echo "            (it interviews you, writes your overlay, and finishes the install)"
+else
+  echo "  note:     $TARGET/CLAUDE.harness.md is NOT auto-included — see bootstrap/INSTALL.md"
+fi

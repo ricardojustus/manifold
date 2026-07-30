@@ -21,9 +21,13 @@
 # Then lints installed skills (frontmatter name+description, name==dirname, description
 # and body length WARNs), scans for unfilled {{HARNESS:...}} slots (blocking), lints for
 # core/ source-tree paths in installed .md (informational), checks that .claude/harness/
-# exists (blocking), and reports module/capability status (informational).
+# exists (blocking), reports module/capability status (informational), and WARNs on unfinished
+# onboarding and on companion tools an install expects but the machine lacks.
 #
-# Exit 0 iff no blocking issue. LOCAL-CHANGE, STALE, CONVERGED, and WARN never fail.
+# An INFO line reports a check that could not run (e.g. the `claude` CLI erroring out on a
+# companion lookup); like WARN it never fails.
+#
+# Exit 0 iff no blocking issue. LOCAL-CHANGE, STALE, CONVERGED, INFO, and WARN never fail.
 # macOS bash-3.2 safe.
 set -euo pipefail
 
@@ -143,7 +147,7 @@ check_record() {
   fi
   ih="$(sha256_of "$installed")"
   # Without --harness we can only compare against the manifest.
-  if [ -z "$HARNESS" ] || [ "$SRC" = "assembled" ]; then
+  if [ -z "$HARNESS" ] || [ "$SRC" = "assembled" ] || [ "$SRC" = "generated" ]; then
     if [ "$ih" = "$S" ]; then echo "OK $P"; else echo "FLAG LOCAL-CHANGE $P"; fi
     return 0
   fi
@@ -295,6 +299,39 @@ if [ -d "$SKILLS_DIR" ]; then
   done
   if [ -f "$SKILLS_DIR/audit-cycle/SKILL.md" ] && ! grep -q '^## Project bindings' "$SKILLS_DIR/audit-cycle/SKILL.md" 2>/dev/null; then
     echo "INFO audit-cycle: no project binding appended — cross-model lens unbound; runs the documented solo-fallback"
+  fi
+fi
+
+# --- onboarding + companion warnings (never blocking) ---
+# The pending marker means install.sh ran in --bootstrap mode and the interview hasn't
+# finished; the companion checks cover the two setup steps humans skip (a plugin an overlay
+# binding depends on, and ponytail's default mode, whose native value is `full`).
+if [ -f "$TARGET/.claude/manifold-onboarding-pending" ]; then
+  echo "WARN ONBOARDING-PENDING — onboarding incomplete; open a session in $TARGET and run /harness-onboarding"; WARNS=$((WARNS+1))
+fi
+if command -v claude >/dev/null 2>&1; then
+  # A failing CLI is not an empty plugin set: without this guard an errored `plugin list` reads as
+  # "nothing installed" — a spurious karpathy warning plus a silently skipped ponytail check.
+  if ! PLUGINS="$(claude plugin list 2>/dev/null)"; then
+    echo "INFO COMPANION-CHECK-SKIPPED — 'claude plugin list' exited nonzero; companion checks not run"
+  else
+    if grep -RIlq 'karpathy-guidelines' "$TARGET/.claude" 2>/dev/null; then
+      case "$PLUGINS" in
+        *karpathy*) : ;;
+        *) echo "WARN COMPANION-MISSING karpathy-guidelines — an installed skill binding references it; install it (see bootstrap/INSTALL.md)"; WARNS=$((WARNS+1)) ;;
+      esac
+    fi
+    case "$PLUGINS" in
+      *ponytail*)
+        PT_CFG="$HOME/.config/ponytail/config.json"
+        PT_MODE=""
+        [ -f "$PT_CFG" ] && PT_MODE="$(sed -n 's/.*"defaultMode"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PT_CFG" | head -1)"
+        [ -n "${PONYTAIL_DEFAULT_MODE:-}" ] && PT_MODE="$PONYTAIL_DEFAULT_MODE"
+        if [ "$PT_MODE" != "off" ]; then
+          echo "WARN PONYTAIL-DEFAULT-ON — ponytail is installed but its default mode is '${PT_MODE:-unset (native default: full)}'; pin it off in $PT_CFG"; WARNS=$((WARNS+1))
+        fi
+        ;;
+    esac
   fi
 fi
 

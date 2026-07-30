@@ -4,3 +4,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# a project's own overlay is private to that project (the shipped template is not)
+overlays/*
+!overlays/_template/

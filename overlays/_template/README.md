@@ -1,6 +1,8 @@
 # overlays/_template — documented blank overlay
 
-Copy this directory to `overlays/<your-project>/` and fill it in. An overlay adapts the
+Copy this directory and fill it in — to `manifold-overlay/` at the root of your own project
+repo (what `/harness-onboarding` does, so your configuration lives with your project), or to
+`overlays/<your-project>/` here for a meta-project. An overlay adapts the
 project-agnostic `core/` to one project. Every directory below is optional except
 `claude-slots/` (the scaffold fails closed on any unfilled slot); an absent directory simply
 contributes nothing.

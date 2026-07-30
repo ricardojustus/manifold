@@ -6,10 +6,52 @@
 bootstrap/install.sh <target-repo> --overlay <name-or-path> [--link]
                      [--profile base|full] [--modules m1,m2]
                      [--allow-placeholder-template] [--overwrite-local]
+bootstrap/install.sh <target-repo> --bootstrap [--profile base|full] [--modules m1,m2]
 bootstrap/update.sh  [<target-repo>] [--no-pull] [--overwrite-local]
 bootstrap/doctor.sh  <target-repo> [--harness <harness-repo-path>]
 bootstrap/maintenance-check.sh <artifact-root> [--days N]
 ```
+
+## First-time setup: `--bootstrap` + the onboarding interview
+
+A new project has no overlay, and an overlay is what makes the harness *that project's*
+harness — ten slot files, a security posture, model pins. Filling them by hand before your
+first session is the wrong order. `--bootstrap` inverts it:
+
+```
+bootstrap/install.sh /path/to/your-repo --bootstrap
+```
+
+This installs the core discipline set at `--profile base`, plus the `harness-onboarding`
+skill and a marker file `.claude/manifold-onboarding-pending` (which records the path of this
+harness clone). It deliberately assembles **no** `CLAUDE.harness.md`: with no overlay there
+are no slots, so the fail-closed rule has nothing to fail on — the constitution simply does
+not exist yet, and nothing pretends it does. The manifest records `mode: bootstrap`, and
+`update.sh` on such a manifest replays bootstrap mode unchanged.
+
+Then open a Claude Code session in the project and run `/harness-onboarding`. Three acts:
+
+1. **The interview** — one question at a time: who you are and how you like to work · what
+   the project is and where its ground truth lives · what is off-limits (the security
+   directive and hard rules arrive as written suggestions you accept, edit, or drop — never
+   blank, never invented) · your model pins (pre-filled with dated public defaults, one
+   confirm question) · your agent's name · whether several sessions will work this repo at
+   once. Answers become `manifold-overlay/` at the root of your own project repo — a fixed
+   convention, so your configuration lives with your project (private with it) and a resumed
+   session always knows where to look. Act 3 installs from there with
+   `--overlay <target>/manifold-overlay`; keeping an overlay inside this harness clone
+   (`overlays/<name>/`, the right home for a meta-project) stays available via the same flag.
+2. **Optional capabilities** — the two Manifold modules (`inter-session`, `multi-agent`) and
+   the companion tools below, each asked before installing and verified after. The
+   cross-model counterparty is *guided, never auto-installed*: it has its own account and
+   billing.
+3. **Assemble and verify** — the full install with your new overlay, `doctor.sh`, marker
+   cleared, and a walkthrough of the two steps that stay manual on purpose (the `CLAUDE.md`
+   include line and any hook wiring): the skill prints the exact text, you paste it, the
+   skill verifies. A session never arms its own guards.
+
+The skill is re-runnable at any point — it detects how far you got instead of assuming a
+fresh start. `doctor.sh` warns while the marker is still there.
 
 **Updating.** `update.sh` is the one-command update for an installed project: it reads the
 project's own `.claude/manifold-manifest.yaml` (overlay, mode, profile, modules — recorded at
@@ -37,8 +79,8 @@ identity). `--allow-placeholder-template` exists for installer smoke tests only.
 
 `--overlay` takes either a bare **name** (resolved under this repo's `overlays/`) or a **path**
 to an external overlay directory (any argument containing a `/`, or an existing directory).
-The path form lets a project keep its overlay next to its own repo instead of inside the
-harness clone; the external dir must contain `claude-slots/` or a `manifest.yaml`. The manifest
+The path form is what the onboarding interview uses (`<target>/manifold-overlay`) and what any
+project keeping its overlay outside the harness clone uses; the external dir must contain `claude-slots/` or a `manifest.yaml`. The manifest
 records which was used (`overlay: <name-or-abspath>`).
 
 ## What install.sh writes into `<target-repo>`
@@ -114,7 +156,10 @@ is a `MISSING` file or an unfilled slot.
 
 These skills are **vendored from upstream**, not authored here. They are never forked into
 `core/` — install each from its upstream source so it tracks upstream updates. The first four
-are published in Anthropic's skills repo; `karpathy-guidelines` is a Claude Code plugin:
+are published in Anthropic's skills repo; `karpathy-guidelines` is a Claude Code plugin.
+**The onboarding interview offers the last two** (`karpathy-guidelines`, `ponytail`) — asking
+first, installing from upstream, and verifying afterwards; everything here applies whether the
+skill installs them or you do:
 
 | Skill | Purpose | Provenance |
 |---|---|---|
@@ -137,8 +182,11 @@ leaves junctions ordering a nonexistent skill.
 (written generically, per the same purity requirement). Two install-time steps, both needed:
 pin the default mode off — `~/.config/ponytail/config.json` = `{"defaultMode":"off"}`, or
 `PONYTAIL_DEFAULT_MODE=off` (**its native default is `full`**, i.e. persona injection in every
-session AND every dispatched subagent, which taints reviewer seats) — and leave it off the
-cross-model counterparty CLI, which occupies implementer and reviewer seats only.
+session AND every dispatched subagent). The pin exists to keep the minimality persona out of
+**lead and judgment seats**, where do-less is the wrong instinct: the rule turns it ON per
+seat, deliberately — dispatched implementation and audit-fix seats, and reviewer seats, which
+are sanctioned. Also leave it off the cross-model counterparty CLI, which occupies implementer
+and reviewer seats only. `doctor.sh` warns if ponytail is installed with the pin unset.
 
 Provenance: the Anthropic-published skills ecosystem (`anthropics/skills` + the Anthropic
 plugin marketplace). **Install from upstream, never fork** — a fork drifts from Anthropic's

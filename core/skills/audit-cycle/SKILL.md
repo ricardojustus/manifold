@@ -256,11 +256,12 @@ lens becomes reachable before the stakes justify shipping on one. Recorded, neve
 
 ## Pre-flight (lead does this BEFORE dispatching reviewers)
 
-Every round, step 0: **where a minimality-mode tool is installed, assert the mode is OFF by the
-tool's own state** (the `minimality-mode` rule; the binding names the concrete check) — its
-subagent injection reaches dispatched reviewers and scoping filters fail open. Re-assert before
-EVERY round's dispatch, not just round 1: a fix seat may legitimately have run with the mode on
-in between.
+Every round, step 0: **where a minimality-mode tool is installed, dispatched reviewers run under
+the persona BY DESIGN** (the `minimality-mode` rule — every dispatched seat is an ON seat,
+arc-wide; operator ruling 2026-07-29) — no flag assert is owed. What the lead still checks is its
+OWN seat: a lead running the tool's sticky session persona (skill-path activation) does not lead
+the round's consolidation or severity calls until the operator deactivates it or a fresh session
+leads (the rule's judgment-seat clause).
 
 Round-1:
 
@@ -355,7 +356,7 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
 **Disposition paths** (every finding gets exactly one):
 - **Direct fix-pass** — code change, commit on feature branch (C/H/M; trivial Lows piggyback).
   Where a minimality-mode tool is installed, a dispatched fix seat runs with the mode ON at
-  standard intensity (`minimality-mode` rule) — asserted back OFF before the next round's dispatch
+  standard intensity (`minimality-mode` rule — arc-wide, like every dispatched seat)
 - **Path A — spec amendment** — the implementer's choice was deliberate-and-correct but the spec
   wording diverged; amend the spec (clerical ratification, not relitigation)
 - **Path C — bounded code change** — a small additive change closes the finding + a related concern
