@@ -6,6 +6,8 @@
 
 **Entry is by stakes, not by label.** Score the build on the project stakes rubric (below) first. A build whose **max-of-dimension stakes come out Low takes the express lane**; **Medium or High runs the full eight phases.** The gate is the stakes score, so a trivial feature can't trip the full loop (and get routed around), and a load-bearing one can't slip the gate by calling itself "just a feature." A whole subsystem (several components plus their orchestration) typically scores Medium+ and runs the full phases; a small, familiar, self-contained change scores Low and takes the express lane. This methodology describes **roles**, not specific agents — map your actual agents onto these roles in their own identity files. Agents read it before scoring stakes and treat its gates and authority rules as binding.
 
+**A big foggy effort enters through a map, not a Vision doc.** An effort that fails the one-sitting test — more decisions than one conversation can hold, decisions blocking decisions, the route invisible — runs the `wayfinder` skill as its front-end: a shared map of decision tickets, worked across sessions until the way is clear. The completed map's **synthesis brief** re-enters the loop as the Vision-shaped input: the adversarial design gate (Gate A / the Council) challenges the brief with the map behind it, and the surviving brief becomes the spec's intent front-matter. The commitment gradient stands — the map never locks, the brief is challenged narrative, and **within the map's chain the spec is the only artifact that locks** (Locks other artifacts earn elsewhere in this loop are untouched; the map absorbs the plan doc's decision-*queue* role, not planning itself). Route the **front-end** by fog, not size — the stakes gate above is unchanged: a well-scoped feature still runs `grilling` → spec, never a map.
+
 **Where things are filed.** The methodology requires an **Evidence Store** — a project root where locks, findings, and audit/council records live. This document calls that root `<artifact-root>`; the overlay binds it to a concrete path (each overlay binds it to a concrete path — a docs tree, a repo folder). Wherever you see `<artifact-root>/audits/<topic>/` or `<artifact-root>/councils/<topic>/`, read the project's configured root.
 
 ---
@@ -168,7 +170,7 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Exit criteria.** The named unknown is resolved to a recorded learning, or explicitly marked still-open with the residual risk flagged for the Council.
 
 ### Gate A — Optional vision-only challenge
-- **When.** **Required** if project stakes are High. Optional at Medium (the Orchestrator decides). Skipped at Low.
+- **When.** **Required** if project stakes are High. Optional at Medium (the Orchestrator decides). Skipped at Low. For a map-fed effort (`wayfinder`), this gate's slot moves to map completion: it challenges the synthesis brief with the completed map behind it.
 - **Purpose.** Catch "should we even build this" *before* planning effort is sunk. The most expensive mistakes live in the Vision, and they are cheapest to kill here.
 - **Owner.** The Orchestrator convenes a lightweight Round Table sitting against the **Vision only** (no plan exists yet).
 - **Outcome.** Findings go to the Orchestrator and the Human. They may loop back to Phase 1 or 3, **abandon the build outright** (a logged Kill), or proceed. The Council does not decide; it informs.

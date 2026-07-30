@@ -40,6 +40,11 @@ off to the project's normal gates (decision packet, spec, review ladder). A gril
 settles what it explicitly names; where the harness owes a decision packet — reserved-authority
 and security-posture calls — the grill produces the packet, not the ruling.
 
+One more exit: a grill that keeps hitting "depends on X, which depends on Y" — more decisions
+than the sitting can hold — promotes to a `wayfinder` map mid-flight; the answers already
+settled land in the map's **Decisions so far**, and the questions it couldn't settle become
+its first tickets.
+
 ## Composition
 
 The loop is unchanged when embedded in another skill's flow; the invoking skill owns what happens

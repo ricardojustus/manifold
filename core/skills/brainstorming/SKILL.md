@@ -1,7 +1,7 @@
 ---
 name: brainstorming
 description: >-
-  Runs a Socratic generative design interview — one question at a time, goals, constraints, 2-3 genuinely different approaches, converge — producing a Vision draft with falsifiable acceptance criteria. Use BEFORE a vision exists: "help me think through X", "brainstorm", "/brainstorming". Upstream of council.
+  Runs a Socratic generative design interview — one question at a time, goals, constraints, 2-3 genuinely different approaches, converge — producing a Vision draft with falsifiable acceptance criteria. Use BEFORE a vision exists: "help me think through X", "brainstorm", "/brainstorming". Upstream of council. A big foggy multi-session effort — decisions blocking decisions — routes to `wayfinder` instead.
 ---
 
 # Brainstorming — the generative front-end to a Vision
@@ -82,7 +82,8 @@ Council may send it back, and that loop is the methodology working.
 ## When to invoke
 
 - The operator says "help me think through X", "brainstorm", "I have a rough idea", "let's figure
-  out what to build", "/brainstorming" — anytime there is not yet a Vision.
+  out what to build", "/brainstorming" — anytime there is not yet a Vision, unless the effort
+  fails the one-sitting test, which routes to `wayfinder`.
 - Proactively when someone jumps straight to a plan or spec for something whose *goal* was never
   interrogated — back up and brainstorm the vision first.
 

@@ -21,6 +21,7 @@ A placement taxonomy + lifecycle. Only a subset of folders is indexed into the s
 | `specs/adr/` | — | ❌ | architecture decision records ("why") |
 | `research/` | — | ❌ | genuine exploration / spikes only |
 | `audits/` | — | ❌ | audit artifacts |
+| `maps/` | — | ❌ | plain-file `wayfinder` maps (the no-tracker fallback): one folder per effort, `map.md` + ticket files; a closed map stays as the effort's archive |
 
 (Whether a project indexes exactly `reference/` + live `plans/`, and by what mechanism, is in the binding. The *pattern* — a small genre-pure indexed set, everything else reachable via pointers — is universal.)
 
@@ -39,6 +40,7 @@ Tie-breakers:
 - **Spec vs reference**: a spec is a *contract for work not yet done*; a reference doc describes *what already runs*. On implementation, the spec's durable behavior **promotes** into a reference doc (close-out below).
 - **ADR vs spec**: the ADR is the distilled *decision* ("we chose X over Y because…"); the spec is the *full contract*. A significant spec produces both.
 - **research vs spec**: acceptance criteria + a build target → spec; still figuring out the shape → research.
+- **map vs research**: a `wayfinder` map folder → `maps/` (created and owned by `wayfinder`), never `research/`.
 
 ## Spec → reference promotion (close-out checklist)
 
