@@ -103,7 +103,7 @@ The constitution's error-triage rule ("an error code is not a cause" — parent 
 artifact** (the contract this fills) · `audit-cycle` / `spec-adherence` (the pre-merge gates that
 verify the finished fix).
 
-## Graduated diagnosis lessons (buffer sweep 2026-07-25)
+## Graduated diagnosis lessons
 
 - **Diagnosis grounds in the spec's NORMATIVE text before any design-intent claim** — code artifacts
   (dead tables, retained modules, pinned constants) are never evidence of intent.

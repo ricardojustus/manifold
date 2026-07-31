@@ -12,7 +12,7 @@ internally consistent). This gate catches that class CHEAPLY, before audit round
 it. It is a **tripwire, not a proof**: one pass, one sitting, no agent fleet. The audit's
 contract-fidelity and spec-vs-reality checks stay fully live behind it.
 
-*Settled 2026-07-22, operator-killed predecessor: the prior clause-exhaustive shape (checklist
+*Settled — inherit: the prior clause-exhaustive shape (checklist
 of every MUST, multi-agent Workflow fan-out, completeness-critic agent, unbounded fix→re-verify
 loop, wire-by-default adjudication) looped two builders in one day into wiring dead machinery
 nobody had asked for. Do not regrow it.*

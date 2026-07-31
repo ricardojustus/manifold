@@ -13,7 +13,7 @@ challenge — not inlined), and where it needs project values it names a
 **binding contract** (e.g. `threads.md` → the overlay's threads binding) rather than
 hard-coding any project's paths.
 
-**Capture format (Ric ruling 2026-07-20 — see `rule-writing.md`):** rules are always-loaded,
+**Capture format (see `rule-writing.md`):** rules are always-loaded,
 so every byte rides every session. State the rule, its scope, its enforcement — nothing else;
 no inline receipts. The WHY is diarized at capture time and lives in the memory graph, retrieved
 on challenge. Target ≤1.5 KB per rule. This README itself is never installed (`skip_readme`).

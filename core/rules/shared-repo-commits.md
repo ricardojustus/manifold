@@ -8,7 +8,7 @@ In any repo that multiple live sessions write concurrently (a shared vault, a co
 2. **Commit path-listed, never bare.** `git commit -m "..." -- <paths>` — a bare `git commit`
    commits the WHOLE index, so a sibling's staged-uncommitted files ride your commit invisibly;
    the path-listed form commits ONLY the named paths and leaves foreign staged entries untouched
-   (native git semantics, verified empirically 2026-07-29). An inspection (`git diff --cached`)
+   (native git semantics, verified empirically). An inspection (`git diff --cached`)
    before a bare commit is NOT a substitute — the index can change between the look and the
    commit.
 3. **Path-scoping does NOT protect a concurrently-edited SAME file.** `git add <path>` stages
@@ -17,5 +17,4 @@ In any repo that multiple live sessions write concurrently (a shared vault, a co
    edits** (coordinate via the operator or the project's inter-session channel), or **accept the
    misattribution explicitly** in the commit message — never claim scoping solved it.
 
-Litigated 2026-07-26, path-listed commit form added 2026-07-29 (H-27) — inherit; incident
-receipts diarized in the memory store.
+Settled — inherit: incident receipts are diarized in the memory store.

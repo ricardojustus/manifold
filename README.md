@@ -136,6 +136,14 @@ The short version of the philosophy (the long version is `FIELD_GUIDE.md`):
 - **Structure over vibes.** Verdicts come from reading the artifact end-to-end, findings
   carry severity and evidence, and the audit gate is a number (0/0/0), not a feeling.
 
+## Platforms
+
+Manifold was created on macOS and is developed there. **Linux works** — the bootstrap scripts are
+POSIX-ish bash with the platform differences (SHA-256 tooling) resolved at runtime. **Windows is
+not yet systematically tested**, but early installs have worked: Claude Code runs these scripts
+through Git Bash. The one known gap is the optional inter-session module, which is Unix-only
+(macOS/Linux/WSL).
+
 ## Verify the tooling
 
 ```bash

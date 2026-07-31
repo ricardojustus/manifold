@@ -65,7 +65,7 @@ The named gates:
 
 Use the recommended section-set in `references/spec-skeleton.md`. It's a menu, not a mandate — take what the spec needs. Five pieces always earn their place:
 
-- **Top summary (REQUIRED, the FIRST section of the doc).** A plain-language, ADHD-readable summary at the top of the same doc: clear, in the operator's terms, jargon-free, concise, good to read. **Assume it is the ONLY part the operator reads** — it must be self-sufficient: every load-bearing architectural choice and decision visible there, surfaced plainly for explicit yes/no, any necessary term paired with a one-line explanation. Renderable diagrams (Mermaid / clean indented lists), never ASCII art. This is where the operator audits the SHAPE before it locks (operator ruling 2026-06-04, ratified as a required section 2026-07-27 — the receipt is a 5,300-word vision doc whose inverted architecture shipped because it was too long to audit).
+- **Top summary (REQUIRED, the FIRST section of the doc).** A plain-language, skimmable summary at the top of the same doc: clear, in the operator's terms, jargon-free, concise, good to read. **Assume many operators read only this summary** — it must be self-sufficient: every load-bearing architectural choice and decision visible there, surfaced plainly for explicit yes/no, any necessary term paired with a one-line explanation. Renderable diagrams (Mermaid / clean indented lists), never ASCII art. This is where the operator audits the SHAPE before it locks — the failure it prevents is a 5,300-word vision doc whose inverted architecture shipped because it was too long to audit.
 - **Gate-attestation block + Complexity-Tracking table** (Step 3) — the named gates, checked, with a row per complexity deviation.
 - **Goals / Non-Goals.** Non-Goals is where "module A is out of scope, because it's being retired" gets *forced into writing* — it doubles as a scope-correctness backstop.
 - **Decisions (with rationale + rejected alternatives).** Capture *why* each non-obvious choice was made so audits and future readers don't relitigate it.
@@ -110,7 +110,7 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - **audit-cycle** — the reviewer gate that runs *after* the spec is written. This skill gets the spec to the point it's worth auditing.
 - **spec-adherence** — the impl-side conformance gate that verifies the *code* obeys this spec, after implementation and before audit-cycle. Step-5 self-review here is the author-side analogue.
 
-## Graduated grounding lessons (buffer sweep 2026-07-25)
+## Graduated grounding lessons
 
 - **A third-party service gets a half-day REAL-CONTENT spike before any spec locks around it** —
   verdict shape + fitness/false-positive rate on real inputs, never the vendor's docs alone (a

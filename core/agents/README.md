@@ -7,7 +7,7 @@ contract); an agent file that duplicates a skill's procedure will silently drift
 (To give a role shared procedure, point at the skill — or preload it whole via the `skills:`
 frontmatter field — never paste it.)
 
-Grounding: the 2026-07-06 research capture (official docs + Anthropic's shipped plugin agents
+Grounding: a research capture (official docs + Anthropic's shipped plugin agents
 + community practice) — see the overlay's research pointer. The load-bearing rules:
 
 - **A role earns a file when**: it recurs across sessions with a stable identity and rubric,
@@ -17,12 +17,18 @@ Grounding: the 2026-07-06 research capture (official docs + Anthropic's shipped 
   costs context in every session.
 - **Model/effort doctrine**: pin in frontmatter the settled per-role economics (the reviewer
   pins `effort: xhigh`; both roles pin the operator's named review/build tier as the model
-  DEFAULT — operator ruling 2026-07-25, so an unpinned dispatch can never silently inherit the
-  session's frontier model). The dispatcher's per-invocation `model` parameter beats frontmatter
+  DEFAULT, so an unpinned dispatch can never silently inherit the session's frontier model).
+  The dispatcher's per-invocation `model` parameter beats frontmatter
   (resolution: env `CLAUDE_CODE_SUBAGENT_MODEL` > invocation param > frontmatter > session
   model), which is how a spec's dispatch-triage stays in charge per invocation. ⚠ Model pins
   have known runtime-reliability bugs — verify a pin on a real invocation before trusting cost
   assumptions.
+- **Changing a role's default tier or effort**: the frontmatter here IS the per-role default, and
+  the installed copies under `.claude/agents/` are manifest-managed — a local edit to one is
+  drift the doctor flags and the next install refuses. An overlay `agent-bindings/<role>.md`
+  APPENDS body doctrine only; it cannot change frontmatter. So a project remapping its model
+  tiers changes `model:`/`effort:` in `core/agents/<role>.md` in its harness clone and re-installs,
+  or overrides per dispatch (the invocation `model` parameter always wins).
 - **Tools are least-privilege + prose**: restrict to the role's actual needs (a reviewer gets
   no Edit) AND state the constraint in the body — Anthropic's own agents do both.
 - **Dispatch is explicit.** These roles are named by skills (`subagent_type: "reviewer"`), not

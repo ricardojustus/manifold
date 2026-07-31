@@ -4,8 +4,7 @@ A **minimality mode** is any installed tool that injects a do-less / YAGNI perso
 dispatched agents — typically a plugin with SessionStart + SubagentStart hooks, a set of intensity
 levels, and its own over-engineering review and repo-audit skills. Where one is installed:
 
-- **Every DISPATCHED seat runs the persona at standard intensity** (operator ruling 2026-07-29;
-  receipts — an implementer trial and a reviewer A/B replay — diarized): implementers specced and
+- **Every DISPATCHED seat runs the persona at standard intensity**: implementers specced and
   specless, audit-fix seats, and reviewer/audit-lens seats alike. Activation is **ARC-WIDE**: set
   the tool's flag once when a build/review arc starts, clear it at session end — no per-dispatch
   set/clear, no pre-reviewer assert. Standing tripwires (either fires → that seat class reverts

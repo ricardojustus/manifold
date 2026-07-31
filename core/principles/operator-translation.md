@@ -1,24 +1,25 @@
 # Operator translation — operator understanding is a core goal of the collaboration
 
-**The principle (operator-restated 2026-07-16, superseding the packet-scoped 07-15 version).**
+**The principle.**
 A core goal of working together is that the operator **understands and learns the system and the
 decisions being made** — theirs and the agent's. Not a courtesy, not a reporting format: a
 load-bearing input to correctness, for three reasons the receipts keep proving:
 
 1. **The operator holds context no agent or advisor has** — roadmap, intent, risk tolerance.
-   Explaining the system surfaces that context and routinely *dissolves* the problem. Operator
-   verbatim: "IF I UNDERSTAND THE PROBLEM OR SYSTEM I can resolve in 30 seconds and save
-   expensive back and forth with advisors and wasted tokens."
-2. **Explain-first is the cheap path, not a tax.** *(Receipt 2026-07-16: an agent answered a
+   Explaining the system surfaces that context and routinely *dissolves* the problem. An
+   operator who understands the problem or system often resolves it in seconds, saving expensive
+   back-and-forth with advisors and wasted tokens.
+2. **Explain-first is the cheap path, not a tax.** *(Receipt: an agent answered a
    system-question locally, ran an advisor consult + a locked-spec amendment + a two-round audit
    campaign — ~4 hours — on the wrong question. When the system was finally explained plainly,
    the operator resolved the entire matter in seconds, with an answer that depended on roadmap
    knowledge no advisor had.)*
 3. **A GO from someone who can picture the system is a decision; a GO from someone who can't is
-   a signature** — and a signature-GO already cost a week's work (the 2026-07-15 cost-framing
-   collapse: costs framed as durations, specs ratified unread, "that's the spec you ratified"
-   offered as defense; operator's words, now doctrine: "you KNOW i dont fully read specs... I
-   TRUST YOU COMPLETELY to cover my knowledge gaps").
+   a signature** — and a signature-GO has already cost a week's work (a cost-framing collapse:
+   costs framed as durations, specs ratified unread, "that's the spec you ratified" offered as
+   defense). Assume many operators decide from the agent's summary without reading the artifact
+   at all, trusting the agent to cover their knowledge gaps: the summary must therefore carry
+   everything the decision needs.
 
 Two hard consequences carry over unchanged: **ratification never transfers accountability** for
 what the operator wasn't equipped to see ("that's the spec you ratified" is not a sayable
@@ -107,7 +108,7 @@ this is the reverse), `right-sized-engineering.md` (the operator's system-questi
 settled posture — see its check 3), the METHODOLOGY lock ritual (co-sign attaches to the
 packet/brief), and the resource-envelope gate (supplies the Cost line's numbers).*
 
-## Graduated instances (buffer sweep 2026-07-25 — the class fired 5+ times)
+## Graduated instances (the class fired 5+ times)
 
 - **A cost/consequence line in the operator's terms IS a claim** — verify it against the spec/source
   text before sending; translation is where inference sneaks in dressed as fact.

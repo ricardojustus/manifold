@@ -11,6 +11,10 @@ The harness runs the cross-model counterparty in three genres: **judge** (audit-
 from a brief) and **spec-drafter** (a first-draft spec the main model revises). They share
 mechanics; they differ in model tier, brief genre, and which gate the output faces.
 
+**No second model family configured → this skill is inapplicable.** Implementation and drafting
+dispatches route to same-family implementer/author seats instead (the `implementer` role, dispatched
+from a brief); nothing else about the gates changes.
+
 ## Seat selection — where the judgment lives decides the tier
 
 The project binding names two counterparty tiers: an **implementer tier** (fast, mechanically

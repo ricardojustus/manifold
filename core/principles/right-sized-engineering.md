@@ -12,7 +12,7 @@ machinery at all (a guard, an abstraction, a config surface, a process step), ru
 3. **Was this already litigated?** Waivers, coverage notes, decision logs, and stated postures are
    *settled*. Inherit them. Re-deriving a threat model or a design tradeoff that a prior decision
    already closed burns budget and — worse — can silently reverse a deliberate call.
-   **Two boundaries on this check (added 2026-07-16, after both were violated in one arc):**
+   **Two boundaries on this check — both have been violated in a single arc:**
    (a) **inherit exactly what was litigated, no more** — a receipt that defended one component (a
    security wall) does not settle the layers built around it; read what the prior decision
    actually closed before citing it. (b) **The OPERATOR asking "is this needed / is this
@@ -26,7 +26,7 @@ machinery at all (a guard, an abstraction, a config surface, a process step), ru
 **Proportionality of process.** Process weight scales with the **stakes rubric** — size, novelty,
 design-choice, complexity, knowledge gaps, blast radius, security/privacy, external commitment
 (max-of-dimension; METHODOLOGY.md owns the table) — not with how interesting the problem is, and
-**never with reversibility** (operator ruling 2026-07-14: almost all work is reversible, so a
+**never with reversibility** (almost all work is reversible, so a
 reversibility-keyed process goes vestigial — the big-but-reversible feature is exactly what the
 full process exists for). Irreversibility keeps its bite where it lands: destructive actions halt
 (`ask-vs-decide`), an irreversible chunk owes hardening (a rollback/migration proof; Critical
@@ -34,8 +34,8 @@ escalation), and one-violation-is-forever security invariants are the floor belo
 adversarial audit machinery is for spec-lane implementations and high-stakes surfaces; a
 best-effort convenience gets a review and a selftest — not a hardening campaign.
 
-**The classification check — the rubric's inputs are claims, and claims get grounded** (added
-2026-07-15). A rule that keys on blast radius has no defense against a false classification. Any
+**The classification check — the rubric's inputs are claims, and claims get grounded.** A rule
+that keys on blast radius has no defense against a false classification. Any
 invocation of "irreversible / high blast radius" **used to justify machinery** must cite the
 concrete recovery story from the project's current-state docs — what actually happens when this
 goes wrong, detection latency, what propagates meanwhile, recovery cost in operator labor — never
@@ -54,7 +54,7 @@ seat counts get the same adversarial scrutiny as architecture — each pinned co
 Constants ratified as statistics whose *price* nobody computed are how a design passes every gate
 and dies on first contact with the account it runs on.
 
-## Receipt (2026-07-04, this harness's own v1 self-audit)
+## Receipt — this harness's own v1 self-audit
 
 A best-effort force-push guard hook — whose limits were *declared at design time* ("it cannot
 anticipate every exotic path… the backstop for the obvious ones, not the whole guarantee") and
@@ -66,7 +66,7 @@ because a guard that blocks normal work gets disabled). The operator's resolutio
 simplification** — 170 lines → ~60 obviously-correct lines, a written waiver for the disguise
 tail, selftest-pinned. The audit rounds were the failure mode, not diligence.
 
-## Receipt (2026-07-15, the certification fortress — the other direction)
+## Receipt — the certification fortress (the other direction)
 
 The v1 receipt above is process pointed at too small a target; this one is machinery built too
 big. A week-long arc built statistical certification gates (97% CI at n≥99/class, 100% blind

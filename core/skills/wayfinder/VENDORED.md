@@ -14,7 +14,7 @@
 1. **Handoff shape replaced**: upstream ends "map clears → to-spec collapses it". Here the map
    ends in a **synthesis brief** (a coherence pass upstream doesn't have) that the project's
    adversarial design gate (council) challenges, then absorbs into the spec's intent
-   front-matter — the operator-ratified gate geometry (30/07).
+   front-matter — the gate geometry this harness uses.
 2. **Commitment gradient added**: map-never-locks → challenged brief → LOCKED spec, plus
    sanctioned partial early handoff of a settled slice. Upstream has no lock concept.
 3. **Fog test promoted to a routing section** ("When") with the three-tier table and both

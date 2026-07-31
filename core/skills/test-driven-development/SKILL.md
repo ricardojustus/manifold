@@ -82,6 +82,17 @@ green suite full of these is more dangerous than no suite at all.
 - Proactively whenever you're about to write implementation code for a behavior that can be
   expressed as a test before it exists — which is most behavior.
 
+## When NOT to use
+
+- **Throwaway spikes and prototypes** — code written to answer a question and then deleted; the
+  answer is the deliverable, not the code.
+- **Purely mechanical edits with no behavior change** — a rename, a move, a formatting pass, a
+  doc edit. Nothing new to state as a test.
+- **A one-line fix whose behavior the existing suite already covers** — run the suite; if it
+  would have caught the bug, it already is the test.
+- **Exploratory work that will be respecced** — tests written against a shape that is about to
+  change encode the shape, not the behavior. Test-first resumes when the shape settles.
+
 ## Pairs with
 
 - **goal-driven-execution** (principle) — the parent discipline; TDD is its test-first

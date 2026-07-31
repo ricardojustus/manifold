@@ -191,7 +191,7 @@ a judge rewarding verbosity — you only see it in the traces.
   the framework-abstractions table, and all source URLs.
   `.claude/harness-templates/eval-scorecard.md` — the run artifact.
 
-## The freeze protects comparability, not correctness (graduated 2026-07-25)
+## The freeze protects comparability, not correctness
 
 Check eval CONTENT against the operator's-world ground-truth sources before trusting a frozen
 artifact — a frozen question can encode a transcription garble and then measure a phantom.

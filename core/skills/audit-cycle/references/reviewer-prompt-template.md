@@ -50,7 +50,7 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
 2. **Boundary-scale inputs** — MB-class strings, 10k-record fixtures, empty and single-element sets, max-length identifiers. Does anything blow up (RangeError/OOM/timeout) or silently truncate? Pay special attention to SHARED dependencies: a size limit in a common utility can make a legal record permanently unprocessable.
 3. **Hostile-value classes** — values that are *type-valid but semantically impossible or adversarial*: impossible calendar dates, clock regressions, duplicate/reused identifiers, encoding edge cases, values that normalize into something else. Does anything impossible get accepted into a durable/immutable store?
 
-*Receipt (2026-07-10): across a 9-round two-model ladder, the cross-model lens was the decisive finder in 6 of 7 rounds; in one impl round the primary returned a clean MERGE while the cross-model lens found three empirically-provable Highs — an error-fallback that silently restored a spec-forbidden state, an impossible calendar date accepted into a forever-raw store, and a size-limit RangeError in a shared security dependency that made a legal record uncapturable. The primary's empirical work was solid on the probes it CHOSE; it simply never ran these classes. This narrows the primary-lens gap — it never substitutes for the cross-model lens, whose orthogonal threat model remains the strongest signal there is.*
+*Receipt: across a 9-round two-model ladder, the cross-model lens was the decisive finder in 6 of 7 rounds; in one impl round the primary returned a clean MERGE while the cross-model lens found three empirically-provable Highs — an error-fallback that silently restored a spec-forbidden state, an impossible calendar date accepted into a forever-raw store, and a size-limit RangeError in a shared security dependency that made a legal record uncapturable. The primary's empirical work was solid on the probes it CHOSE; it simply never ran these classes. This narrows the primary-lens gap — it never substitutes for the cross-model lens, whose orthogonal threat model remains the strongest signal there is.*
 
 # Rubric — universal categories
 
@@ -101,7 +101,7 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
 
 # Confidence scoring
 
-Rate each finding 0-100. **Only report ≥80** (this filters noise; calibrated from cross-model-lens experience):
+Rate each finding 0-100. **Only report ≥80** (this filters noise):
 
 - **0-25**: likely false positive or pre-existing issue → don't report
 - **26-50**: minor nitpick not explicitly in spec → don't report unless Critical

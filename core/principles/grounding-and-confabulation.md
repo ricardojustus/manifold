@@ -27,7 +27,7 @@ Recovery when caught: stop, acknowledge cleanly, re-verify, replace with the gro
 - Before *any* claim about a file, system, prior decision, or number: re-read/re-probe this turn and paste the evidence. For a claim that something in the operator's world is "fabricated," check the authoritative roster *first* — calling a real entity invented is inverse-confabulation.
 - Match the defense to the mode; don't rely on one check to catch all three.
 
-## Instruments — a probe's output is only as good as the probe (7 buffered instances, graduated 2026-07-25)
+## Instruments — a probe's output is only as good as the probe (7 buffered instances)
 
 A zero, an empty result, or a "still running" from an UNVALIDATED instrument is not a finding:
 

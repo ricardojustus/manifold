@@ -11,8 +11,12 @@ most commonly because the session fell back below the frontier tier and the coun
 tier out-writes the fallback main. The main loop narrows to framing work, dispatching it well,
 verifying what comes back, and carrying decisions to the operator.
 
-**The posture is spoken, never assumed — only an EXPLICIT declaration counts** (operator ruling
-2026-07-15). "Go into orchestrator mode" / "defer everything to <the counterpart>" activates it;
+**No second model family available → this posture is unavailable.** The fallback is the sibling
+`brain-mode` posture (a stronger main-loop model where the project has one) or simply staying inline
+and authoring in-session.
+
+**The posture is spoken, never assumed — only an EXPLICIT declaration counts.** "Go into
+orchestrator mode" / "defer everything to <the counterpart>" activates it;
 "implement this with <the counterpart>" does NOT — that dispatches ONE task via
 `cross-model-dispatch`, posture off. A posture declaration names the SESSION's way of working; a
 delegation names a task. Genuinely ambiguous phrase → ask. Once on, the posture survives small
@@ -48,7 +52,7 @@ intervening chat; until ended, every qualifying junction routes out.
 
 | Junction | Route |
 |---|---|
-| **Any decision** — architecture choice, approach selection, finding disposition, anything a decision packet will carry | `cross-model-advisor` consult, **MANDATORY while the posture is active** (operator ruling 2026-07-15) — not just load-bearing ones. The main loop still consolidates and still owns the packet — the consult is an input, never the decider. |
+| **Any decision** — architecture choice, approach selection, finding disposition, anything a decision packet will carry | `cross-model-advisor` consult, **MANDATORY while the posture is active** — not just load-bearing ones. The main loop still consolidates and still owns the packet — the consult is an input, never the decider. |
 | Plan / design question ("how should X work?") | `cross-model-advisor` (think-with), main loop consolidates — and if the outcome needs a written design/plan artifact, its DRAFTING dispatches via `cross-model-dispatch` (reasoning tier) |
 | Spec to write | `cross-model-dispatch`, spec-drafter seat → main-loop revision pass in-file → normal spec flow |
 | Implementation (specced) | `cross-model-dispatch`, implementer tier (reasoning tier if complex — the seat table decides, unchanged) |

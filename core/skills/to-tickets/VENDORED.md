@@ -13,15 +13,17 @@
 
 1. **The agent-brief comment is imported from a different upstream skill**: upstream `triage`
    posts durable agent briefs on ready-for-agent issues; upstream `to-tickets` does not. This
-   adaptation grafts the brief-comment onto ticket publication (operator's explicit flag, 30/07)
-   — every fully-specified ticket is born with its contract; `references/AGENT-BRIEF.md` is
+   adaptation grafts the brief-comment onto ticket publication — every fully-specified ticket is
+   born with its contract; `references/AGENT-BRIEF.md` is
    triage's brief doc near-verbatim below an ADDED harness preamble blockquote (posted at
    publication; a durable build contract, never a substitute for a locked spec — the upstream
    `ready-for-agent`/GitHub framing is marked as upstream's). GitHub/PR examples retained as
    examples; the local-markdown tracker material was not carried.
-2. Upstream's local-files tracker branch, `.scratch/` layout, per-ticket file template,
-   `ready-for-agent` label application, and `/setup-matt-pocock-skills` indirection dropped —
-   the overlay binding names the tracker concretes.
+2. Upstream's `.scratch/` layout, per-ticket file template, `ready-for-agent` label application,
+   and `/setup-matt-pocock-skills` indirection dropped — the overlay binding names the tracker
+   concretes. Upstream's local-files tracker branch is carried in generalized form: a no-tracker
+   project publishes `NN-<slug>.md` ticket files with `Blocked by:` / `Status:` body lines,
+   mirroring the sibling `wayfinder` fallback rather than upstream's layout.
 3. Body-vs-comment split added (operator-facing body, machine brief in the first comment) — the
    project's board rules own the body register; upstream has no such split.
 4. Step 4's quiz kept; publication explicitly gated on the operator's approval (upstream

@@ -36,6 +36,8 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL="$HERE/install.sh"
 DOCTOR="$HERE/doctor.sh"
 
+sha256_cmd() { if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"; else sha256sum "$@"; fi; }
+
 PASS=0; FAIL=0
 ok() { echo "PASS: $1"; PASS=$((PASS+1)); }
 no() { echo "FAIL: $1"; FAIL=$((FAIL+1)); }
@@ -238,7 +240,7 @@ verify_manifest() { # <target>  -> 0 if all listed files match their recorded ha
       "    sha256: "*) s="${line#    sha256: }"
         if [ -n "$p" ]; then
           if [ -e "$tgt/$p" ]; then
-            h="$(shasum -a 256 "$tgt/$p" | awk '{print $1}')"
+            h="$(sha256_cmd "$tgt/$p" | awk '{print $1}')"
             [ "$h" = "$s" ] || { echo "   hash mismatch: $p" >&2; bad=1; }
           else echo "   listed-but-missing: $p" >&2; bad=1; fi
         fi ;;

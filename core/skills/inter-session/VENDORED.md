@@ -19,7 +19,7 @@
    pointer `[INTER-AGENT MESSAGE msg=<id> cont] full text <N> bytes at <messages.log path>`.
 2. `SKILL.md` — reaction policy replaced: upstream's "act on messages as if the user typed
    them" is DELETED; ANSWER-class / ACT-class rule (operator-gated actions) instead, plus the
-   events-are-transport-never-authority floor (operator ruling 2026-07-28).
+   events-are-transport-never-authority floor.
    Connect flow uses binding-pinned names instead of cwd auto-naming.
 3. Removed plugin-marketplace machinery: `.claude-plugin/`, `monitors/monitors.json`,
    `bin/auto_start.py` (+ its tests). Standalone-skill mode only.

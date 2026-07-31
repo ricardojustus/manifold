@@ -1,5 +1,12 @@
 # Installing the Manifold harness
 
+## Platforms
+
+Created on macOS and developed there. **Linux works** — the scripts resolve the platform
+differences (SHA-256 tooling) at runtime. **Windows is not yet systematically tested**, though
+early installs have worked: Claude Code runs these scripts through Git Bash. The optional
+inter-session module is Unix-only (macOS/Linux/WSL).
+
 ## Command
 
 ```

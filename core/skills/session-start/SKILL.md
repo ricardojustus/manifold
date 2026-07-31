@@ -66,7 +66,7 @@ If you can't articulate why you'd say <100%, you're 100%.
 reading the relevant reference doc; start editing in this first turn; volunteer architecture
 opinions before loading the design.
 
-**A kickoff is a plan, never a standing GO** (operator ruling 2026-07-28). The orientation report
+**A kickoff is a plan, never a standing GO.** The orientation report
 ends the turn; session-scale build work starts on the operator's word in THIS session — the prior
 session's directive tells you what's next, not that you may begin. A background event (a bus
 message, a scheduled wakeup, a task notification) re-opens the turn only to handle that event and
@@ -89,7 +89,7 @@ asks.
 - `session-end` — the counterpart; its outputs (state, memory, plan updates) are this skill's inputs.
 - `compact-resume` — the compaction-aware sibling (you have a lossy summary, not a cold start).
 
-## Park reconciliation (graduated 2026-07-25)
+## Park reconciliation
 
 Orientation reconciles open parks against the kickoff and state: a park a later ruling answered, or
 a kickoff directive contradicting a standing park, is a DISAGREEMENT — flag it in the orientation

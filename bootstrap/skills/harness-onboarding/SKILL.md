@@ -66,12 +66,13 @@ still an active import, so the pattern accepts them.
 Groups 4–6 leave weaker traces than the slot files. Read these before calling Act 1 done:
 
 - **Group 4** — `manifold-overlay/rules/model-pins.md`. It exists from Act 1's `cp` carrying the
-  pre-filled defaults, so its presence cannot tell you whether Q10 was ever asked. **On any
-  resume, re-ask Q10** (one confirm question) — a default is only adopted when they accept it.
+  pre-filled defaults, so its presence cannot tell you whether Q13 was ever asked. **On any
+  resume, re-ask Q12 and Q13** (billing shape, then the one pins confirm question) — a default
+  is only adopted when they accept it.
 - **Group 5** — `manifold-overlay/manifest.yaml`: `name:` equal to `<project>` and a
   `description:` with no `<…>` placeholder left. Still bracketed ⇒ replay Group 5.
-- **Group 6** — no durable trace at all; Q12's answer only ever lived in the conversation.
-  **On any resume, re-ask Q12** (one question) before Act 2's module questions.
+- **Group 6** — no durable trace at all; Q15's answer only ever lived in the conversation.
+  **On any resume, re-ask Q15** (one question) before Act 2's module questions.
 
 Tell the operator which of these you found before asking anything.
 
@@ -136,31 +137,45 @@ which you concluded.
 3. Do you keep a profile file for yourself (name, working style, preferences) the agent should
    import? If not, offer to write the two or three lines you just learned directly into the
    slot instead of an `@`-import.
-4. How should it talk to you: level of technical detail, length, anything that annoys you
-   (offer the harness's usual: no sycophantic openings, no formal sign-offs, plain-English
-   summary at the end of anything touching code or infra), and your date/number/language
-   conventions.
+4. How should it talk to you? Offer the menu — they pick one, combine, or free-form:
+   **deep-dive explanations** (the reasoning, not just the answer) · **quick plain-language
+   summaries** (bottom line first, detail on request) · **dense technical shorthand** (they
+   read code and specs; skip the translation). Then the rest: length, anything that annoys
+   them (offer the harness's usual: no sycophantic openings, no formal sign-offs,
+   plain-English summary at the end of anything touching code or infra), and their
+   date/number/language conventions.
+5. "When an engineering choice comes up mid-task, should the agent decide and note it, or
+   bring you the options first?" Offer the spectrum: **decide-and-note** · **bring me the big
+   ones** · **bring me everything**. Say what it changes: the harness's decision-packet
+   ceremony scales with this answer — the further toward "bring me everything", the more
+   junctions stop and ask. Record it in `comms_style` beside Q4's answer.
 
-### Group 2 — what the project is and where things live → `system_map`, `project_knowledge_sources`, `memory_paths`
+### Group 2 — what the project is and where things live → `system_map`, `project_knowledge_sources`, `memory_paths`, a tracker binding in `manifold-overlay/rules/`
 
-5. What is this project, and where does its code, runtime, and docs live? Anything the agent
+6. What is this project, and where does its code, runtime, and docs live? Anything the agent
    must know about and *not* touch?
-6. When the agent needs ground truth, what should it read, in what order? (Suggest the harness
+7. When the agent needs ground truth, what should it read, in what order? (Suggest the harness
    default order: prior lessons → the project's plans and reference docs → official docs →
    vetted sources → empirical testing last, stated explicitly as a mode switch.)
-7. Where should continuity files live — state, journal, decisions, questions-for-you, lessons?
+8. Where should continuity files live — state, journal, decisions, questions-for-you, lessons?
    Offer the default (`.claude/` next to the harness, or a `docs/` folder) and move on if they
    have no preference. `self_knowledge_corpus` and `compact_instructions` are legitimately
    empty on a young project — say so and leave them empty rather than inventing content.
+9. Does the project use an issue tracker — and which (Linear, Jira, GitHub Issues, …) — or
+   plain files? Note what it changes: `to-tickets` and `wayfinder` publish to the tracker when
+   there is one and fall back to plain ticket/map files when there is not. Record the answer in
+   the overlay — a one-line tracker binding in `manifold-overlay/rules/` naming the tracker (or
+   stating there is none, and where ticket files live), and listed in the manifest's `rules:` to
+   keep it in sync — and mention it in `system_map` so the agent knows where work items live.
 
 ### Group 3 — what is off-limits → `security_directive`, `project_hard_rules`
 
-8. Print the template's suggested security-directive text **verbatim** and ask: accept as-is,
-   edit, or drop? Then ask the one thing the suggestion cannot know: **which concrete paths,
-   repos, or systems are never to be touched**, and whether external access is read-only.
-9. Same for the suggested hard rules: which branches and directories are protected, and any
-   project-specific non-negotiable they already know they want (a vocabulary that binds, a
-   "never commit without asking", a naming mandate).
+10. Print the template's suggested security-directive text **verbatim** and ask: accept as-is,
+    edit, or drop? Then ask the one thing the suggestion cannot know: **which concrete paths,
+    repos, or systems are never to be touched**, and whether external access is read-only.
+11. Same for the suggested hard rules: which branches and directories are protected, and any
+    project-specific non-negotiable they already know they want (a vocabulary that binds, a
+    "never commit without asking", a naming mandate).
 
 Both suggestions carry `<…>` brackets where only the operator can supply the content (the
 never-touch list, the protected branches). **A bracket is never shippable**: either their answer
@@ -172,21 +187,31 @@ strict version is the safe start and can be loosened later with a one-line edit.
 
 ### Group 4 — which models you have → `manifold-overlay/rules/model-pins.md`
 
-10. Show the pre-filled pins (frontier / mid / cheap, with the date they were written) and ask
+12. How is their model access billed: **flat-rate subscription** or **metered API**? On
+    metered, say plainly what it changes and suggest leaner pins — a cheaper tier for the
+    reviewer and implementer seats — and warn that the audit ladder's multi-round fan-outs bill
+    per token, several seats per round. On flat-rate, the current defaults stand and the cost
+    shows up as quota displacement instead. Their answer feeds Q13.
+13. Show the pre-filled pins (frontier / mid / cheap, with the date they were written) and ask
     **one** question: "these are the current public defaults — right for your account, or
-    should any tier be remapped?" Edit the file only if they remap something. If they have a
+    should any tier be remapped?" (If Q12 said metered, offer the leaner mapping here as the
+    suggestion.) Edit the file only if they remap something. If they have a
     second model family available (a cross-model reviewer seat), record it in the file's last
     line; if not, leave the line as-is — audits fall back to single-lens, which is documented.
+    **If they remap a tier**, tell them the named subagent roles (`.claude/agents/reviewer.md`,
+    `implementer.md`) carry their own `model:`/`effort:` frontmatter as the per-role default —
+    installer-owned files, so the change belongs in the harness copy, not a local edit; point
+    them at `core/agents/README.md`, which states how to change it.
 
 ### Group 5 — the manifest → `manifold-overlay/manifest.yaml`
 
-11. Set `name:` to `<project>`, write the one-line `description:`, and ask where audit and
+14. Set `name:` to `<project>`, write the one-line `description:`, and ask where audit and
     council records should live — that is `artifact_root:` (default `.`, the repo root; accept
     it unless they name a docs/evidence directory). Leave `profile:`/`modules:` for Act 2.
 
 ### Group 6 — parallel sessions → the Act 2 input
 
-12. "Will more than one Claude Code session work this repo at the same time — different
+15. "Will more than one Claude Code session work this repo at the same time — different
     workstreams, or parallel implementation lanes?" This single answer drives Act 2's module
     questions. Also ask, if yes, whether one session owns the shared state files or each
     workstream keeps its own folder; record their answer in `memory_paths`.
@@ -205,8 +230,8 @@ installed silently, and a "no" is final — the operator can enable it later wit
 
 | Module | What it gives them | Ask when |
 |---|---|---|
-| `inter-session` | A localhost messaging bus between parallel sessions on this machine (questions, FYIs, co-sign opinions — never remote) | they answered yes to Q12 |
-| `multi-agent` | `parallel-workstreams` + `merge-and-cleanup`: dispatching several implementation lanes in separate git worktrees, then merging them | they answered yes to Q12, or they expect long multi-lane builds |
+| `inter-session` | A localhost messaging bus between parallel sessions on this machine (questions, FYIs, co-sign opinions — never remote) | they answered yes to Q15 |
+| `multi-agent` | `parallel-workstreams` + `merge-and-cleanup`: dispatching several implementation lanes in separate git worktrees, then merging them | they answered yes to Q15, or they expect long multi-lane builds |
 
 A "no" to both is the right default for a solo project — say so; they are re-enabled any time
 by re-running the installer with `--modules`.
@@ -365,8 +390,8 @@ one. Point them at `MANUAL.md` in the harness clone for the operator's guide and
 - **Install fails on a slot you thought you filled** — the FILL comment is still in the file.
   Grep for it, delete that comment, re-run. Never bypass the check.
 - **Operator quits mid-interview** — everything already written stays; re-running this skill
-  resumes at the first unfilled slot (Step 0's table), re-asking Q10 (the pins file cannot
-  prove it was confirmed) and Q12 (its answer was never written anywhere).
+  resumes at the first unfilled slot (Step 0's table), re-asking Q12/Q13 (the pins file cannot
+  prove it was confirmed) and Q15 (its answer was never written anywhere).
 - **They want to redo part of this after the install finished** — re-run the full install with
   their overlay: `<harness>/bootstrap/install.sh . --overlay ./manifold-overlay` after
   editing the overlay files directly. Do **not** reach for `install.sh . --bootstrap`: over a

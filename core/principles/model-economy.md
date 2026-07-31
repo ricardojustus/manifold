@@ -43,10 +43,13 @@ default.
 
 ## Cross-model — counterparty always, implementer sometimes
 
-A **different model family** as reviewer is non-negotiable at the audit gate (a second instance of
-the same model shares the first's blind spots; in the source project's own harness audit the
-cross-model lens caught both the only Critical and a fail-open defect the same-family reviewer
-physically could not reproduce). As **implementer**, the other family earns the dispatch in
+A **different model family** as reviewer is non-negotiable at the audit gate wherever a second
+family is available (a second instance of the same model shares the first's blind spots; in the
+source project's own harness audit the cross-model lens caught both the only Critical and a
+fail-open defect the same-family reviewer physically could not reproduce). Where no second family
+is configured, the audit still runs on `audit-cycle`'s documented solo fallback — one lens plus an
+explicit self-review, degradation recorded as `DONE_WITH_CONCERNS` — never a skipped gate. As
+**implementer**, the other family earns the dispatch in
 exactly two cases: (1) a **bake-off** — two independent implementations of one locked spec,
 compared; (2) the primary family is **demonstrably stuck** — looping on a diagnosis or repeatedly
 failing the same contract, where fresh blind spots beat more effort. Outside those, cross-model

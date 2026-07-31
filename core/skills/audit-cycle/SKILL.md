@@ -51,7 +51,7 @@ fix-pass, then dispatch the multi-model audit only on a PASS. Conformance ("does
 the contract?") is a different axis from defect-finding ("is the code correct/safe/robust?"):
 divergent code is internally consistent and reads as correct, so it slips a bug-focused audit.
 Procedure lives in **`spec-adherence`** — invoke it, don't re-derive it; it is a tripwire, not
-a proof (never an agent fleet, never a loop — the operator killed that shape 2026-07-22).
+a proof (never an agent fleet, never a loop — the operator killed that shape).
 
 - Does NOT apply to spec-LOCK cycles (no impl to conform).
 - Distinct from Cat #15 (which checks the *spec's* claims about existing code) and from the
@@ -191,7 +191,8 @@ run round 6?") but an explanation of WHY five rounds haven't converged:
 3. **A recommendation keyed to the cause**: CORRECT-dominated tail (convergence housekeeping) →
    one more round / lock with the tail triaged. ADD-dominated ROUND-BORN findings (the
    ratchet) → **discard-and-restart as the default recommendation**: a fresh cross-model author
-   (the project's model pins name the counterpart tier) receives the JOB, the invariant list,
+   (the project's model pins name the counterpart tier — with no second family available, a fresh
+   same-family author in a session that took no part in the original) receives the JOB, the invariant list,
    and the findings ledger as problems-encountered — NEVER the old artifact text (inheriting
    the text inherits the ratchet); restart budget 3 rounds, and a second cap-out means the
    problem is the problem, not the author — both artifacts go to the owner with that
@@ -314,7 +315,7 @@ lens becomes reachable before the stakes justify shipping on one. Recorded, neve
 
 Every round, step 0: **where a minimality-mode tool is installed, dispatched reviewers run under
 the persona BY DESIGN** (the `minimality-mode` rule — every dispatched seat is an ON seat,
-arc-wide; operator ruling 2026-07-29) — no flag assert is owed. What the lead still checks is its
+arc-wide) — no flag assert is owed. What the lead still checks is its
 OWN seat: a lead running the tool's sticky session persona (skill-path activation) does not lead
 the round's consolidation or severity calls until the operator deactivates it or a fresh session
 leads (the rule's judgment-seat clause).
@@ -605,7 +606,7 @@ unrelated, they don't apply.
 
 Skill-eval test prompts: `references/test-prompts.md`.
 
-## Graduated verification lessons (buffer sweep 2026-07-25)
+## Graduated verification lessons
 
 - **A fix-pass disposition is verified against the CODE, not the intent** — re-read the applied hunk
   and assert the claimed post-state before recording it. An aggregate ("N fixed") is a CLAIM; only

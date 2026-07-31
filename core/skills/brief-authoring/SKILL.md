@@ -74,8 +74,8 @@ Probes, before pasting:
   continue. Do NOT silently scope-out or invent. The receiving agent surfaces ambiguity, it does
   not resolve it unilaterally.
 - **Success criteria** — verifiable end state (tests pass / spec §N satisfied / audit gate met).
-- **Deliverables come back INLINE** — never name a report FILE as a subagent deliverable (the
-  harness blocks subagent writes of report-shaped files): the brief asks for the report in the
+- **Deliverables come back INLINE** — never name a report FILE as a subagent deliverable
+  (report-shaped files written by subagents may be blocked by the harness): the brief asks for the report in the
   final message; the dispatcher files it.
 - **Read-only / classifier briefs carry an explicit "no subagent spawning" line** — parallelism
   is the dispatcher's call, made in the brief, never the seat's (receipt: one unbriefed fan-out
@@ -141,7 +141,7 @@ If any answer is no, the brief is not ready to dispatch.
 - **Self-discipline** (the Cardinal Rule's "research FIRST") — the constitution owns that. This
   skill governs briefs you WRITE, not your own behavior.
 
-## Read-only dispatches cover the FILESYSTEM (graduated 2026-07-25)
+## Read-only dispatches cover the FILESYSTEM
 
 A "read-only" instruction to a subagent must say: no writes anywhere — no files, no redirects, no
 temp artifacts; scratch = <named tmp dir> — and the dispatcher asserts the live tree clean at

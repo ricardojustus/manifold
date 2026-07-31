@@ -51,7 +51,8 @@ MANIFEST="$TARGET/.claude/manifold-manifest.yaml"
 [ -f "$MANIFEST" ] || { echo "error: no manifest at $MANIFEST — is the harness installed?" >&2; exit 2; }
 [ -z "$HARNESS" ] || HARNESS="$(cd "$HARNESS" && pwd)"
 
-sha256_of() { shasum -a 256 "$1" | awk '{print $1}'; }
+sha256_cmd() { if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"; else sha256sum "$@"; fi; }
+sha256_of() { sha256_cmd "$1" | awk '{print $1}'; }
 
 # --- manifest header fields ---
 hdr_key() { sed -n "s/^$1:[[:space:]]*//p" "$MANIFEST" | head -1; }

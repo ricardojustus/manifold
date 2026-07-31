@@ -161,13 +161,13 @@ After ALL lanes for the batch have merged:
 - `session-end` — invoke after consolidation IF this closes the session; if the next arc starts
   immediately, defer it.
 
-## Worktree-remove preflight (graduated 2026-07-25)
+## Worktree-remove preflight
 
 Before any `git worktree remove --force`: enumerate the worktree's untracked files against their
 claimed preservation homes, per-file. (Recovery path where the builder was a sandboxed CLI: its
 session rollouts retain file payloads verbatim.)
 
-## History rewrites (graduated 2026-07-25)
+## History rewrites
 
 `git filter-repo` and kin: scope refs EXPLICITLY (`--refs <heads+tags> ^<every remote ref>`) — the
 default invocation rewrites PUSHED history when signed commits sit below the push boundary

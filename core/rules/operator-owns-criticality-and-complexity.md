@@ -14,6 +14,6 @@
 
 Pairs with: `right-sized-engineering` (simplicity kernel + classification check) · `operator-translation` (packet completeness; criticality and security-depth are the facts most often withheld) · `ask-vs-decide` (reserved-authority calls are a halt trigger, never decide-and-park).
 
-**Ratification is not authority for machinery** (operator ruling, quotable): a prior LOCK is NULL
+**Ratification is not authority for machinery**: a prior LOCK is NULL
 AND VOID as justification for any mechanism not directly connected to plan and vision — only a
 vision/plan clause authorizes machinery; never cite "you ratified this spec" to justify it.

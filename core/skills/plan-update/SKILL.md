@@ -53,12 +53,12 @@ Use the banner whenever a section's premise is invalidated by new findings but t
 
 ### 2½. Keep the top summary true (required section)
 
-Every plan doc carries a **top summary as its first section** — plain-language, ADHD-readable,
-in the operator's terms, jargon-free and concise; **assume it is the ONLY part the operator
-reads**. It must be self-sufficient: every load-bearing architectural choice and decision
+Every plan doc carries a **top summary as its first section** — plain-language, skimmable,
+in the operator's terms, jargon-free and concise; **assume many operators read only this
+summary**. It must be self-sufficient: every load-bearing architectural choice and decision
 visible there, surfaced plainly for an explicit yes/no, any necessary term paired with a
-one-line explanation; renderable diagrams (Mermaid / clean indented lists), never ASCII art
-(operator ruling 2026-06-04; required section ratified 2026-07-27). A plan without one gets it added at this update; an
+one-line explanation; renderable diagrams (Mermaid / clean indented lists), never ASCII art.
+A plan without one gets it added at this update; an
 update that changes design intent re-syncs it in the same pass — a stale top summary misleads
 the exact reader the section exists for.
 
@@ -109,7 +109,7 @@ Some projects author a **short/overview version** of a plan (an llms.txt-shaped 
 - `session-end` — invokes this skill at session close if design intent shifted.
 - `research` — produces findings that frequently trigger a plan update.
 
-## Obligation laundering (graduated 2026-07-25)
+## Obligation laundering
 
 A plan claiming an obligation ANSWERED must contain the substance IN the plan; "carried to a named
 accountable event" is the honest label for everything else.

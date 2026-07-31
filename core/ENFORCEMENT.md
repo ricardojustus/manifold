@@ -2,7 +2,7 @@
 
 Most of this harness is **prose the model must choose to obey**. That is deliberate: a rule that carries its reasoning ("here is *why* we validate errors before diagnosing, here is the incident that taught us") produces better judgment than a rule reduced to a mechanical check, because the model can apply the *why* to cases the check never anticipated. Prose generalizes; a checklist does not.
 
-Prose has one failure mode a check does not: a careless, confused, or compromised session can simply not obey it. The original version of this doctrine answered that with a tier of deny-hooks. **That answer was revised on 2026-07-05, from production experience:** within one day of being wired, the deny tier produced one real incident (a boundary hook blocked a workstream from its own primary surface, and the self-modification guard then blocked the operator-authorized fix — a deadlock only the operator could break) and zero real saves. The revised doctrine below reflects what actually held the line all along: the prose, the operator in the loop, and the runtime's own permission layer.
+Prose has one failure mode a check does not: a careless, confused, or compromised session can simply not obey it. The original version of this doctrine answered that with a tier of deny-hooks. **That answer was revised, from production experience:** within one day of being wired, the deny tier produced one real incident (a boundary hook blocked a workstream from its own primary surface, and the self-modification guard then blocked the operator-authorized fix — a deadlock only the operator could break) and zero real saves. The revised doctrine below reflects what actually held the line all along: the prose, the operator in the loop, and the runtime's own permission layer.
 
 ## The enforcement ladder (in order of preference)
 
@@ -21,7 +21,7 @@ Where an invariant has a server-side form, prefer it over anything local: hosted
 
 ### 3. The operator in the loop
 
-For gated flows whose *normal case is sanctioned* — amending a locked artifact, a spec correction found mid-implementation, a scope change — conversational approval IS the enforcement point. **Do not mechanize a flow whose common case is "ask and receive yes": the mechanism blocks the flow, not the failure.** Receipt: a locked-artifact write-deny hook was retired 2026-07-05 because amendment is a routine, operator-approved, near-daily operation; in production the hook could only ever stand between the artifact's owner and their own sanctioned work.
+For gated flows whose *normal case is sanctioned* — amending a locked artifact, a spec correction found mid-implementation, a scope change — conversational approval IS the enforcement point. **Do not mechanize a flow whose common case is "ask and receive yes": the mechanism blocks the flow, not the failure.** Receipt: a locked-artifact write-deny hook was retired because amendment is a routine, operator-approved, near-daily operation; in production the hook could only ever stand between the artifact's owner and their own sanctioned work.
 
 ### 4. Hooks — by shape, and the shapes are not equal
 

@@ -41,7 +41,8 @@
 # simply does not exist yet. The manifest records `mode: bootstrap`; the first session runs
 # /harness-onboarding, which writes a real overlay and re-installs normally over this one.
 #
-# macOS bash-3.2 safe: no associative arrays, no mapfile. shasum -a 256 for hashing.
+# macOS bash-3.2 safe: no associative arrays, no mapfile. SHA-256 via shasum, falling back to
+# sha256sum where shasum is absent (most Linux distros).
 set -euo pipefail
 
 usage() { echo "usage: install.sh <target-repo> --overlay <name-or-path> [--link] [--profile base|full] [--modules m1,m2] [--allow-placeholder-template] [--overwrite-local]
@@ -193,7 +194,8 @@ HARNESS_VERSION=""
 [ -n "$HARNESS_VERSION" ] || HARNESS_VERSION="$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9.-]*' "$HARNESS_ROOT/CHANGELOG.md" 2>/dev/null | head -1 || true)"
 [ -n "$HARNESS_VERSION" ] || HARNESS_VERSION="unknown"
 
-sha256_of() { shasum -a 256 "$1" | awk '{print $1}'; }
+sha256_cmd() { if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"; else sha256sum "$@"; fi; }
+sha256_of() { sha256_cmd "$1" | awk '{print $1}'; }
 
 STAGE="$(mktemp -d "${TMPDIR:-/tmp}/manifold-install.XXXXXX")"
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/manifold-install-work.XXXXXX")"
@@ -273,7 +275,7 @@ copy_tree "$HARNESS_ROOT/core/case-law"   ".claude/harness/case-law"   "core/cas
 # --- overlay trees: project rules + enforcement hooks ---
 # Overlay rules merge into .claude/rules/ alongside core rules (README placeholders skipped);
 # hooks install as DRAFT to .claude/harness-hooks/ and are NOT wired into settings.json
-# (ruling D3 — wiring is a documented manual step). The hooks README is NOT skipped: it is
+# (wiring is a documented manual step). The hooks README is NOT skipped: it is
 # the operative wiring instruction (overlays/<name>/hooks/README.md documents the exact
 # manual wiring), and dropping it stranded fresh installs without their setup doc.
 copy_tree "$OVERLAY_DIR/rules"  ".claude/rules"          "$OVERLAY_SRCREF/rules"  skip_readme

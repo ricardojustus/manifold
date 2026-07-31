@@ -2,8 +2,9 @@
 name: to-tickets
 description: >-
   Break an approved plan, a locked spec, or a settled conversation into tracer-bullet tickets on
-  the project's issue tracker — vertical slices that each cut a complete path through every layer
-  and are demoable alone, with native blocking edges declaring what gates what, and a durable
+  the project's issue tracker (or plain files where the project has none) — vertical slices that
+  each cut a complete path through every layer and are demoable alone, with native blocking edges
+  declaring what gates what, and a durable
   agent-brief comment on every fully-specified ticket. Use when settled work needs to become
   board items ("file this as tickets", "break the plan into issues"), or at a spec handoff into
   build. Decomposes settled intent — unlike `wayfinder` (which settles it).
@@ -69,6 +70,16 @@ gets the missing decision named in its body instead.
 when a lane picks the ticket up. The brief comment freezes it at its peak; at dispatch time the
 project's dispatch-brief discipline still runs, adding fresh code references on top of the
 ticket's durable contract.
+
+**No tracker?** A project without an issue tracker still gets its tickets, as plain files:
+`NN-<slug>.md` files in the project's tickets home (`tickets/`, or the `maps/<effort-slug>/`
+folder when the work descends from a `wayfinder` map — the doc-placement conventions own that
+home; the overlay binding is where the tracker, or its absence, is named). The native
+blocking relation becomes a `Blocked by:` body line naming the gating ticket files, and claiming
+becomes a `Status: open | claimed | closed` line; the agent-brief comment becomes an
+`## Agent brief` section at the bottom of the same file. Strictly weaker than a real tracker (no
+native blocking view, nothing visible without opening files) — say so when you publish. When the
+project earns a tracker, migrate the OPEN tickets to it and keep the folder as the archive.
 
 Work the **frontier**: any ticket whose blockers are all done.
 

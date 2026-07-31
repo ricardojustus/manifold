@@ -141,7 +141,7 @@ pauses, after a single mid-session commit, or while the operator is still propos
 - `memory-discipline` owns step 3's saves · `plan-update` owns step 4 · `reference-doc-writing`
   owns step 5's doc authoring.
 
-## Closure reconciliation (graduated 2026-07-25)
+## Closure reconciliation
 
 The close-out artifacts must carry the operator's FINAL-turn dispositions — when they settled or
 dismissed something late in the session, STATE/KICKOFF reflect that, or the next session grounds on

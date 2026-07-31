@@ -11,6 +11,10 @@ counterpart model + dispatch mechanics). One strong model reasoning alone conver
 family's blind spots. The harness already has adversarial *gates* returning severity-rated findings
 (audit-cycle, council); this is the other thing — **thinking together**.
 
+**No counterpart bound → skip the consult**: the main model reasons through the junction solo. Where
+the junction was consult-worthy, say so in the deliverable ("no counterpart available; reasoned
+solo") rather than letting the absence pass silently.
+
 ## When to invoke
 
 - **Load-bearing decisions** — architecture choices, approach selection, anything a decision packet
