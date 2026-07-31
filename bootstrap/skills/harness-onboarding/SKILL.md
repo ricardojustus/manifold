@@ -137,13 +137,25 @@ which you concluded.
 3. Do you keep a profile file for yourself (name, working style, preferences) the agent should
    import? If not, offer to write the two or three lines you just learned directly into the
    slot instead of an `@`-import.
-4. How should it talk to you? Offer the menu — they pick one, combine, or free-form:
+4. How should it talk to you? First explain, briefly and in plain words, what the harness's
+   shipped default already codifies (installed at `.claude/rules/response-style.md`): plain
+   language with codes in parentheses; shorter by default (shortness drops detail, never
+   clarity); uncertainty stated first; every response ending with
+   what's-happening/what's-needed/what's-next; status reports that rebuild context from zero
+   (nothing off-screen is assumed remembered — no "keep in mind X"); completed work made
+   visible; a TLDR atop any document longer than a screen; the native task/plan tool for work
+   of 3+ steps; lists past five items split. Then ask: **keep it, tune it (they name the
+   edits), or drop it** — record the choice, and any tuned or replacement wording, in
+   `comms_style`: the operator's register overrides the shipped default and survives every
+   install and update (the rule file itself is installer-managed — never edit the installed
+   copy or the harness source). Then offer the menu — they pick one, combine, or free-form:
    **deep-dive explanations** (the reasoning, not just the answer) · **quick plain-language
    summaries** (bottom line first, detail on request) · **dense technical shorthand** (they
-   read code and specs; skip the translation). Then the rest: length, anything that annoys
-   them (offer the harness's usual: no sycophantic openings, no formal sign-offs,
-   plain-English summary at the end of anything touching code or infra), and their
-   date/number/language conventions.
+   read code and specs; skip the translation). A menu pick that contradicts a kept default
+   (dense technical shorthand vs the default's plain language) is a TUNE — restate the
+   combined result and reconfirm before recording. Then the rest: length, anything that
+   annoys them (offer the harness's usual: no sycophantic openings, no formal sign-offs), and
+   their date/number/language conventions.
 5. "When an engineering choice comes up mid-task, should the agent decide and note it, or
    bring you the options first?" Offer the spectrum: **decide-and-note** · **bring me the big
    ones** · **bring me everything**. Say what it changes: the harness's decision-packet

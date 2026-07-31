@@ -87,7 +87,7 @@ One-page judgment notes — the things that used to live only in the senior mode
 
 ### Rules (`core/rules/`)
 
-Always-on contracts. The big one: `threads.md` — the parallel-threads convention (see §7).
+Always-on contracts. The big one: `threads.md` — the parallel-threads convention (see §7). The most operator-visible one: `response-style.md` — every reply rebuilds the reader's context (plain language, codes in parentheses, shorter by default, uncertainty first, every response ends with state/next, status reports assume nothing off-screen persists, completed work made visible, a TLDR atop anything longer than a screen, the native task/plan tool for multi-step work, long lists split); the onboarding interview explains it and tunes or drops it per operator.
 
 ### Templates (`core/templates/`)
 

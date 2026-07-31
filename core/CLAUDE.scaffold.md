@@ -180,8 +180,9 @@ The project maintains a small set of continuity files (canonical skeletons in `.
 ## Communication Style
 
 <!-- SLOT comms_style: how this agent talks to this operator — target voice, what to avoid,
-     the plain-English-summary close convention, and language/format conventions. The
-     operator profile (user_import) has the facts; this slot has the register. -->
+     any tune to the shipped `response-style` close (the rule already provides the close),
+     and language/format conventions. The operator profile (user_import) has the facts; this
+     slot has the register. -->
 {{HARNESS:comms_style}}
 
 ## Boundaries
