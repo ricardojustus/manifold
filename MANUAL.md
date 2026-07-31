@@ -44,7 +44,7 @@ manifold/
 │   ├── SUCCESSOR_CALIBRATION.md self-test runbook for a cold agent's judgment
 │   ├── agents/            named subagent roles (reviewer, implementer) for recurring dispatches
 │   ├── skills/            27 procedures (session lifecycle, build arc, dispatch, evals…)
-│   ├── principles/        15 one-page judgment kernels
+│   ├── principles/        17 one-page judgment kernels
 │   ├── case-law/          precedent for calls rubrics can't make (severity, dispatch sizing)
 │   ├── rules/             always-on rules (e.g. the parallel-threads contract)
 │   └── templates/         19 file skeletons + 3 steering-doc templates
@@ -81,9 +81,9 @@ Each skill is a markdown procedure with a strict trigger description (≤150 wor
 - **Dispatch & parallelism:** `brief-authoring` (every dispatched agent gets a verified, self-contained brief), `parallel-workstreams` (worktree-isolated implementation lanes), `merge-and-cleanup` (consolidating lanes), `autonomous-work` (unattended runs — see §7), `hookify` (mine your corrections into draft guard rules — see §10).
 - **Knowledge & docs:** `research` (source-priority protocol), `plan-update`, `reference-doc-writing`, `doc-placement`, `memory-discipline`, `system-audit`, `scoped-adversarial-audit`.
 
-### Principles (`core/principles/` — 15 kernels) and case-law (`core/case-law/`)
+### Principles (`core/principles/` — 17 kernels) and case-law (`core/case-law/`)
 
-One-page judgment notes — the things that used to live only in the senior model's taste. Highlights: `ask-vs-decide` (when the agent decides and parks ratification vs when it must halt and ask you), `model-economy` (which model tier and effort level per task — see §6), `right-sized-engineering` (YAGNI with a floor), `smell-checklist` (the "wait, that doesn't add up" reflexes), `grounding-and-confabulation`, `finding-freshness` (dated empirical claims carry re-verify instructions). Case-law holds worked precedent: `severity-case-law` (how bad is this finding, really) and `dispatch-sizing` (how many agents, which primitive).
+One-page judgment notes — the things that used to live only in the senior model's taste. Highlights: `ask-vs-decide` (when the agent decides and parks ratification vs when it must halt and ask you), `model-economy` (which model tier and effort level per task — see §6), `right-sized-engineering` (YAGNI with a floor), `smell-checklist` (the "wait, that doesn't add up" reflexes), `deep-module-vocabulary` (the shared design language — module, interface, seam, depth), `grounding-and-confabulation`, `finding-freshness` (dated empirical claims carry re-verify instructions). Case-law holds worked precedent: `severity-case-law` (how bad is this finding, really) and `dispatch-sizing` (how many agents, which primitive).
 
 ### Rules (`core/rules/`)
 

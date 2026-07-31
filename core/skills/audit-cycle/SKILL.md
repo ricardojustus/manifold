@@ -169,6 +169,17 @@ awaits the operator's ratification.
 Lows never block lock at the default floor. Every Low gets TRIAGED — triage is mandatory, fixing
 is not.
 
+**Merge assert (mechanical, at merge time)**: the LOCK record pins the full head SHA it gated.
+(The LOCK record is the artifact the project's binding names as the lock's durable record; it
+records the 40-char head SHA of the final clean round — a short or absent SHA there cannot
+satisfy the assert: resolve the true 40-char head from the final clean round's own notes before
+comparing, never an eyeballed prefix.) Immediately before the merge executes, re-read that SHA and assert the merge subject's CURRENT
+head equals it — the PR head as the REMOTE reports it, or the local branch head for a subject
+with no remote — and paste both values. Mismatch = commits the audit never saw (an unpushed
+lock, a post-lock "quick fix", a rebase) → the merge is BLOCKED until the round re-runs at the
+new head or the operator explicitly rules. A close-out's "pushed" is a claim; this assert is the
+evidence.
+
 **Parent-contract back-prop (close-out duty)**: a finding in any round that surfaces a defect in
 the PARENT contract (the governing full-system spec above the audited child) is folded into the
 parent BEFORE the cycle closes — edit the affected parent section + a one-line top-of-doc
@@ -274,7 +285,7 @@ implement → commit → [code impls: spec-adherence Gate 0 → PASS @ sha (see 
   → fix-pass commit (C/H/M + piggybacked trivial Lows) OR Path A spec amendment OR Path C bounded change
   → dispatch round-2 with disposition table + R2-A/B/C dimensions
   → [spec-LOCK cycles + amendments: spec-vs-plan gate CLEAN]
-  → lock gate met (C/H/M = 0 with standing + no new C/H/M) → MERGE → push → cleanup
+  → lock gate met (C/H/M = 0 with standing + no new C/H/M) → merge assert (current head == locked SHA) → MERGE → push → cleanup
   → otherwise: round-3+ (cap 5; round 6 needs the convergence diagnosis + owner ruling)
 ```
 
@@ -437,7 +448,11 @@ the lines the finding names is not fixing the class — and the sweep is constit
 SYSTEM'S OWN DATA (enumerate the affected surface from the authoritative store / config /
 payloads, then adjudicate every member against it), never from the prior round's grep terms,
 which can only re-find what was already found (receipt: one class survived four rounds on
-reused search terms).
+reused search terms). Sweep greps — and ANY grep-backed absence claim ("no residue", "clean",
+"0 hits") — run `grep -a`: a file containing a single non-text byte is classified binary — the
+agent shell's grep skips it silently (no output, an exit that reads as clean) and BSD/GNU grep
+prints only `Binary file X matches`, never the matching lines; either way the sweep's evidence
+is gone.
 
 **Consolidated findings output shape** — write to
 `<AUDIT_DIR>/round-<N>-consolidated-findings.md`:

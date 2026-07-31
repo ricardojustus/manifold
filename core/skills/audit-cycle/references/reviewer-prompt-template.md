@@ -80,7 +80,7 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
     - **Invariant Expression** (1-10) — how clearly are invariants communicated through type structure? Compile-time enforcement where possible?
     - **Invariant Usefulness** (1-10) — do the invariants prevent real bugs? Neither too restrictive nor too permissive?
     - **Invariant Enforcement** (1-10) — are constraints actually enforced, or just documented?
-12. **Excess** — the inverse hunt, same rigor as the other eleven: material the job does not
+12. **Excess** — the inverse hunt, same rigor as the other categories: material the job does not
     demand — machinery no ratified clause calls for, clauses that cannot fire on this system,
     acceptance criteria satisfiable only by mocking the thing under test, defenses no in-scope
     adversary can trigger, duplicated guards. Report as findings with the same confidence bar;
@@ -90,6 +90,27 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
     Scope guard: an excess finding against material the OPERATOR ratified routes to the
     operator (ratified machinery is theirs to keep); against ladder-born material it drives
     the mechanism-defect fork normally.
+13. **Code-smell baseline** (CONDITIONAL — code subjects only; the classic Refactoring smell
+    set) — judgment-call heuristics matched against the code this round audits (rounds 2+: the
+    fix diff), never hard violations: label each "possible <smell>" and quote the hunk. A
+    documented repo/project standard OVERRIDES the baseline where they conflict, and anything
+    tooling already enforces is skipped. Default severity Low; rate higher only where
+    the instance compounds into a real defect, with normal authority. The set (what it is → the
+    fix): **Mysterious Name** (name doesn't reveal what it does/holds → rename; no honest name
+    coming = the design is murky) · **Duplicated Code** (same logic shape in 2+ hunks/files →
+    extract the shared shape) · **Feature Envy** (a method reaching into another object's data
+    more than its own → move it onto the data it envies) · **Data Clumps** (the same few
+    fields/params keep traveling together → bundle them into one type) · **Primitive Obsession**
+    (a primitive/string standing in for a domain concept → give it its own small type) ·
+    **Repeated Switches** (the same switch/if-cascade on the same type recurs → polymorphism, or
+    one map both sites share) · **Shotgun Surgery** (one logical change forces scattered edits
+    across many files → gather what changes together) · **Divergent Change** (one module edited
+    for several unrelated reasons → split so each changes for one reason) · **Speculative
+    Generality** (abstraction/hooks for needs the spec doesn't have → delete, inline back until a
+    real need shows; overlaps the Excess category — report there when it blocks) · **Message
+    Chains** (long `a.b().c().d()` navigation → hide the walk behind one method) · **Middle Man**
+    (mostly delegates onward → cut it, call the target direct) · **Refused Bequest** (an
+    implementer ignoring/overriding most of what it inherits → drop inheritance, compose).
 
 # Rubric — project-specific categories (from the binding)
 
@@ -141,7 +162,7 @@ When you claim "verified via grep" or "the helper at X:Y exists" — PASTE the g
 Write to `<AUDIT_DIR>/reviewer-<primary|cross-model>-round-<N>.md`:
 - Subject + inputs
 - Round-N fix-verification table (round-2+ only: VERIFIED-CLOSED / STILL-OPEN / FALSE-POSITIVE per finding)
-- Summary: NC/NH/NM/NL counts + score X/Y (3 points × applicable categories — exclude the conditional Type-design category when non-applicable; the binding's project categories add to Y) + verdict (MERGE / NEEDS-FIX-PASS / NEEDS-ROUND-N+1)
+- Summary: NC/NH/NM/NL counts + score X/Y (3 points × applicable categories — exclude the conditional categories (Type-design, Code-smell baseline) when non-applicable; the binding's project categories add to Y) + verdict (MERGE / NEEDS-FIX-PASS / NEEDS-ROUND-N+1)
 - **Critical / High / Medium / Low sections** — each finding includes:
   - file:line
   - pasted-evidence (the grep output or excerpt that backs the claim)
@@ -155,7 +176,7 @@ DO NOT modify code. Audit only. If clean: recommend "<topic> LOCKED → MERGE".
 
 ## Notes on usage
 
-- **The Type-design category** is conditional — include only when the layer introduces new types. The score base is `3 × applicable categories`; excluding a category lowers the denominator so a non-applicable category isn't scored as a miss.
+- **The Type-design and Code-smell categories** are conditional — Type-design only when the layer introduces new types, Code-smell only on code subjects. The score base is `3 × applicable categories`; excluding a category lowers the denominator so a non-applicable category isn't scored as a miss.
 - **The Error-handling category** is where the silent-failure-hunter patterns earn their keep. The expanded sub-bullets surface anti-patterns the top-level wording alone won't.
 - **The Test-coverage category** sub-bullets catch the vacuous-coverage recurring failure.
 - **Reviewer-prompt vs audit-state-notes**: this template is the WHAT-to-look-for; audit-state-notes is the CONTEXT (PK notes, special dimensions, disposition table). Both go in the dispatch.

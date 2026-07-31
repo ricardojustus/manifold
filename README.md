@@ -112,7 +112,7 @@ reviewing what your agent assembled. (2) If you opt into enforcement hooks, you 
 |---|---|
 | **27 skills** | The full arc: session lifecycle (`session-start` to `session-end`, compaction prep/resume), the build pipeline (`brainstorming`, `council`, `spec-writing`, `spec-adherence`, `audit-cycle`), dispatch (`brief-authoring`, `parallel-workstreams`, `merge-and-cleanup`), plus `debugging-discipline`, `test-driven-development`, `eval-building`, `research`, `autonomous-work`, `subsystem-grounding`, `inter-session` (peer-session messaging bus), and more |
 | **2 named agent roles** | `reviewer` (the audit's adversarial arm: pinned effort, no Edit tool by design) and `implementer` (dispatched builds: ambiguity protocol, verify-before-done; ships pinned to a frontier model at medium effort, which a spec's dispatch triage overrides per job) |
-| **15 principles** | One-page judgment kernels: grounding vs. confabulation, error triage, right-sized engineering (YAGNI with a floor), model economy, ask-vs-decide, fix-the-class, and others |
+| **17 principles** | One-page judgment kernels: grounding vs. confabulation, error triage, right-sized engineering (YAGNI with a floor), model economy, ask-vs-decide, fix-the-class, and others |
 | **Case-law** | Precedent for calls rubrics can't make: finding severity, dispatch sizing |
 | **METHODOLOGY.md** | The build pipeline end-to-end: vision, adversarial council review, plan, locked spec, implementation, multi-round audit to a 0-Critical/0-High/0-Medium gate, merge |
 | **ENFORCEMENT.md** | The enforcement ladder: prose first, native permission layer + classifier rules next, hooks by taxonomy last (including the exit-code footgun that makes naive deny hooks fail open) |

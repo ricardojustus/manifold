@@ -43,7 +43,8 @@ Rule applies to brief authoring, not only code authoring.
 
 A **concrete claim** is any of: file path · directory existence · function/class/symbol name ·
 line-number citation · schema column or enum value · pattern reference ("follow the existing X
-pattern") · cross-reference to a sibling spec/doc · line-count claim · module-convention claim.
+pattern") · cross-reference to a sibling spec/doc · line-count claim · module-convention claim ·
+**system-behavior claim** ("X writes to Y", "A is read-only", "the daemon does Z on boot").
 
 Probes, before pasting:
 
@@ -54,6 +55,10 @@ Probes, before pasting:
 - Pattern reference → confirm the pattern exists in code; if it doesn't, you've invented a convention
 - Cross-reference → `ls <sibling-spec-path>` (specs get renamed; verify the current filename)
 - Line count → `wc -l <file>`
+- System-behavior claim → read the code path that produces the behavior (or run the probe) and
+  cite file:line in the brief. NEVER source a behavior claim from a doc that is itself under
+  correction, or from an upstream spec/plan — a GIVEN claim ships to the receiving agent as
+  ground truth, and a false one becomes a shipped false claim at the implementer's hands.
 
 **If you cannot verify a claim, do one of three things — never the fourth:**
 

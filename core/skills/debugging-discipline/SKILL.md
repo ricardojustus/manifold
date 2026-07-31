@@ -1,7 +1,7 @@
 ---
 name: debugging-discipline
 description: >-
-  Hunts a live bug to its ROOT CAUSE before changing anything — trace backward from the symptom, one hypothesis at a time, fix test-first, sweep the defect class; 3 failed attempts → stop and escalate. Use for "debug X", "it's broken", "find the root cause", "/debugging-discipline". Diagnoses a live defect, unlike the pre-merge gates (audit-cycle, spec-adherence).
+  Hunts a live bug to its ROOT CAUSE before changing anything — build a fast red feedback loop first, trace backward from the symptom, one hypothesis at a time, fix test-first, sweep the defect class; 3 failed attempts → stop and escalate. Use for "debug X", "it's broken", "find the root cause", "/debugging-discipline". Diagnoses a live defect, unlike the pre-merge gates (audit-cycle, spec-adherence).
 allowed-tools: Read, Edit, Bash, Grep, Glob
 ---
 
@@ -22,6 +22,25 @@ invariants / regression test) is the *contract* you produce — this is the proc
 **The hard gate of the whole skill: no fix is written until the root cause is named.** A fix applied
 before the cause is understood is a guess, and a guess that moves the symptom is worse than no fix.
 
+- **Build the feedback loop FIRST — it is most of the diagnosis.** Before tracing, before
+  instrumenting: construct ONE command that goes RED on this bug's exact symptom — a failing test
+  at whatever seam reaches the bug, a curl against a dev server, a CLI run diffed against
+  known-good, a replayed captured trace, a throwaway harness around the bug path. Run it once and
+  keep the invocation + output. Everything downstream — bisection, hypothesis-testing,
+  instrumentation — consumes this loop; reading code to build a theory before the command exists
+  is the exact failure this skill stops. A bug you can't reproduce on demand can't be verified
+  fixed.
+  - **Tight beats merely-existent** — treat the loop as a product: faster (seconds, not minutes),
+    sharper (assert the specific symptom, not "didn't crash"), more deterministic (pin time, seed
+    RNG, isolate filesystem/network).
+  - **Intermittent bugs: raise the reproduction rate rather than demanding a clean repro** — loop
+    the trigger, parallelize, add stress, narrow timing windows, until the rate is debuggable.
+  - **Minimise once red** — cut inputs, callers, config, and steps one at a time, re-running the
+    loop after each cut, until every remaining element is load-bearing. The minimal repro shrinks
+    the hypothesis space and becomes phase 4's regression test.
+  - **Genuinely cannot build a loop → stop and say so explicitly** — list what you tried; ask the
+    operator for the reproducing environment, a captured artifact (log dump, trace, recording), or
+    permission for temporary instrumentation. Do NOT proceed to hypotheses loopless.
 - **An error code / message is not a cause** — it's a symptom (the constitution's error-triage rule
   is the parent discipline). A 500, a null-deref, a timeout, a non-zero exit tells you *where it
   surfaced*, never *why*. The cause is unverified until traced to its origin with evidence in hand.
@@ -31,8 +50,6 @@ before the cause is understood is a guess, and a guess that moves the symptom is
 - **Instrument the boundaries** — logging / asserts / a breakpoint at module and function edges along
   the suspected path. Read the ACTUAL values crossing each boundary; don't infer them. The bug lives
   at the first boundary where the value is already wrong.
-- **Reproduce it reliably first** — a bug you can't reproduce on demand can't be verified fixed. If
-  intermittent, find the condition that makes it deterministic before going further.
 
 **Output of phase 1**: a one-sentence root cause you can state and point to in the code. If you
 can't, you're not done investigating — do not proceed to a fix.
@@ -61,8 +78,8 @@ to work? The two have different root-cause shapes.
 ## Phase 4 — Fix (failing test first, then the fix, then the sweep)
 
 1. **Write the failing test first** — encode the reproduction as a test that fails NOW, for the
-   root-cause reason. That turns "the symptom went away" into "the defect is provably gone" and
-   guards the regression.
+   root-cause reason (the minimised repro from the phase-1 loop IS this test). That turns "the
+   symptom went away" into "the defect is provably gone" and guards the regression.
 2. **Then make it pass** with the minimum change addressing the *root cause*, not the symptom.
    Surgical: touch only what the root cause requires.
 3. **Then sweep for the same defect class elsewhere** — a root cause is rarely unique; the same
