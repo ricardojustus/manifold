@@ -11,6 +11,8 @@ most commonly because the session fell back below the frontier tier and the coun
 tier out-writes the fallback main. The main loop narrows to framing work, dispatching it well,
 verifying what comes back, and carrying decisions to the operator.
 
+> Project bindings may amend this contract — read the "## Project bindings" section (end of file) first.
+
 **No second model family available → this posture is unavailable.** The fallback is the sibling
 `brain-mode` posture (a stronger main-loop model where the project has one) or simply staying inline
 and authoring in-session.
@@ -19,7 +21,8 @@ and authoring in-session.
 orchestrator mode" / "defer everything to <the counterpart>" activates it;
 "implement this with <the counterpart>" does NOT — that dispatches ONE task via
 `cross-model-dispatch`, posture off. A posture declaration names the SESSION's way of working; a
-delegation names a task. Genuinely ambiguous phrase → ask. Once on, the posture survives small
+delegation names a task. Genuinely ambiguous phrase → ask; propose the posture if you think it's
+warranted, but never slide into it because quota feels tight. Once on, the posture survives small
 intervening chat; until ended, every qualifying junction routes out.
 
 ## The contract
@@ -58,7 +61,7 @@ intervening chat; until ended, every qualifying junction routes out.
 | Implementation (specced) | `cross-model-dispatch`, implementer tier (reasoning tier if complex — the seat table decides, unchanged) |
 | Implementation (un-specced) | `cross-model-dispatch`, reasoning tier (the ALWAYS row — posture changes nothing) |
 | Review / pre-merge | `audit-cycle`, unchanged — with the builder-independence note: the counterparty built it, so the other family's reviewer seat carries the round |
-| Tiny mechanical fix (typo, path, config one-liner) | Main loop just does it — dispatching a one-line fix is orchestration theater in the other direction |
+| Tiny mechanical fix (typo, path, config one-liner) | Main loop just does it — a **theater dispatch** of a one-line fix is orchestration theater in the other direction; judgment beats ritual |
 
 ## What is deliberately NOT deferred
 
@@ -67,9 +70,10 @@ the cross-model doctrine protects. In this posture the main loop is MORE of a re
 it authored nothing, so its read of the harvested work is the fresh-eyes read. Spec-adherence,
 audit rounds, verification, severity dispositions, and every operator-facing decision stay home.
 
-**The thinking.** Orchestrator ≠ relay. The main loop still forms its own position at every
-junction (what should the brief ask for? is the harvest right? does the draft fit the
-architecture?).
+**The thinking.** Orchestrator ≠ relay — **relay drift** (forwarding artifacts between the
+counterparty and the operator without verifying or forming a position) is a failed posture. The
+main loop still forms its own position at every junction (what should the brief ask for? is the
+harvest right? does the draft fit the architecture?).
 
 ## Ending the posture
 
@@ -78,15 +82,3 @@ architecture?).
   ending it; say which reading you took if ambiguous).
 - The session ends. The posture is session-scoped: note it in the session's state/journal so the
   NEXT session knows it was a posture, not a new permanent process — it does not auto-resume.
-
-## Anti-patterns
-
-1. **Silent posture entry** — sliding into deferring-everything because quota feels tight. The
-   posture is operator-declared; propose it if you think it's warranted.
-2. **Gate deferral** — letting the builder's family self-certify. Never.
-3. **Relay drift** — forwarding without verifying or forming a position. A session that just
-   forwards artifacts between the counterparty and the operator has failed the posture.
-4. **Posture creep** — still deferring everything three sessions later because nobody said stop.
-   Session-scoped, always.
-5. **Theater dispatches** — routing trivial mechanical fixes out to preserve posture purity;
-   judgment beats ritual.

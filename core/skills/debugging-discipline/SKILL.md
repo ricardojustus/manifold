@@ -12,10 +12,9 @@ is pattern-matched, something near the symptom changes, the symptom moves, and t
 survives under a new patch. The discipline: **understand before you change, one variable at a time,
 and know when to stop digging and escalate.**
 
-Two neighbors this is NOT: the **pre-merge gates** (`audit-cycle`, `spec-adherence`) verify a
-*finished* change against a spec — this runs earlier, on a *live* defect; and the **bugfix
-artifact** (the methodology's express-lane record: symptom / root-cause / fix / unchanged-behavior
-invariants / regression test) is the *contract* you produce — this is the procedure that fills it.
+## Step 0 — Load the project's coding guidelines where the binding names them
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 ## Phase 1 — Root-cause investigation (NO FIXES YET)
 
@@ -38,6 +37,8 @@ before the cause is understood is a guess, and a guess that moves the symptom is
   - **Minimise once red** — cut inputs, callers, config, and steps one at a time, re-running the
     loop after each cut, until every remaining element is load-bearing. The minimal repro shrinks
     the hypothesis space and becomes phase 4's regression test.
+  - **A test that goes red after a change: run the project's OWN canonical command with NOTHING
+    added** before blaming the environment — your workaround env must not become the measurement.
   - **Genuinely cannot build a loop → stop and say so explicitly** — list what you tried; ask the
     operator for the reproducing environment, a captured artifact (log dump, trace, recording), or
     permission for temporary instrumentation. Do NOT proceed to hypotheses loopless.
@@ -47,6 +48,8 @@ before the cause is understood is a guess, and a guess that moves the symptom is
 - **Trace backward from the symptom** — start where it breaks and walk *upstream* (what called this,
   with what inputs, from what state) until you reach the first place reality diverges from what
   should be true. That divergence is the root cause.
+- **Ground the diagnosis in the spec's NORMATIVE text before any design-intent claim** — code
+  artifacts (dead tables, retained modules, pinned constants) are never evidence of intent.
 - **Instrument the boundaries** — logging / asserts / a breakpoint at module and function edges along
   the suspected path. Read the ACTUAL values crossing each boundary; don't infer them. The bug lives
   at the first boundary where the value is already wrong.
@@ -87,7 +90,9 @@ to work? The two have different root-cause shapes.
    is the **fix-the-class** principle (`.claude/harness/principles/`) — a fix leaving five siblings
    alive is a quarter of a fix.
 4. **Verify unchanged behavior** — confirm the fix didn't move behavior you weren't targeting (the
-   "unchanged-behavior invariants" line the bugfix artifact asks for).
+   "unchanged-behavior invariants" line the bugfix artifact asks for). A verify step runs INSIDE
+   the transaction whose work it verifies — a post-commit check mutates-then-reports (a corrupt
+   store migrates irreversibly, throws once, passes on reopen); an in-transaction check rolls back.
 
 ## The circuit breaker — 3 strikes, then STOP
 
@@ -108,24 +113,5 @@ model produces another failure plus more layered damage. At three:
 
 ## When to invoke
 
-Chasing a live bug, a failing test, a regression, or "why is this happening": "debug X", "it's
-broken", "find the root cause", "/debugging-discipline". Proactively the moment you notice you're
-about to change code near a symptom without having named its cause — that's the failure this skill
-exists to stop.
-
-## Pairs with
-
-The constitution's error-triage rule ("an error code is not a cause" — parent discipline for phase
-1) · the **fix-the-class** principle (`.claude/harness/principles/`, phase 4's sweep) · the **bugfix
-artifact** (the contract this fills) · `audit-cycle` / `spec-adherence` (the pre-merge gates that
-verify the finished fix).
-
-## Graduated diagnosis lessons
-
-- **Diagnosis grounds in the spec's NORMATIVE text before any design-intent claim** — code artifacts
-  (dead tables, retained modules, pinned constants) are never evidence of intent.
-- **A test that goes red after a change: run the project's OWN canonical command with NOTHING added**
-  before blaming the environment — your workaround env must not become the measurement.
-- **A verify step runs INSIDE the transaction whose work it verifies** — a post-commit check
-  mutates-then-reports (a corrupt store migrates irreversibly, throws once, passes on reopen);
-  an in-transaction check rolls back.
+Proactively the moment you notice you're about to change code near a symptom without having named
+its cause — that's the failure this skill exists to stop.

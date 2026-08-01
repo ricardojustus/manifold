@@ -1,7 +1,7 @@
 ---
 name: hookify
 description: >-
-  Mines operator corrections into DRAFT enforcement-rule candidates — triage by the enforcement escalation tests, then write drafts with verbatim receipts to hook-drafts and PARK ratification; NEVER wires a live hook or settings file. Use on "hookify" / "turn that correction into a rule"; judgment-shaped corrections go to memory-discipline.
+  Mines operator corrections into DRAFT enforcement-rule candidates; never wires a live hook or settings file. Use on "hookify" / "turn that correction into a rule" / "capture that correction", or when pointed at a correction log and asked what should become enforcement; judgment-shaped corrections go to memory-discipline.
 ---
 
 # Hookify — corrections into draft enforcement candidates
@@ -15,12 +15,13 @@ orders the homes: a **prose rule** (a judgment the model reads and applies — t
 classifier enforces with judgment), an **informational or anti-escape hook**, or — rarest,
 operator-commissioned only — a **deny hook**. This skill triages and drafts; it installs nothing.
 
-**The one divergence from the upstream:** upstream `hookify` activates the rule it generates. **This
-harness never does** — a session authoring its own live enforcement is
-`.claude/harness/ENFORCEMENT.md` invariant #3 (no mid-session config / permission
-self-modification). Output is always a DRAFT parked for the operator; wiring is a separate, human,
-out-of-band step. Writing into `.claude/harness-hooks/` or a `settings.json` means you have left
-this skill's lane — stop.
+Output is always a DRAFT parked for the operator; wiring is a separate, human, out-of-band step
+(Step 4 holds the boundary).
+
+## When to invoke
+
+Proactively at the end of a run that accumulated several corrections — the consistency-audit /
+retro backlog item is the scheduled version of this; until it ships, run hookify by hand.
 
 ## Step 1 — Gather the correction signals
 
@@ -81,8 +82,8 @@ whose block path is never tested can fail open in exactly the case it exists for
 
 ## Step 4 — Write drafts to the hook-drafts dir (NEVER live paths)
 
-Write each draft to the project's **`hook-drafts/` directory** (the binding names the concrete
-location; it may override the default) — a staging area, inert by construction. **Never** write into
+Write each draft to **`.claude/hook-drafts/`** (the default; a project binding may override the
+location) — a staging area, inert by construction. **Never** write into
 `.claude/harness-hooks/` (the installed-but-unwired bindings), and **never** touch any
 `settings.json` or permission file: those are the live-enforcement surfaces, and a session editing
 its own enforcement is the invariant-#3 violation this skill exists to avoid. The draft dir is the
@@ -96,13 +97,6 @@ as prose in memory-discipline / drop) but do not act on it. **Post-ratification 
 human's manual step** (per the hooks README): they move the draft into the overlay's `hooks/`, add
 the block-path selftest cases, and wire it into `settings.json` out-of-band — the same
 decide-and-park discipline `autonomous-work` uses for owner-gated calls.
-
-## When to invoke
-
-The operator says "hookify", "turn that into a rule", "capture that correction", or points you at a
-correction log and asks what should become enforcement. Proactively at the end of a run that
-accumulated several corrections — the consistency-audit / retro backlog item is the scheduled
-version of this; until it ships, run hookify by hand.
 
 ## Pairs with
 

@@ -1,7 +1,7 @@
 ---
 name: compact-resume
 description: >-
-  Picks work up AFTER a compaction: reads the compact-prep checkpoint, re-reads its load-bearing sources IN FULL (the summary is lossy), re-invokes dropped skill bodies, resumes at the pinned point — files beat memory. Use on "pick up", "resume", "we just compacted", "/compact-resume". Not a cold start (session-start).
+  Picks work up AFTER a compaction, where the surviving summary is lossy and files beat memory. Use on "pick up", "resume", "we just compacted", "/compact-resume". Not a cold start (session-start).
 allowed-tools: Read, Grep, Glob, Bash
 ---
 
@@ -16,6 +16,8 @@ not. Where your recollection and a file disagree, the file is authoritative — 
 argue with it.
 
 ## The pickup, in order
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 **1. Read the checkpoint — your resume map.** The project's **compaction-checkpoint** file
 (written by `compact-prep`), end-to-end; it's short. It gives the arc, the resume point, what to
@@ -53,8 +55,8 @@ verbatim re-reads, not the summary.
 
 A **repeated compact → refill → compact cycle** on the same arc without net forward progress means
 **stop and escalate**. Repeated compaction on one stuck point usually means the work needs a
-decomposition, a decision the operator must make, or a smaller scope. After roughly two or three
-refill cycles on the same wall, write up where you're stuck (what's done, what's blocking, the
+decomposition, a decision the operator must make, or a smaller scope. On the **second** refill
+cycle against the same wall, write up where you're stuck (what's done, what's blocking, the
 specific decision or split needed) and surface it. (`autonomous-work` names the same guard for
 unattended loops.)
 
@@ -67,10 +69,9 @@ plainly; that's signal the summary drifted, and exactly what this skill exists t
 
 ## When to invoke
 
-Right after a compaction on a long-horizon arc: "pick up" / "resume" / "we compacted" /
-"/compact-resume" — or you notice your context looks summarized (a checkpoint file exists, more
-recent than your apparent context) and you're about to act. Do NOT use for a true fresh session
-with zero context (use `session-start`); the tell: fresh session = no conversation summary at all;
+Right after a compaction on a long-horizon arc — or you notice your context looks summarized (a
+checkpoint file exists, more recent than your apparent context) and you're about to act. Do NOT
+use for a true fresh session with zero context (use `session-start`); the tell: fresh session = no conversation summary at all;
 compact-resume = you have a summary but lost detail.
 
 ## Pairs with

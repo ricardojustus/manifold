@@ -1,7 +1,7 @@
 ---
 name: research
 description: >-
-  Runs the research protocol before acting on a hypothesis, starting a phase, or committing to an architectural decision — dispatches a pre-fed research subagent honoring strict source priority, empirical testing last. Use for "how should we X", "research Z", "look into W", or verifying a third-party claim.
+  Runs the research protocol before acting on a hypothesis, starting a phase, committing to an architectural decision, updating a runtime/CLI/SDK/language dep or any tool, or debugging something unfamiliar. Use for "how should we X", "research Z", "look into W", or verifying a third-party claim.
 ---
 
 # Research
@@ -29,6 +29,8 @@ project's *own* current state (`git log`, the state snapshot, the lessons store 
 not research).
 
 ## Source priority (strict order)
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 Top-down; don't skip to web sources until the project-internal layers are exhausted. The **binding
 names the concrete sources at each rung**; the order is universal.
@@ -102,23 +104,11 @@ load-bearing claim against a primary source. **Separate facts from recommendatio
 sources, recommendations name the tradeoff. **Present findings to the operator before implementing**
 (Cardinal Rule step 3).
 
-## Failure modes this prevents
-
-First-hypothesis trap (acting on theory X, discovering hours later it was wrong) · third-party claim
-adoption without primary sources · re-deriving solved problems (the pre-feed defeats this) · stale
-information treated as current (dates matter) · empirical-first when docs exist.
-
-## Honest about uncertainty
-
-Conflicting sources, inconclusive data, or no authoritative answer: SAY SO. Confident prose over a
-shaky foundation is worse than explicit uncertainty.
-
-- "Research found X, Y, and Z, which disagree. I can't resolve this without an empirical test or
-  your input."
-- "The docs don't specify this; the most-starred community implementation does X, but I can't
-  verify that's officially endorsed."
-- "No primary source available — here's what I inferred from `<secondary signal>`, flagged as
-  unverified."
+**Name the shape of the uncertainty, not just its presence** — conflicting sources, an unendorsed
+community answer, and an inference from a secondary signal are three different results, and the
+operator acts differently on each: "X, Y and Z disagree; unresolvable without an empirical test or
+your input" · "the docs don't specify it; the most-starred implementation does X, officially
+endorsed unverified" · "no primary source — inferred from `<secondary signal>`, flagged unverified".
 
 ## Related
 

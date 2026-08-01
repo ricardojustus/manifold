@@ -6,9 +6,11 @@ description: >-
 
 # Spec-Writing
 
-Authoring a spec is two jobs braided: aim it at the **right target**, and make it a **good spec**. Nothing else in the pipeline covers either — `brief-authoring` grep-verifies that references *exist*, `audit-cycle` checks internal consistency against reality, but **both take the spec's scope as given.**
+Authoring a spec is two jobs braided: aim it at the **right target**, and make it a **good spec**. Nothing else in the pipeline covers either.
 
 ## Step 0 — Frame-reset, THEN classify the regime
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 **Frame-reset first (four sentences, always).** Restate the change stripped of its solution nouns and risk labels: the plain operator outcome · the cheapest recovery if it fails (in operator labor + downtime) · the simplest direct implementation · and the operator posture-receipt that authorizes anything heavier — or `N/A — no heavier posture proposed` for a simple direct change. If a heavier frame (a migration ceremony, phase machine, soak, rollback rehearsal, an assurance program) has no posture receipt, or its recovery story contradicts the plan's risk label, it is not yet authorized — halt to the operator before drafting the body (`operator-owns-criticality-and-complexity`). Only then:
 
@@ -32,6 +34,13 @@ Emit the verdict as the first line of the spec, e.g. `Regime: LIGHT — single-m
 Name **every module a unit of data passes through, in the system as it WILL be** — not just as it is today, and not just the one subsystem you assume you're touching.
 
 > **Surface traces are NOT grounding (HARD).** A function signature, a `grep` hit, or a doc-comment header tells you a thing *exists* — never *why it is built that way* or *how data actually flows*. **Read the actual specs to ground on the architecture's REASONING** — the LOCKED specs that govern the surface you're touching AND their **stale/archived** predecessors (a superseded spec still records *why* the design is shaped as it is). Read the project's **documentation-retrieval system** and the real code paths **end-to-end**. **Do not write the spec until the system is understood FULLY** — the bar is: you can explain the design's rationale and its rejected alternatives *from the sources*, not from inference.
+>
+> **A third-party service gets a half-day REAL-CONTENT spike before any spec locks around it** —
+> verdict shape + fitness/false-positive rate on real inputs, never the vendor's docs alone (a
+> locked-and-built integration was torn out when first real content refuted the documented behavior).
+> **A multi-surface protocol is designed by walking its lifecycle END-TO-END before writing** —
+> every creation path × file→surface→act→clear→complete. Reviewers verify a design; audit rounds
+> are the expensive way to finish one.
 
 - Read the **adjacent** modules' reference docs, not only the subsystem's own. Consult the project's current-state reference corpus + documentation-retrieval system. **Then read the governing specs** (the LOCKED spec store + its archive) for the surface — the reasoning lives there, not in code comments. Plan docs tell you intent; reference docs tell you what's live *right now*; specs tell you *why it's built this way*.
 - Produce a **literal trace**: `Source → moduleA → moduleB → … → store`, and mark the insertion point.
@@ -58,6 +67,9 @@ The named gates:
 - **Coverage gate.** Walk the completeness taxonomy in `references/coverage-and-self-review.md` and mark each area Clear / Partial / Missing. It's how you notice the dimension you forgot (failure modes, observability, security posture) before a reviewer does.
 - **Complexity gate.** If the spec deviates from the simplest thing that works, add a **Complexity-Tracking row**: *what you added | why it's needed | which simpler alternative you rejected and why.* A row that can't be justified is a signal to simplify, not to waive.
 - **Success-criteria gate.** Every spec states how you'll know it's satisfied, in objectively checkable terms (this is what the audit gate then verifies). "Works correctly" is not a success criterion.
+- **Prior-rulings recall gate.** For every pinned constant and every process gate (waits, windows, thresholds, retry/promotion policies), ONE query against the project's recall system (where the overlay names one) for prior operator rulings on that mechanism class — operator doctrine is often thread-local; the recall system sees across threads. A ruling found = inherit it or surface the conflict; never silently re-derive convention. Attest: `Prior-rulings recall gate: PASS — <n> queries` (or `N/A — no pinned constants or process gates`).
+- **Environments gate.** Enumerate the environments the deliverable's flow serves — build, test, release, runtime, and THE OWNER'S OWN MACHINE where the flow differs. Every default path / env-var / host assumption is a concrete claim about a named environment (verify-or-mark-unverified), and the acceptance criteria include one real run in each. Attest the list.
+- **Advisor gate (where the runtime has an advisor — else `N/A`).** One advisor consult on the finished draft: fresh eyes on wrong-target framing before audit rounds are paid for. Attest: `PASS — consult recorded` or `N/A`.
 - **Visual-surface gate (only when the spec governs a UI / rendered / experiential surface — else `N/A`).** Do NOT lock a spec that pins a *visual* decision (a layout, a component split, a screen) unless the actual surface has been **seen rendered** — opened, smoke-driven, looked at. Attest: `Visual-surface gate: N/A` or `PASS — surface observed at <where>`.
 - **Resource-envelope gate (when the spec's implementation or runtime consumes model calls / quota / metered spend — else `N/A` with one line of justification).** An unpriced spec **cannot lock.** Attest the envelope: **(1) the cost tier** (the overlay binds tier boundaries to observed account physics — order-of-magnitude buckets, never precision arithmetic against unpublished limits); **(2) for Heavy-tier+, the one-line multiplication** (`items × calls-per-item × token weight × recurrence`), with guessed numbers *named as guesses*; **(3) dollars, mandatorily, wherever metered API is involved** (expected + worst case); **(4) for Heavy-tier+ runs, the closed loop**: the hard call/token caps the runner enforces, the bounded canary that runs first, and the halt-and-reopen rule when observed usage exceeds the envelope — *an approved estimate is not an operational control*. A genuinely unknown capacity is recorded `UNKNOWN → capped measurement spike`, never a fabricated number. **Every pinned constant** (sample size, threshold, density, seat count) carries its cost implication inline where it is pinned. Attest: `Resource-envelope gate: N/A — <why>` or `PASS — tier <T>, table in §<n>`.
 
@@ -79,23 +91,16 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 
 ## Pre-flight checklist (before handing the spec to audit-cycle)
 
-- Regime declared on line 1?
-- Top summary present as the FIRST section — self-sufficient, plain-language, every load-bearing choice surfaced for yes/no?
-- (If the runtime has an advisor) one advisor consult on the finished draft — fresh eyes on wrong-target framing before audit rounds are paid for?
-- **System understood FULLY from the actual specs (LOCKED + stale/archived) + the documentation-retrieval system + end-to-end code — not surface traces? Can you explain the design's reasoning + rejected alternatives from the sources?**
-- (HEAVY) Step-1 trace done, insertion point on the **live** path confirmed?
-- (HEAVY) Axis-2 scope validated with the owner before the body was written?
-- Gate-attestation block filled: Constitution PASS, Clarification ≤3, Coverage walked, Complexity rows justified, Success criteria measurable, Visual-surface seen-or-N/A, **Resource envelope priced-or-N/A (unpriced = cannot lock; Heavy+ carries caps + canary + halt rule)**?
-- **Prior-rulings recall gate**: for every pinned constant and every process gate (waits, windows, thresholds, retry/promotion policies), ONE query against the project's recall system (where the overlay names one) for prior operator rulings on that mechanism class — operator doctrine is often thread-local; the recall system sees across threads. A ruling found = inherit it or surface the conflict; never silently re-derive convention.
-- Goals **and** Non-Goals explicit?
-- **Environments enumerated** — build, test, release, runtime, and THE OPERATOR'S OWN MACHINE
-  where the flow differs? Every default path / env-var / host assumption is a concrete claim
-  about a named environment (verify-or-mark-unverified), and the acceptance criteria include
-  one real run in each environment the deliverable's flow serves?
-- (Amendment) delta-scoped + sibling-coordination section present + no audit-trail in body?
-- Concrete code references grep-verified (per `brief-authoring`) — existence is necessary even though it isn't sufficient?
-- Implementation-dispatch triage filled (tier + effort + lane shape + cross-model role + rationale)? (At dispatch, Agent-tool implementations use the `implementer` role with the tier passed as the per-invocation `model` param.)
-- Step-5 self-review clean?
+A roll-call, not a re-description — each line names something already done above:
+
+- Regime declared on line 1 (Step 0).
+- System grounded from the actual sources, not surface traces (Step 1's hard rule — owed by every spec, both regimes).
+- Step 4's five always-earn pieces present: top summary FIRST, gate-attestation block + Complexity-Tracking table, Goals **and** Non-Goals, Decisions with rejected alternatives, implementation-dispatch triage. (At dispatch, Agent-tool implementations use the `implementer` role with the tier passed as the per-invocation `model` param.)
+- Every Step-3 gate attested or explicitly `N/A`: Constitution · Clarification-cap · Coverage · Complexity · Success-criteria · Prior-rulings recall · Environments · Advisor · Visual-surface · Resource-envelope (**unpriced = cannot lock**).
+- (HEAVY) Step-1 trace done with the insertion point on the **live** path, and Step-2 Axis-2 scope validated with the owner before the body was written.
+- (Amendment) delta-scoped + sibling-coordination section present + no audit-trail in body.
+- Concrete code references grep-verified (per `brief-authoring`).
+- Step-5 self-review clean.
 
 ## When to invoke / when to skip
 
@@ -109,12 +114,3 @@ Before declaring the spec ready for `audit-cycle`, run one author-side pass that
 - **doc-placement** — *where* the spec file belongs in the corpus.
 - **audit-cycle** — the reviewer gate that runs *after* the spec is written. This skill gets the spec to the point it's worth auditing.
 - **spec-adherence** — the impl-side conformance gate that verifies the *code* obeys this spec, after implementation and before audit-cycle. Step-5 self-review here is the author-side analogue.
-
-## Graduated grounding lessons
-
-- **A third-party service gets a half-day REAL-CONTENT spike before any spec locks around it** —
-  verdict shape + fitness/false-positive rate on real inputs, never the vendor's docs alone (a
-  locked-and-built integration was torn out when first real content refuted the documented behavior).
-- **A multi-surface protocol is designed by walking its lifecycle END-TO-END before writing** —
-  every creation path × file→surface→act→clear→complete. Reviewers verify a design; audit rounds
-  are the expensive way to finish one.

@@ -39,9 +39,9 @@ the answer made relevant. Let the operator's answers drive the branch order.
    different* ways to meet the goals (e.g. minimal-change vs clean-rebuild vs pragmatic-middle).
    For each, name what it optimizes for and what it costs. If you can only think of one, you
    haven't explored enough — push for the approach the operator hasn't considered.
-4. **Challenge assumptions and probe trade-offs — gently.** Surface the load-bearing assumptions
+4. **Challenge assumptions and probe trade-offs.** Surface the load-bearing assumptions
    under the favored approach and test them: "this assumes X — is that true?" Probe the trade-offs
-   between approaches honestly. Gently: stress the idea, not the person.
+   between approaches honestly. Stress the idea, not the person.
 5. **Converge.** Once the approaches have been weighed, help the operator pick a direction and
    sharpen it into the Vision draft below.
 
@@ -59,33 +59,25 @@ the answer made relevant. Let the operator's answers drive the branch order.
 ## The output — a Vision draft Phase 1 can accept
 
 Brainstorming ends with an artifact, not just a good conversation. Write a **Vision draft** in the
-shape `.claude/harness/METHODOLOGY.md` Phase 1 expects:
+shape `.claude/harness/METHODOLOGY.md` Phase 1 defines — that doc owns the required top summary
+and acceptance criteria. What the interview feeds into that shape:
 
-- **Top summary (REQUIRED, the first section)** — a plain-language, skimmable summary:
-  clear, in the operator's terms, jargon-free, concise, good to read. **Assume it is the ONLY
-  part the operator reads**: every load-bearing choice visible there, surfaced for explicit
-  yes/no — the failure it prevents is a 5,300-word vision doc whose inverted architecture
-  shipped unread.
-- **The problem** — what this is for and who it serves (from step 1).
-- **The chosen approach** — the direction converged on, plus a one-line note on the alternatives
-  considered and why this one (steps 3-5), so the Council sees the road not taken.
-- **Constraints / scope** — what's in, what's out (step 2).
-- **Acceptance criteria / definition of done** — **falsifiable** criteria a third party could judge
-  the finished thing against. Non-negotiable: without concrete acceptance criteria the downstream
-  audits and Council have nothing objective to check and degrade into opinion. If the brainstorm
-  can't produce falsifiable criteria yet, that itself is a finding — the goal isn't clear enough
-  to build.
+- **The problem** (step 1) and **constraints / scope** (step 2).
+- **The chosen approach, plus the roads not taken** (steps 3-5) — a one-line note on each
+  alternative weighed and why it lost. Only the interview knows them; without the note the Council
+  re-argues options you already closed.
+- **Acceptance criteria the interview can actually produce.** This is the interview's exit
+  condition: if it can't yet state criteria a third party could judge the finished thing against,
+  that is a finding — the goal isn't clear enough to build, and the brainstorm isn't done.
 
 Hand this draft to Gate A / the Council for adversarial review. It is a draft, not a lock: the
 Council may send it back, and that loop is the methodology working.
 
 ## When to invoke
 
-- The operator says "help me think through X", "brainstorm", "I have a rough idea", "let's figure
-  out what to build", "/brainstorming" — anytime there is not yet a Vision, unless the effort
-  fails the one-sitting test, which routes to `wayfinder`.
-- Proactively when someone jumps straight to a plan or spec for something whose *goal* was never
-  interrogated — back up and brainstorm the vision first.
+Beyond the asks the description carries: invoke proactively when someone jumps straight to a plan
+or spec for something whose *goal* was never interrogated — back up and brainstorm the vision
+first.
 
 ## Pairs with
 

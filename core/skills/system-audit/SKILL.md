@@ -27,6 +27,8 @@ A STRUCTURED audit of a *whole subsystem*, producing a severity-sorted finding l
 
 ## Procedure
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 ### 1. Scope the audit clearly
 
 Before writing any findings, nail down:
@@ -47,11 +49,15 @@ Read every file in scope — not skim, read. Build a map:
 
 **This inventory often IS the reference-doc writeup for the subsystem.** If no current-state reference doc exists, the audit is a good moment to produce one — two outputs from one read pass (see `reference-doc-writing`).
 
+**Done when**: every in-scope module has a named responsibility and a named log surface, and the not-in-the-system list is written down. A module you can't describe that way is one you haven't read yet.
+
 ### 3. Identify findings
 
 For each potential finding, capture: **What** (one sentence), **Where** (file + line range, or a concept — not all findings are file-scoped), **Severity** (rubric below), **Impact** (the concrete failure mode if unaddressed), **Detection** (how you found it, how someone else would verify it).
 
-### Severity rubric
+**Done when**: every module in the step-2 inventory has been walked for findings and is accounted for — either it carries findings, or it is explicitly recorded as clean. "I stopped finding things" is not the exit.
+
+#### Severity rubric
 
 | Severity | Meaning |
 |---|---|
@@ -77,7 +83,7 @@ Write to `<audits-dir>/<subsystem>-audit-<YYYY-MM-DD>.md`, on the template in `r
 
 ### 7. Optional: adversarial subagent pass
 
-For subsystems where audit rigor matters (security-sensitive, architectural, pre-production): after your draft, dispatch a context-less adversarial subagent, pre-fed with the same sources you read, to critique the audit *itself* — brief in `references/artifact-template.md`. Fold its findings back into the artifact; flag where its severity differs from your initial read. (The tightly-scoped, security-focused version of this pattern is its own skill — `scoped-adversarial-audit`.)
+For subsystems where audit rigor matters (security-sensitive, architectural, pre-production), run an adversarial critique of the draft audit. Method and brief: [`references/artifact-template.md`](references/artifact-template.md), "Optional adversarial-subagent critique brief".
 
 ## After the audit
 
@@ -87,7 +93,6 @@ The audit artifact is the INPUT to hardening work, not the work itself. Ship the
 
 ## Related
 
-- `scoped-adversarial-audit` — the tightly-scoped, security-focused adversarial single-pass (the subagent-critique pattern in isolated form).
-- `audit-cycle` — the pre-merge multi-round parallel-reviewer cycle with a lock gate; different trigger, different output.
-- `reference-doc-writing` — the inventory in step 2 often doubles as the subsystem's current-state doc.
+- `scoped-adversarial-audit` · `audit-cycle` — the two neighbouring audit skills; "Don't use for" above carries the routing.
+- `reference-doc-writing` — the second output of step 2.
 - `doc-placement` — why the audit artifact stays in the audits directory, not the reference corpus.

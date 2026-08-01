@@ -1,7 +1,7 @@
 ---
 name: cross-model-dispatch
 description: >-
-  Dispatches the cross-model counterparty as a BUILDER — an implementer working a brief, or a spec-drafter whose draft the main model revises. Use on "have <counterpart> build this", "send codex as implementer", "<counterpart> drafts the spec". Not the audit lens (audit-cycle) or the peer consult (cross-model-advisor).
+  Dispatches the cross-model counterparty as a BUILDER — an implementer working a brief, or a spec-drafter whose draft the main model revises. Use on "have <counterpart> build this", "send codex as implementer", "send SOL / LUNA as implementer", "Codex Worker", "Codex subagent", "<counterpart> drafts the spec". Not the audit lens (audit-cycle) or the peer consult (cross-model-advisor).
 ---
 
 # Cross-Model Dispatch — the counterparty as builder
@@ -25,7 +25,7 @@ faithful — but it UNDER-BUILDS when the contract doesn't carry the judgment fo
 |---|---|---|
 | Implementation from a LOCKED spec (normal stakes) | implementer tier | The spec carries the judgment; the seat needs fidelity, not invention. |
 | Implementation from a LOCKED spec, complex (stakes rubric high on any dimension) | reasoning tier | Density the implementer tier under-builds on first contact. |
-| Implementation WITHOUT a locked spec | **reasoning tier, ALWAYS** | No spec = the judgment must live in the builder. Operator hard rule — never the implementer tier here. |
+| Implementation WITHOUT a locked spec | **reasoning tier, ALWAYS** | No spec = the judgment must live in the builder. Never the implementer tier here — "it's a small change" is not an exception. |
 | Spec / design-doc first draft | reasoning tier | Drafting IS judgment; the value is a different family's aggressive code-reading. |
 
 When unsure whether an impl is "complex," run the stakes rubric (size / novelty / design-choice /
@@ -33,6 +33,8 @@ complexity / knowledge-gaps / blast-radius / security, max-of-dimension). One di
 reasoning tier.
 
 ## The procedure
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 1. **Triage the seat** from the table above. Say which lane and why in one line.
 2. **Author the brief — invoke `brief-authoring`.** All four obligations apply unchanged (GIVEN
@@ -75,13 +77,3 @@ reasoning tier.
 - **Not the rescue lane** — rescue is diagnostic takeover when the main session is stuck; this is
   planned delegation of fresh work.
 - **Never a gate substitute** — who built it changes nothing about what reviews it.
-
-## Anti-patterns
-
-1. **Implementer-tier un-specced work** — the table's ALWAYS row exists because the operator ruled
-   it; "it's a small change" is not an exception.
-2. **Brief-free dispatch** — pasting a chat paragraph instead of a `brief-authoring` brief.
-3. **Trusting the builder's own green** — harvest verification is first-hand or it didn't happen.
-4. **Same-family self-review** — the counterparty builds AND its own audit lens carries the round
-   alone. Re-balance the seats.
-5. **Spec draft shipped un-revised** — draft + revise, never draft + rubber-stamp.

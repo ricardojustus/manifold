@@ -1,7 +1,7 @@
 ---
 name: audit-cycle
 description: >-
-  Runs the pre-merge audit ladder — a fresh reviewer subagent plus an independent cross-model reviewer, multi-round to a 0 Critical/High/Medium lock gate. Required for any branch implementing a LOCKED spec, and for spec-LOCK cycles. Triggers "audit before merge", "round-N audit", "fix-pass", "/audit-cycle". Not a whole-subsystem pass (system-audit).
+  Runs the pre-merge audit ladder to a 0 Critical/High/Medium lock gate. Required for any branch implementing a LOCKED spec, and for spec-LOCK cycles. Triggers "audit before merge", "audit X", "round-N audit", "dispatch the audit cycle", "consolidate the audits", "fix-pass", "/audit-cycle". Not a whole-subsystem pass (system-audit).
 ---
 
 # Audit cycle — pre-merge layer-audit dispatch
@@ -14,8 +14,7 @@ reviewer-prompt rubric: `references/reviewer-prompt-template.md`.
 
 **In scope**: a spec-lane branch (implements a LOCKED spec/contract) contract-clean + ready to
 merge · a per-layer / per-chunk pre-merge audit in that lane · spec LOCK cycles · backlog-clearing
-passes (working `audit-backlog.md` items) · "audit X" / "round-1 audit" / "dispatch the audit
-cycle" / "audit before we merge" / "consolidate the audits".
+passes (working `audit-backlog.md` items).
 
 **Out of scope**:
 - Non-spec work (quick fixes, ops, tooling) — the methodology's **light review** by default
@@ -51,7 +50,7 @@ fix-pass, then dispatch the multi-model audit only on a PASS. Conformance ("does
 the contract?") is a different axis from defect-finding ("is the code correct/safe/robust?"):
 divergent code is internally consistent and reads as correct, so it slips a bug-focused audit.
 Procedure lives in **`spec-adherence`** — invoke it, don't re-derive it; it is a tripwire, not
-a proof (never an agent fleet, never a loop — the operator killed that shape).
+a proof: one pass, at most one fix-pass, never an agent fleet and never a loop.
 
 - Does NOT apply to spec-LOCK cycles (no impl to conform).
 - Distinct from Cat #15 (which checks the *spec's* claims about existing code) and from the
@@ -136,7 +135,7 @@ findings). Two lead-owned mechanical checks close the gap:
    artifact size + AC count + regime vs the ROUND-1 baseline, and this round's blocking-finding
    mix — targets ROUND-BORN (material a fix-pass introduced during the ladder) vs ORIGINAL,
    remedies ADD vs CORRECT vs REMOVE.
-2. **The ratchet signature** (measured, 10-arc sweep 2026-07-30 — healthy ladders converge to
+2. **The ratchet signature** (measured across a 10-arc sweep — healthy ladders converge to
    CORRECT-dominated tails regardless of length; the accretion incident ran ADD-dominated
    rounds 2–5): **round ≥3 AND blocking findings majority ROUND-BORN AND remedies
    ADD-dominated → RED FLAG.** Also RED FLAGS, regardless of arithmetic: a regime upgrade
@@ -156,7 +155,7 @@ dropped, one sitting.)
 
 1. **C/H/M = 0** — zero Critical, zero High, zero Medium open findings. *(Default floor; the
    methodology's chunk-risk tier can move it — a Critical chunk drives Lows to zero too, a
-   Low-risk chunk may triage Mediums. `.claude/harness/METHODOLOGY.md` owns the tier→floor
+   Low-risk chunk may triage Mediums. The binding names the doc that owns the tier→floor
    mapping.)*
 2. **The latest pass produced no new C/H/M findings** — a clean-verification pass, not just a
    fixed-everything pass. New Lows triaged into the registries, waived findings, and dismissed
@@ -276,6 +275,8 @@ of whether machinery is wanted).
 
 ## The pattern
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 ```
 implement → commit → [code impls: spec-adherence Gate 0 → PASS @ sha (see `spec-adherence`)] → dispatch round-1 (parallel primary + cross-model)
   → wait for BOTH (consolidating after one reviewer is a recurring waste)
@@ -285,7 +286,7 @@ implement → commit → [code impls: spec-adherence Gate 0 → PASS @ sha (see 
   → fix-pass commit (C/H/M + piggybacked trivial Lows) OR Path A spec amendment OR Path C bounded change
   → dispatch round-2 with disposition table + R2-A/B/C dimensions
   → [spec-LOCK cycles + amendments: spec-vs-plan gate CLEAN]
-  → lock gate met (C/H/M = 0 with standing + no new C/H/M) → merge assert (current head == locked SHA) → MERGE → push → cleanup
+  → lock gate met (C/H/M = 0 with standing + no new C/H/M) → LOCK — what follows LOCK (merge assert, merge, push, cleanup) is the binding's call
   → otherwise: round-3+ (cap 5; round 6 needs the convergence diagnosis + owner ruling)
 ```
 
@@ -338,7 +339,12 @@ Round-1:
    (`git log --oneline <base>..<head>`) · `test-output.txt` (the test-suite run, with any required
    env vars) · `typecheck-output.txt` (the typecheck run, target 0 errors).
 3. Write `AUDIT_DIR/audit-state-notes.md`:
-   - Subject + scope (file allowlist; "implementation as a whole" framing — anti-pattern 1)
+   - Subject + scope (file allowlist) — frame the subject as the **implementation as a whole**,
+     with the diff as context only (rounds 2+ are diff-scoped per the re-audit rule). Where the
+     change amends N surfaces of ONE contract, the subject is the **SET**: cross-surface defects
+     (a state undone by a merged sibling; one term with two meanings across files; a new file
+     breaking the invariant an old file protects) are structurally invisible to per-file review —
+     re-check every NEW surface against the invariant itself.
    - **Governing plan + vision paths** — mandatory FULL reads for every reviewer, and the
      authority sources machinery findings must cite (a reviewer can't cite what it never saw;
      plan kill-rulings scatter across Non-Goals / decision tables / section text, so excerpts
@@ -401,7 +407,12 @@ Wait for both before drafting any fix code; single-pass synthesis on combined fi
 discipline.
 
 **MAX-severity rule**: reviewers disagreeing on severity for the same finding → the higher rating
-wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read source).
+wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read source). A
+cross-lens split on the same text is closed by widening the protection, never narrowing it.
+
+**An owner correction outranks the audit**: when the owner states a finding is factually wrong,
+the AUDIT is wrong — save the correction to the memory store and add it to the PK list (or
+`audit-waivers.md`) for subsequent rounds; the implementation is never reshaped against it.
 
 **Dedup** — match findings across reviewers by `(file:line, issue-class)`:
 - Same `file:line` + same issue → MERGE (keep the more detailed description; MAX severity; max
@@ -418,8 +429,8 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
    bar the skill holds reviewers to. A note merely asserting "the artifact was stale" is not a
    carve-out but an ungrounded severity dodge; MAX-severity stands until the evidence is shown.
 3. Then decide pragmatically: (a) accept-as-resolved with the pasted disposition note, (b) apply
-   the recommended fix anyway if small (the owner's preferred path — concrete code-change
-   closure), or (c) dispatch a focused round-N+1 with fresh artifacts (architectural divergence).
+   the recommended fix anyway if small (concrete code-change closure), or (c) dispatch a focused
+   round-N+1 with fresh artifacts (architectural divergence).
 
 **Disposition paths** (every finding gets exactly one):
 - **Direct fix-pass** — code change, commit on feature branch (C/H/M; trivial Lows piggyback).
@@ -442,6 +453,10 @@ wins, UNLESS the underlying evidence is provably wrong (stale artifact, mis-read
 - **Advisory** — a machinery finding with no authority citation (see Finding authority) →
   recorded in the consolidated findings' advisory table, carried to the operator with the lock
   report; never blocks, never drives a fix-pass
+
+**Every disposition is verified against the CODE, not the intent** — re-read the applied hunk and
+assert the claimed post-state before recording it. An aggregate ("N fixed") is a CLAIM; only
+per-item checks are evidence — verify each, or record the count as the builder's claim.
 
 **A finding naming a defect CLASS closes via a ground-truth sweep, never a spot-fix.** Fixing
 the lines the finding names is not fixing the class — and the sweep is constituted from the
@@ -487,7 +502,8 @@ Round-2 prompts need MORE than round-1 copy-pasted. Add to the reviewer-prompt:
      error-class assertions, comment cruft, mis-mocked seams, scope creep)
    - **R2-C**: registry integrity — waived/backlogged items correctly recorded; a waiver may be
      challenged ONLY by citing the specific fix-pass change that invalidated its rationale
-4. Re-audit scope is TIGHT to the fix diff — don't re-walk wide-surface edges already covered
+4. Re-audit scope is TIGHT to the fix diff — a wide-surface re-audit behind a narrow fix diff
+   spends tokens re-walking edges the earlier round already covered
 
 **Re-audit C/H findings = same-session priority.** Fix them in the SAME session as atomic commits;
 don't queue for "future hardening" — re-audits exist because the implementation team had blind
@@ -503,6 +519,12 @@ output inline · prior decision claim → grep the memory/lessons store, quote t
 result claim → check the tool output, don't paraphrase from working memory. Can't verify → mark
 `[unverified]` and ask.
 
+Two claim shapes that read as evidence and aren't: a **coverage claim** (a test asserting N×M
+combinations while seeding only N+M fixtures) — hold it to positive controls + explicit nested
+loops, per the test-coverage rubric category; and a **builder's self-disclosed limitation** —
+check whether the failure mode it describes is the one the code actually has
+(unclassified-and-failing vs invisible-and-passing are opposite properties).
+
 **Audit-trail location** — per the specs-describe-current-state HARD RULE, artifacts live under
 `<artifact-root>/audits/<topic>/`, never in the spec body: round-N reviewer docs → `AUDIT_DIR` ·
 consolidated findings + disposition tables → `AUDIT_DIR` · the three registries →
@@ -517,50 +539,6 @@ in argv, so a `grep $'\x00'` form degrades to an empty pattern and flags EVERY f
 any hit is re-rendered with escaped bytes (the Evidence Store's value is that claims can be
 re-checked later; a NUL-bearing file silently swallows every future grep with no error). Do not
 rewrite historical arcs' files.
-
-## Anti-patterns (don't regress)
-
-1. **Diff-scoped audit framing** at the pre-merge gate — the subject is the full implementation,
-   the diff is context only. (Rounds 2+ ARE diff-scoped — the re-audit rule, not this.)
-2. **Consolidating after only one reviewer** — wait for BOTH.
-3. **Skipping the cross-model completion-watcher** — recurring failure mode.
-4. **Re-flagging pre-known notes, waived, backlogged, or dispute-dismissed findings** — they're
-   listed explicitly; re-flags are no-op findings. A waiver challenge is legitimate ONLY when it
-   cites the specific change that invalidated its rationale.
-5. **Claimed-verification without evidence** — paste grep output / file excerpts inline.
-6. **Stale artifact reuse** in round-2 — re-capture test-output + typecheck-output POST-fix-pass.
-7. **Audit log inline in the spec** — artifacts go to `audits/`.
-8. **Wide-surface re-audit** when the fix diff is narrow — wastes tokens on covered edges.
-9. **Queuing re-audit C/H findings for "future hardening"** — same-session priority.
-10. **A redundant 3rd primary pass after the primary + cross-model pair already ran.**
-11. **Vacuous-coverage tests** — claims N×M assertions but only seeds N+M fixtures. Defend with
-    positive controls + explicit nested loops (the test-coverage rubric category handles this).
-12. **Conflating literal-source-grounding with truth-grounding** — a "hallucination" finding MUST
-    distinguish (a) source-ungrounded AND truth-ungrounded, (b) false-against-reality, (c)
-    source-weak but truth-strong (NOT a prompt-tightening candidate). Re-flagging (c) as (a) is a
-    process failure.
-13. **Enshrining audit framing against an explicit owner correction** — when the owner says a
-    finding is wrong, the AUDIT is wrong. Don't "fix" the implementation against a factual
-    correction. Save the correction to memory; add it to the PK list (or `audit-waivers.md`) for
-    subsequent rounds.
-14. **Propagating upstream spec claims into briefs/impl without re-verifying against current code**
-    (the confab class — Cat #15) — ratification + LOCK confer design-intent agreement, NOT
-    code-truth; re-grep at brief-write time.
-15. **Fix-passes or audit cycles triggered by Lows alone** — Lows are triaged, piggybacked, or
-    promoted; they never drive a cycle by themselves.
-16. **Dispatching this multi-model audit on freshly-implemented code before spec-adherence Gate 0
-    PASSES** (code impls) — conformance is a separate axis; a contract-divergent impl reads as
-    correct and slips the bug-hunt. Run `spec-adherence` first (see Gate 0).
-17. **Treating an authority-free machinery finding as lock-blocking** — the one-way ratchet in a
-    single move; classify it ADVISORY and let the operator see it in the lock report.
-18. **Declaring a spec LOCK without the spec-vs-plan gate artifact** (spec-LOCK cycles +
-    amendments) — the gate is the only comparison up the chain; skipping it is how a spec
-    quietly repeals a ratified plan decision.
-19. **Dispatching reviewers without the governing plan + vision as mandatory full reads** — the
-    authority discipline is unenforceable by reviewers who never saw the authority sources.
-20. **Hardening a ladder-born mechanism round after round without ever asking whether it should
-    exist** — the mechanism-defect fork (exist? → real? → fix) is mandatory when the defect is
-    IN a mechanism, and its first question is forced at chain length 3 (see Finding authority).
 
 ## Cat #15 — Spec-vs-Reality Confab Check
 
@@ -602,6 +580,16 @@ existing-code-shape that doesn't match; a spec with even ONE Critical confab can
 cross-reference to a non-existent sibling spec OR a named module that's elsewhere. **Low** — minor
 numerical drift (line count off by 1-5), trivial citation precision; triage like any Low.
 
+**Classify a confab on both axes before reporting it**: (a) source-ungrounded AND
+truth-ungrounded, (b) false-against-reality, (c) source-weak but truth-strong — (c) is TRUE
+material with thin citation, so it is not a confab and not a prompt-tightening candidate.
+Ground the call against the project's own reference sources (the binding names them) before
+calling any claim invented.
+
+**Re-grep upstream spec claims at brief-write time**: ratification and LOCK confer agreement on
+design INTENT, never on code truth — a claim inherited from an upstream spec into a brief or an
+impl is verified against current code by the consumer, every time.
+
 Cat #15 is the FIRST audit dimension, not the last — confabs in the spec invalidate every
 downstream layer of audit.
 
@@ -620,21 +608,3 @@ unrelated, they don't apply.
 - `research` — the pre-feed dispatch shape this cycle reuses
 
 Skill-eval test prompts: `references/test-prompts.md`.
-
-## Graduated verification lessons
-
-- **A fix-pass disposition is verified against the CODE, not the intent** — re-read the applied hunk
-  and assert the claimed post-state before recording it. An aggregate ("N fixed") is a CLAIM; only
-  per-item checks are evidence — verify each, or record the count as the builder's claim.
-- **A named defect CLASS gets an independent repo-wide sweep**, not just fixes to the listed items —
-  the identical unlisted sibling is the one that ships.
-- **Amending N surfaces of one contract → audit the SET, never per-file** — cross-surface defects
-  (a state undone by a merged sibling; one term with two meanings across files; a new file breaking
-  the invariant an old file protects) are structurally invisible to per-file review. Re-check every
-  NEW surface against the invariant itself, not your memory of having protected it.
-- **Cross-lens split on the same text: fix it if the remedy is smaller than the argument** — MAX
-  severity stands unless the evidence is provably wrong; widen the protection, never narrow it.
-- **A builder's self-disclosed limitation is a CLAIM** — check whether the failure mode it describes
-  is the one the code has (unclassified-and-failing vs invisible-and-passing are opposite properties).
-- **Release verification exercises EACH admitted call shape** end-to-end (bodyless AND body-bearing,
-  read AND write), never one representative — the unexercised shape is the silently-broken one.

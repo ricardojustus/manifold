@@ -1,7 +1,7 @@
 ---
 name: scoped-adversarial-audit
 description: >-
-  Spawns a context-less adversarial subagent, pre-fed the project threat model, to attack one tightly-scoped security-sensitive surface — named files or a pending change — reasoning as the attacker. Use on "adversarial pass on X", "what am I missing", or "fresh eyes" on a SECURITY surface; a pre-merge branch review is audit-cycle.
+  Adversarial pass on one tightly-scoped security-sensitive surface — named files or a pending change. Use on "adversarial pass on X", "what am I missing", "fresh eyes", or "critique this" on a SECURITY surface; a pre-merge branch review is audit-cycle.
 ---
 
 # Scoped adversarial audit
@@ -11,7 +11,6 @@ Spawn a context-less subagent pre-fed with the project's threat model, point it 
 ## When to invoke
 
 **Strong signals**:
-- The operator says "adversarial pass", "fresh eyes", "what am I missing", "critique this", "audit before shipping".
 - A new integration that pulls in external / untrusted data.
 - Extending the permission / trust model (a new capability tier).
 - Changing how untrusted content is wrapped or how it reaches the model.
@@ -27,6 +26,8 @@ Spawn a context-less subagent pre-fed with the project's threat model, point it 
 
 ## The pattern
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 ### 1. Scope tightly
 
 Name the EXACT files + line ranges, or the EXACT diff, in scope. Vague scope produces vague audits. (Good/bad examples: `references/subagent-brief-template.md`.)
@@ -37,9 +38,7 @@ Include in the subagent's brief: the project's **security baseline** (the specif
 
 ### 3. Spawn the subagent with a pointed brief
 
-Fill `references/subagent-brief-template.md`. Its mandatory elements: exact scope · the pre-feed list (baseline sections, posture doc, absolute rules, the dependency files that are NOT the change) · the threat model with "reason as the attacker" · 3+ specific adversarial questions including a blast-radius one and the open-ended "what did the author miss?" · an output contract (severity Critical/High/Medium + `file:line` evidence + recommended fix, under 500 words, no hedging, "unable to verify X without testing" when true).
-
-The explicit **"no findings on <question>"** requirement is load-bearing: it distinguishes "I checked and it's fine" from "I didn't look", which a silent omission conflates.
+Fill `references/subagent-brief-template.md` — it owns the brief's mandatory elements, and the brief is not optional. What you decide before opening it: the exact scope from step 1 (a vague scope voids the audit) and which adversarial questions this surface needs.
 
 ### 4. Read the output CRITICALLY
 
@@ -48,6 +47,8 @@ The subagent can also be wrong. Spot-check before acting:
 - **High-severity claims**: does the finding actually reproduce? Try to construct the concrete path. If you can't, it may be a false positive.
 - **"No issues found"**: did it actually look, or bail early? A suspiciously clean output on a complex surface usually means the brief was too narrow.
 - **Disagreements with your own intuition**: that's signal — either you were wrong (update) or it was wrong (sharpen the brief). Both resolutions are useful.
+
+Done when EVERY Critical/High finding carries a written reproduced-or-rejected verdict and every adversarial question in the brief is accounted for — answered by a finding or by the subagent's explicit "no findings on <question>" line. A question with neither is an unaudited question: go back to the brief.
 
 ### 5. Fold findings into action
 

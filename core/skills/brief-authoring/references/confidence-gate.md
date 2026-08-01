@@ -4,9 +4,8 @@ For lane briefs and any dispatch with a substantial pre-flight read list. Fires 
 pre-flight reads, BEFORE any drafting. (Distinct from the `DECISION-PENDING-<owner>` inline
 marker, which fires *during* work and continues.)
 
-The canonical text also ships in the dispatch brief template in `.claude/harness-templates/` and
-in `parallel-workstreams/references/brief-template.md` — point the brief at a template rather than
-re-pasting when you aren't customizing.
+This file is the canonical text. `parallel-workstreams/references/brief-template.md` embeds it for
+lane briefs — point the brief at that template rather than re-pasting when you aren't customizing.
 
 > **Confidence gate (HALT-AND-REPORT before starting work)**
 >

@@ -26,6 +26,8 @@ Do NOT update a plan for:
 
 ## The protocol
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 ### 1. Read the existing section end-to-end
 
 Before editing, read the relevant section fully. Plan docs carry context you'll lose if you skip — prior audit notes, decision rationale, deferred items. Don't overwrite history you don't understand.
@@ -33,7 +35,8 @@ Before editing, read the relevant section fully. Plan docs carry context you'll 
 ### 2. Make the edit in place
 
 - **Additions**: add the new section or subsection. Include a dated note if substantive: `(added <DATE> — reason)`.
-- **Changes to existing content**: edit in place, but preserve prior context if it's historically useful. Don't wholesale-rewrite a section that captured valid prior reasoning.
+- **Changes to existing content**: edit in place, but preserve prior context if it's historically useful. Don't wholesale-rewrite a section that captured valid prior reasoning; substantive content removal carries an audit-trail note explaining why.
+- **Claim only what the plan contains**: a plan claiming an obligation ANSWERED must carry the substance IN the plan — "carried to a named accountable event" is the honest label for everything else.
 - **Findings land IN the section they affect**, not appended at the end. Append-only "Updates" sections bloat the doc and hide conflicts between old and new intent.
 - **Blocking design issues**: use a banner callout at the top of the affected section:
 
@@ -83,7 +86,7 @@ Don't "fix" the plan to match current runtime — that loses forward-looking int
 
 ### 5. Cross-reference the ripple
 
-If the update affects other docs, handle them in the same session (notice the ripple; don't silently do all of it):
+If the update affects other docs, name the ripple to the operator and update only what they confirm:
 
 - The **state snapshot** if the next-session kickoff changes.
 - **Reference docs** if a plan-defined invariant shifted.
@@ -95,21 +98,9 @@ Some projects author a **short/overview version** of a plan (an llms.txt-shaped 
 
 **Worked example** (integrating a research pass): library picks → a new subsection where they belong; a finding that invalidates a premise → a banner callout; implementation notes → the end of the sections they touch; then bump the revision with an audit-trail note ("research pass integrated + blocking-issue callout"). Each finding lands in the section it affects, never as a trailing appendix.
 
-## Don't do
-
-- **Append-only updates** — new intent lands in the section it affects, not at the end.
-- **Silent rewrites** — substantive content removal needs an audit-trail note explaining why.
-- **Mixing runtime status with design intent** — runtime status is the state snapshot's job.
-- **Skipping the revision bump when you changed intent** — it degrades the audit trail.
-
 ## Related
 
 - `reference-doc-writing` — the current-state docs that plans are allowed to disagree with.
 - `doc-placement` — deciding whether a doc is a plan at all, versus a spec / reference / research artifact.
 - `session-end` — invokes this skill at session close if design intent shifted.
 - `research` — produces findings that frequently trigger a plan update.
-
-## Obligation laundering
-
-A plan claiming an obligation ANSWERED must contain the substance IN the plan; "carried to a named
-accountable event" is the honest label for everything else.

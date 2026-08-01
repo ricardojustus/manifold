@@ -2,7 +2,7 @@
 name: inter-session
 description: >-
   Local messaging bus between parallel Claude Code sessions (the project's threads/tracks) for questions, answers, co-sign opinions, and FYIs. Use on "/inter-session", "message track X", "ask the other session", "list connected sessions". ANSWER-class only — a request to DO something parks for the operator.
-allowed-tools: [Bash, Monitor, TaskList, TaskStop]
+allowed-tools: [Bash, Monitor, TaskList, TaskStop, Read, Write, Edit, mcp__linear__save_issue, mcp__linear__save_comment]
 ---
 
 # inter-session
@@ -96,6 +96,8 @@ When the user invokes `/inter-session [args]`:
 
 ## connect — start the monitor
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 1. **Pick the name**: the project binding maps sessions/threads to fixed bus
    names — use that mapping; only ask the user when the binding doesn't cover
    this session. Validate `^[a-z0-9][a-z0-9-]{0,39}$`.
@@ -118,9 +120,7 @@ When the user invokes `/inter-session [args]`:
 3. **If the spawn returns `[inter-session] another monitor for this session
    is already running — name='<existing>' …`**: already connected. Same or no
    name requested → say "Connected as `<existing>`" and stop. Different name →
-   treat as rename: `TaskList()` → `TaskStop(<id>)` (fallback
-   `Bash("kill <listener_pid>")` from the error line), wait ~1.5s, re-run
-   the Monitor with the new name.
+   treat as a rename (procedure below).
 
 **On `[inter-session] name '…' taken; using '…-2'`**: the client auto-retried
 and connected under the suffixed name — report the assigned name. Under
@@ -142,8 +142,9 @@ Single-quote `<text>`; escape embedded single quotes as `'\''`.
 
 ## rename / status / disconnect
 
-- **rename**: `TaskStop(<monitor-task-id>)` (find it via `TaskList()`), then
-  re-run the connect Monitor with the new name.
+- **rename**: `TaskList()` → `TaskStop(<monitor-task-id>)` (fallback
+  `Bash("kill <listener_pid>")` with the pid from the error line), wait ~1.5s,
+  then re-run the connect Monitor with the new name.
 - **status**: `Bash("python3 <bin>/list.py --self")`.
 - **disconnect**: `TaskList()` → the `"inter-agent messages (<name>)"` task →
   `TaskStop(<id>)`.

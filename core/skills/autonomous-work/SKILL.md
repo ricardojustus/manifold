@@ -1,7 +1,7 @@
 ---
 name: autonomous-work
 description: >-
-  Runs an unattended loop-until-done run: the three hygiene files (JOURNAL / DECISIONS / QUESTIONS), STOP boundaries parking destructive, live-prod or owner-gated actions, the fallback heartbeat, close-at-idle. Invoke the MOMENT a handoff starts — "I'm going to bed, keep going", "/loop until done", "run autonomously".
+  Governs unattended loop-until-done running — the record it leaves and the boundaries it stops at. Invoke the MOMENT a handoff starts — "I'm going to bed, keep going", "/loop until done", "run autonomously".
 ---
 
 # Autonomous work — running unattended without dropping the thread
@@ -12,6 +12,8 @@ otherwise: **the loop stalls** (a dead dependency, a usage-limit pause, an ambig
 memory, exactly the confabulation risk the record exists to kill. You stand in for the operator on
 everything reversible and in-scope, and leave a clean desk for everything that's genuinely their
 call. The three files ARE the clean desk.
+
+> Project bindings may amend this contract — read the "## Project bindings" section (end of file) first.
 
 ## The three thread-local files (the non-negotiable core)
 
@@ -50,7 +52,7 @@ At a STOP: park the question with your lean and keep the loop moving on anything
 When nothing reversible remains — completed or blocked — sweep and END the session (see "Close
 at the idle boundary"). A halt is not a failure; the failure mode is guessing on their call to
 avoid the pause. For which forks are yours to decide and which to park, see the **ask-vs-decide**
-principle in `.claude/harness/principles/`.
+principle — `.claude/harness/principles/ask-vs-decide.md`.
 
 ## Advisor consults during the run (where the runtime has one)
 
@@ -72,7 +74,7 @@ is exactly the signal the operator should see before ratifying. **The advisor ca
 decision within your authority; it can NEVER expand it: a STOP boundary stays a STOP regardless
 of what the advice says.**
 
-## Surviving the night — wakeups and watchers
+## Surviving the night — wakeups, watchers, and pauses
 
 **Fallback heartbeat.** Whenever you end a turn with outstanding background work, schedule a
 wakeup *before going idle*. Runtime-tracked subagents auto-notify, so this is a **fallback**, not
@@ -99,9 +101,6 @@ its uncommitted work, is a **two-writer collision** — the worst self-inflicted
 autonomous operation. To recover a suspected-dead subagent: (1) wait out a long window for its
 completion notification; (2) confirm zero head/tree advancement over that window; (3) prefer
 waiting one more heartbeat over acting.
-
-**Assemble deliverables eagerly with pending items marked** — don't hold a package hostage to the
-last flaky verdict.
 
 **Usage limits.** A rolling-window pause suspends and later resumes the session; a scheduled
 wakeup + up-to-date files mean the resumed-you picks up cleanly — another reason the journal is
@@ -138,6 +137,9 @@ everything durably, so it is safe whatever the operator does next, and it relaxe
 boundary: owner-gated actions stay parked in QUESTIONS.
 
 ## Morning presentation
+
+**Assemble deliverables eagerly with pending items marked** — don't hold a package hostage to the
+last flaky verdict.
 
 When the operator returns (or you reach done), lead with the three files as the handoff surface:
 where the loop got to, the decisions they can override (with reversibility), and the parked

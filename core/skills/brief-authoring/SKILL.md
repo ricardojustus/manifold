@@ -1,7 +1,7 @@
 ---
 name: brief-authoring
 description: >-
-  Authors the brief for any dispatched agent — subagent, teammate, parallel lane, or implementer. Requires a GIVEN block, grep-verified code references, an ambiguity protocol, and verifiable success criteria. Invoke before writing it. Not the spec itself (spec-writing) or lane mechanics (parallel-workstreams).
+  Authors the brief for any dispatched agent — subagent, teammate, parallel lane, or implementer. Use when about to dispatch a subagent / teammate / lane / implementer, or on "write the brief". Other skills invoke it by name whenever they need a dispatch contract authored. Not the spec itself (spec-writing) or lane mechanics (parallel-workstreams).
 ---
 
 # Brief-Authoring Discipline — GIVEN Context Up Front
@@ -12,6 +12,8 @@ task: the brief is the ambient-context contract, and a thin brief makes the rece
 gaps silently.
 
 ## Required GIVEN block
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 - **Current system state** — what's running, what's locked, what's pending, what was just decided.
 - **Locked references (intent docs)** — paths + version tags of any LOCKED spec / contract / plan
@@ -79,31 +81,35 @@ Probes, before pasting:
   continue. Do NOT silently scope-out or invent. The receiving agent surfaces ambiguity, it does
   not resolve it unilaterally.
 - **Success criteria** — verifiable end state (tests pass / spec §N satisfied / audit gate met).
-- **Deliverables come back INLINE** — never name a report FILE as a subagent deliverable
-  (report-shaped files written by subagents may be blocked by the harness): the brief asks for the report in the
-  final message; the dispatcher files it.
 - **Read-only / classifier briefs carry an explicit "no subagent spawning" line** — parallelism
-  is the dispatcher's call, made in the brief, never the seat's (receipt: one unbriefed fan-out
-  burned 145k tokens in 5.5 minutes).
+  is the dispatcher's call, made in the brief, never the seat's: one unbriefed fan-out burned 145k
+  tokens in 5.5 minutes.
 
-## The handoff triad + status vocabulary
+## Where the report goes + the status vocabulary
 
-A dispatch is a contract. Pass the three artifacts **as file PATHS, not pasted text**:
+A dispatch is a contract, and the dispatch KIND decides the shape of the handback:
 
-- **brief.md** — the GIVEN + TASK + criteria (what the controller hands down).
-- **report.md** — what the agent hands back (findings, what it did, evidence).
-- **diff-package** — the concrete change (patch / branch / file set), referenced by path or branch.
+- **Lane-style dispatches** (a separate session that writes files — a parallel lane, an
+  implementer in its own worktree) return through the **handoff triad**, passed as file PATHS,
+  never pasted text: **brief.md** (the GIVEN + TASK + criteria the controller hands down) ·
+  **report.md** (findings, what it did, evidence) · **diff-package** (the concrete change,
+  referenced by patch / branch / file set). Canonical templates live in
+  `.claude/harness-templates/`; point the brief at them.
+- **In-session subagent dispatches** return the report **INLINE in the final message** — never
+  name a report FILE as a subagent deliverable (report-shaped files written by subagents may be
+  blocked by the harness). The dispatcher files it. The brief + any diff-package still travel as
+  paths.
 
-Canonical templates live in `.claude/harness-templates/`; point the brief at them.
+Either way the agent closes with **exactly one** status from the closed vocabulary — `DONE` /
+`DONE_WITH_CONCERNS` / `NEEDS_CONTEXT` / `BLOCKED`, defined in the handoff-triad template. What
+the controller owes each:
 
-The agent closes with **exactly one** status from this closed vocabulary:
-
-| Status | Meaning | Controller response |
-|---|---|---|
-| **DONE** | Task complete, success criteria met, no reservations. | Verify the criteria against the report/diff, then proceed / merge. |
-| **DONE_WITH_CONCERNS** | Complete, but the agent flags risks/caveats it couldn't resolve in-scope. | Read each concern; disposition it (fix now / backlog with a trigger / accept) BEFORE proceeding. Never merge past unread concerns. |
-| **NEEDS_CONTEXT** | Blocked on missing information the brief should have carried. | Supply the missing context (or the source), agent resumes. A NEEDS_CONTEXT is a **brief-quality signal** — fix the brief, not just this instance. |
-| **BLOCKED** | Cannot proceed — a dependency, a decision, or a broken precondition. | Resolve the blocker or re-scope. Work does not proceed until cleared; don't tell the agent to "try anyway." |
+| Status | Controller response |
+|---|---|
+| **DONE** | Verify the criteria against the report/diff, then proceed / merge. |
+| **DONE_WITH_CONCERNS** | Read each concern; disposition it (fix now / backlog with a trigger / accept) BEFORE proceeding. Never merge past unread concerns. |
+| **NEEDS_CONTEXT** | Supply the missing context (or the source), agent resumes. A NEEDS_CONTEXT is a **brief-quality signal** — fix the brief, not just this instance. |
+| **BLOCKED** | Resolve the blocker or re-scope. Work does not proceed until cleared; don't tell the agent to "try anyway." |
 
 ## Required: confidence gate (briefs with a substantial pre-flight read list)
 
@@ -112,7 +118,7 @@ with large pre-flight read lists): include a **Confidence gate** instructing the
 halt-and-report AFTER pre-flight reads + BEFORE drafting anything — print
 `Confidence: <0-100%>`; if <100% list clarifications needed + divergent ideas and HALT for the
 owner; if 100% print "proceeding" and continue. Canonical paste text:
-`references/confidence-gate.md` (also in the harness templates). Fires ONCE, before work — unlike
+`references/confidence-gate.md`. Fires ONCE, before work — unlike
 the `DECISION-PENDING-<owner>` inline marker, which fires during work and continues.
 
 ## Pre-flight checklist (before dispatching any teammate/subagent)
@@ -121,20 +127,20 @@ the `DECISION-PENDING-<owner>` inline marker, which fires during work and contin
    out-of-scope, conventions)?
 2. Does the brief name the locked spec by path + LOCK version?
 3. Does the brief state the ambiguity protocol — "surface on contradiction or silence"?
-4. Does the brief state success criteria in verifiable terms, and name the handoff triad + status
-   vocabulary?
+4. Does the brief state success criteria in verifiable terms, and name the report shape its
+   dispatch kind requires + the status vocabulary?
 5. **Worktree isolation — not parallel-only.** If parallel implementers: did the worktree
    pre-flight run? AND if the brief's work dir is a **live-daemon / production repo** (a running
    bridge, a cron-booted checkout), does the brief mandate a **linked worktree** and **forbid
    `git switch`/`checkout` in the live path** — *regardless of lane count*? A single lane told to
    "work in `<live repo>` on branch X" will move the LIVE checkout onto an unmerged branch, and the
    daemon boots that branch at its next scheduled fire.
-5½. If an Agent-tool implementation dispatch: is it using the **`implementer` role**
+6. If an Agent-tool implementation dispatch: is it using the **`implementer` role**
    (`subagent_type: "implementer"`)? The role file carries the standing conventions (ambiguity
    protocol, pwd+branch re-verify, verify-before-done, handoff shape) so the brief carries only the
    GIVEN block + contract. The triage's model goes on the call as the per-invocation `model`
    parameter.
-6. **Was every concrete code reference grep-verified against actual current code?** Includes claims
+7. **Was every concrete code reference grep-verified against actual current code?** Includes claims
    propagated from upstream specs. Verify at brief-write time, not at impl time.
 
 If any answer is no, the brief is not ready to dispatch.

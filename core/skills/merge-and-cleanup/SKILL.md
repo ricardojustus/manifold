@@ -1,7 +1,7 @@
 ---
 name: merge-and-cleanup
 description: >-
-  Consolidates parallel-lane workstreams after they return — walks deliverables with the operator, resolves inline decision-markers, merges ratified branches via `git merge --no-ff`, prunes worktrees. Use on "consolidate", "merge the lanes", "/merge-and-cleanup". Sibling to parallel-workstreams (which dispatches them).
+  Consolidates parallel-lane workstreams after they return — walks deliverables with the operator, resolves inline decision-markers, merges ratified branches, prunes worktrees. Use on "consolidate", "merge the lanes", "/merge-and-cleanup". Sibling to parallel-workstreams (which dispatches them).
 ---
 
 # Merge-and-cleanup — consolidate parallel-lane workstreams
@@ -15,8 +15,7 @@ audit. **The audit clears the technical bar; the operator clears the architectur
 
 ## When to invoke
 
-**In scope**: the operator says "consolidate" / "merge the lanes" / "wrap up the parallel work" /
-"/merge-and-cleanup" · all (or some) dispatched lanes have written status reports + committed +
+**In scope**: all (or some) dispatched lanes have written status reports + committed +
 exited (partial consolidation is fine — merge what's ready, revisit the rest) · post-compaction
 restart of an in-progress consolidation (read the Step 1 morning-review file to resume).
 
@@ -27,6 +26,8 @@ unless consolidation surfaces an *integration* concern the per-lane audits could
 case dispatch a fresh `audit-cycle` on the merged state.
 
 ## Pre-flight
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 1. **All status reports present.** A missing report means the lane is still running or died
    mid-flight — check its terminal window; resume the same `/goal` in the same worktree, or
@@ -74,9 +75,10 @@ Per the morning-review's merge order, for each lane in sequence:
    path/convention. Drift found → tag it in the morning-review file and resolve paired BEFORE
    merging.
 
-## Step 3 — Merge ratified branches (sequential, `--no-ff`)
+## Step 3 — Merge ratified branches (sequential)
 
-For each ratified branch, in the specified order:
+**The project binding may override the merge mechanism — read it before running this step.** The
+core default, for each ratified branch, in the specified order:
 
 ```bash
 git -C <repo> checkout <default-branch>
@@ -109,6 +111,16 @@ git -C <repo> branch -d <lane-branch>
 net against killing unmerged work. If `-d` refuses, INVESTIGATE; don't escalate to `-D` without a
 paired operator review.
 
+**If the removal needs `--force`** (the worktree still holds untracked files), first enumerate
+those files against their claimed preservation homes, per-file, and only then remove. (Recovery
+path where the builder was a sandboxed CLI: its session rollouts retain file payloads verbatim.)
+
+**This skill never performs a history rewrite.** If one is ever sanctioned: `git filter-repo` and
+kin: scope refs EXPLICITLY (`--refs <heads+tags> ^<every remote ref>`) — the default invocation
+rewrites PUSHED history when signed commits sit below the push boundary (signature stripped → hash
+changes → every descendant rewritten); verify the preserved-tip property explicitly after ANY
+rewrite, never trust the tool's default.
+
 **Append one line to the batch completion ledger** — append-only, one line per verified-clean lane
 merge, never rewritten:
 
@@ -137,19 +149,6 @@ After ALL lanes for the batch have merged:
 6. **Task-audit log** — append an entry naming the batch + lanes merged + spend estimate + any
    flagged follow-ups.
 
-## Anti-patterns (don't do these)
-
-- **Don't merge a lane the operator hasn't ratified** — even at a clean audit; that gate is
-  necessary, not sufficient.
-- **Don't auto-apply cross-repo diff proposals** — hand-apply paired; cross-repo state is
-  high-blast-radius.
-- **Don't skip the morning-review file** — after compaction it's your starting point; without it,
-  consolidation re-derives state and wastes the operator's time.
-- **Don't merge without `--no-ff`.**
-- **Don't force-delete branches (`-D`) without operator review.**
-- **Don't skip memory saves** — mid-consolidation decisions, integration patterns, operator
-  corrections are all durable signal.
-
 ## Templates (`references/`) + related skills
 
 - `references/morning-review-template.md` — the consolidation-kickoff file (Step 1). The
@@ -160,16 +159,3 @@ After ALL lanes for the batch have merged:
 - `memory-discipline` — invoke in Step 5 if non-obvious decisions surfaced.
 - `session-end` — invoke after consolidation IF this closes the session; if the next arc starts
   immediately, defer it.
-
-## Worktree-remove preflight
-
-Before any `git worktree remove --force`: enumerate the worktree's untracked files against their
-claimed preservation homes, per-file. (Recovery path where the builder was a sandboxed CLI: its
-session rollouts retain file payloads verbatim.)
-
-## History rewrites
-
-`git filter-repo` and kin: scope refs EXPLICITLY (`--refs <heads+tags> ^<every remote ref>`) — the
-default invocation rewrites PUSHED history when signed commits sit below the push boundary
-(signature stripped → hash changes → every descendant rewritten). Verify the preserved-tip property
-explicitly after ANY rewrite; never trust the tool's default.

@@ -1,7 +1,7 @@
 ---
 name: test-driven-development
 description: >-
-  Drives new behavior test-first: RED → GREEN → REFACTOR — write the failing test first and watch it fail for the RIGHT reason, minimum code to pass, refactor green; never weaken or skip a failing test. Ships a testing-anti-patterns bank. Use for "TDD this", "write the test first", "red-green-refactor". For a live bug use debugging-discipline.
+  Drives new behavior test-first: RED → GREEN → REFACTOR. Ships a testing-anti-patterns bank. Use for "TDD this", "write the test first". For a live bug use debugging-discipline.
 ---
 
 # Test-driven development — RED → GREEN → REFACTOR
@@ -19,6 +19,8 @@ behavior. Two neighbors it is NOT:
   construction; spec-adherence gates after it.
 
 ## RED — write the failing test first, and watch it fail
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 1. **Write the test before the implementation exists.** State, as a test, the single next
    behavior you want. If the unit under test isn't there yet, the test won't compile or will
@@ -77,8 +79,6 @@ green suite full of these is more dangerous than no suite at all.
 
 ## When to invoke
 
-- Building a new unit of behavior test-first: "TDD this", "write the test first",
-  "red-green-refactor", "/test-driven-development".
 - Proactively whenever you're about to write implementation code for a behavior that can be
   expressed as a test before it exists — which is most behavior.
 

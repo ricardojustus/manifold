@@ -21,7 +21,6 @@ this skill is the HOW.
 - **Gate A** — vision-only challenge before planning effort is sunk (required at High stakes,
   optional at Medium).
 - **Phase 5** — Vision + Plan adversarial review before the Lock.
-- "Convene the council" / "round table" / "Gate A" / "Phase 5 council" / "/council".
 
 **Out of scope**: per-artifact pre-merge code/spec gate → `audit-cycle` · scoped adversarial pass
 on a security-sensitive surface → `scoped-adversarial-audit` · whole-subsystem inventory →
@@ -44,8 +43,8 @@ under-tagging check is skipped (there's no plan to tag).
 | stakes | seats |
 |---|---|
 | **low** | **Skip** — Low builds take the express lane, which drops the Council (human review suffices). Convene only if the operator *explicitly* asks for an out-of-method advisory pass. |
-| **medium** | 3 seats — default **Premise Skeptic (strong-reasoning) + Systems Critic (cross-model) + Proportionality Skeptic (cross-model)** (premise + coherence are highest-leverage; proportionality always sits). Full panel at Orchestrator discretion. |
-| **high** | Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model (the Proportionality Skeptic standing). |
+| **medium** | 3 seats — default **Premise Skeptic (strong-reasoning) + Systems Critic (cross-model) + Proportionality Skeptic (cross-model)**. Full panel at Orchestrator discretion. |
+| **high** | Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model. |
 
 **The Proportionality Skeptic sits at EVERY sitting, both phases, all stakes where a council
 convenes** — a standing seat, never stakes-scaled and never folded into another seat (a
@@ -77,7 +76,7 @@ each seat is briefed through its own mandate (full text in `references/seat-mand
 | **The Premise Skeptic** | strong-reasoning | First-principles attack on the core premise. Should we build this at all? Strongest case for a different approach or doing nothing? |
 | **The Feasibility Skeptic** | cross-model | Technical + resource realism. Buildable with the stack/constraints/timeline? Where's the hidden complexity? |
 | **The Systems Critic** | cross-model | Coherence + second-order effects. Does the Plan deliver the Vision (acceptance criteria AND vision-mandated deliverables)? Dependencies/ordering/architecture sound? What breaks at scale? **Are chunks honestly risk-tagged, or under-tagged to earn an easier audit floor?** |
-| **The Proportionality Skeptic** | cross-model (standing, every sitting) | Overengineering + YAGNI + cost. Price the design (tiers; "cannot price" blocks at Phase 5); challenge the blast-radius classification against the written recovery story; the six standing questions; findings name concrete deletions. |
+| **The Proportionality Skeptic** | cross-model | Overengineering + YAGNI + cost. Price the design (tiers; "cannot price" blocks at Phase 5); challenge the blast-radius classification against the written recovery story; the six standing questions; findings name concrete deletions. |
 
 Model-to-seat mapping is the default, not a law — the Orchestrator may remap (e.g. a saturated
 cross-model provider → a third strong-reasoning seat). **Cross-model is the point**: the two
@@ -85,6 +84,8 @@ cross-model seats come from a genuinely different family than the primary reason
 second instance of the same model shares the first's blind spots.
 
 ## Run format
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 1. **Pre-flight.** Set `COUNCIL_DIR` to the ONE session dir every step uses — an **absolute** path
    under the artifact root, `<artifact-root>/councils/<topic>/<phase>` (a bare relative
@@ -99,14 +100,15 @@ second instance of the same model shares the first's blind spots.
 2. **Independent first pass — dispatch all seats EXCEPT the Proportionality Skeptic in the SAME
    turn** (see Dispatch). Each seat produces findings WITHOUT seeing any other seat's. Every
    finding carries `assumptions`, `confidence`, and a `steelman` (the strongest counter the seat
-   can make to its own finding).
+   can make to its own finding), and **cites the artifact line or the repo reality it rests on**
+   (seats can read the current-state note + repo).
 3. **Cross-examine — default 1 round, 0 for cheap sittings.** Give each first-pass seat the other
    seats' pass-1 findings; each may challenge, concede, or sharpen. Write `seat-<name>-pass2.md`.
    The Orchestrator may set 0 rounds at Low/Medium to favor speed + maximal independence.
-4. **Proportionality stage — the standing seat runs now, alone.** Compose its prompt from its
-   mandate + the briefing + **all other seats' final findings** (pass-2 where cross-exam ran, else
-   pass-1). It reviews the design AND verdicts every additive finding
-   (`endorse`/`demote`/`price` + plain-language reasoning) per its mandate. Write
+4. **Proportionality stage — the standing seat runs now, alone** (its standing-ness, run-order,
+   and dual target are stated under "Council size by stakes"). Compose its prompt from its
+   mandate + the briefing + **all other seats' final findings** (pass-2 where cross-exam ran,
+   else pass-1). Write
    `seat-proportionality-pass1.md`. Same dispatch mechanics + completion guard as any cross-model
    seat.
 5. **Consolidate** all findings into one list, **MAX-severity** when two seats raise the same issue
@@ -175,27 +177,10 @@ parallel sub-tree (`councils/` vs `audits/`). **The Council is advisory: zero po
 artifact, lock, or loop back.** A brilliant Council argument the Human rejects is simply a logged,
 waived finding.
 
-## Anti-patterns (don't regress)
-
-1. **Shared prompt across seats** — defeats the whole design; brief each seat through its own
-   mandate.
-2. **First-pass seats seeing each other before the first pass** — independence is the point;
-   cross-exam is a *separate, later* round. (The Proportionality Skeptic is the deliberate
-   exception: it runs LAST and sees everything — that's its job, not a leak.)
-3. **Skipping a cross-model seat's completion-watcher** — it doesn't auto-notify; you'll
-   consolidate on a half-finished panel.
-4. **The Council deciding** — it advises. Re-open / waiver / refine / abandon are Orchestrator +
-   Human calls.
-5. **Using it as a code audit** — no diffs, no impl, no single spec. That's `audit-cycle`.
-6. **Convening it on the Council itself or on a lone Low-stakes item** — below the methodology
-   threshold (express lane); don't council the council.
-7. **Inventing findings without grounding** — a feasibility/coherence claim cites the artifact line
-   or the repo reality it rests on (seats can read the current-state note + repo).
-
 ## Related skills
 
-- `audit-cycle` — per-artifact pre-merge code/spec gate (the dispatch shape this skill mirrors).
-- `scoped-adversarial-audit` — scoped adversarial single-pass on security-sensitive surface.
+- `audit-cycle` — the dispatch shape this skill mirrors.
+- `scoped-adversarial-audit`.
 - `phase-start` / `.claude/harness/METHODOLOGY.md` — where the Council sits in the loop.
 
 Skill-eval test prompts: `references/test-prompts.md`.

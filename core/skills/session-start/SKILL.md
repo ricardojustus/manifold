@@ -13,6 +13,8 @@ this session should surprise the prior work.
 
 ## What to do, in order
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 **1. Session kickoff — end-to-end.** Read the project's **session-kickoff** file in full (short by
 design). These are the operator's directives for THIS session; any mandatory-reads list lives here
 — execute those reads before proposing work.
@@ -43,11 +45,9 @@ for ongoing work, or an interrupted session?).
 
 **6. Topic grounding — follow the shared ladder**:
 [`../phase-start/references/grounding-ladder.md`](../phase-start/references/grounding-ladder.md)
-— the reading spine shared with `phase-start` (single-sourced so the two can't drift): consult the
-project's **always-loaded self-knowledge index** and read **end-to-end** every current-state
-reference doc relevant to today's work, then the lessons grep, the memory grep, the source, and the
-verify-the-premises rung. Do not reconstruct which doc covers which subsystem from memory —
-consult the index; it's regenerated, your recollection is not.
+— the reading spine shared with `phase-start` (single-sourced so the two can't drift). Work its
+rungs in order, from the self-knowledge index down to verify-the-premises; the ladder file is the
+authority on what each rung requires.
 
 ## What to produce
 
@@ -62,10 +62,6 @@ If confidence <100%, list the specific clarifications needed and any divergent i
 opinionated — name what YOU think and why it differs). **This check fires AFTER all the reads.**
 If you can't articulate why you'd say <100%, you're 100%.
 
-**Do NOT**: propose new work beyond what the kickoff/state direct; form bug hypotheses before
-reading the relevant reference doc; start editing in this first turn; volunteer architecture
-opinions before loading the design.
-
 **A kickoff is a plan, never a standing GO.** The orientation report
 ends the turn; session-scale build work starts on the operator's word in THIS session — the prior
 session's directive tells you what's next, not that you may begin. A background event (a bus
@@ -78,10 +74,10 @@ run are the mechanism working as designed.
 
 ## When to invoke
 
-Fresh session oriented for substantive work: "start the session" / "where were we" / "what's the
-state", a long-idle session picking back up with new work, or you notice you're confused about
-what's current (re-grounding is cheap). Do NOT fire on casual greetings or single-turn tactical
-asks.
+Beyond the phrases the description carries, this fires on your own signal: a long-idle session
+picking back up with new work, or you notice you're confused about what's current (re-grounding is
+cheap). Route elsewhere for casual greetings and single-turn tactical asks (no orientation), and
+for a compacted session — a lossy summary rather than a cold start is `compact-resume`.
 
 ## Pairs with
 

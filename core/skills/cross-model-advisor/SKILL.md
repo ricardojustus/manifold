@@ -1,7 +1,7 @@
 ---
 name: cross-model-advisor
 description: >-
-  Consults a strong different-family model as a peer reasoning partner to pair-reason and hunt blind spots. Advisory only: positions and confidence, never severity-rated findings. Use on load-bearing decisions, roadblocks, and ALWAYS on "reason deeply" / "think deeply" / "/advisor". Not audit-cycle or council.
+  Consults a strong different-family model as a peer reasoning partner to pair-reason and hunt blind spots (the project's binding may name it — e.g. "the Codex Advisor"). Advisory only: positions and confidence, never severity-rated findings. Use on load-bearing decisions, roadblocks, presumed-mandatory whenever the main loop is running below the project's frontier tier, and ALWAYS on "reason deeply" / "think deeply" / "/advisor". Not audit-cycle or council.
 ---
 
 # Cross-Model Advisor — a peer, not a judge
@@ -38,6 +38,8 @@ whole-system explanation to them comes BEFORE any consult (operator-translation'
 trigger) — their answer may dissolve the consult entirely.
 
 ## The three modes
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 **1. `think-with` (default) — blind-first, two calls on ONE continued counterpart session.**
 (a) **Blind pass**: send the problem, constraints, and file pointers **WITHOUT your lean** — ask for
@@ -76,7 +78,8 @@ of stance; a genuinely bad one is called out regardless of stance.*
 
 ## Authority + the consolidation duty
 
-The main session keeps authority; the advisor is never prescriptive. But **listen ≠ skim**:
+The main session keeps authority; the advisor is never prescriptive — the value is the **delta between
+two strong reads**, not swapping which model you obey. But **listen ≠ skim**:
 
 - **Name the advisor's structural bias on machinery questions.** An advisor asked about a guard, a
   wall, or a process step skews toward MORE of it — depth-maximizing is safe for a consultant who
@@ -98,7 +101,8 @@ Not `audit-cycle` (the pre-merge gate on artifacts; severity vocabulary lives th
 (the formal multi-seat panel at its two phase gates — a design the advisor shaped still faces the
 council cold) · not the runtime's native advisor (same-family, automatic at junctions; this is
 deliberately cross-family and deliberately invoked — they stack) · not an implementer (dispatched
-read-only: it reasons, you act).
+read-only: it reasons, you act). A consult changes none of the gates: the audit, the council sitting,
+and the operator's GO all still run in full afterwards.
 
 ## Mechanics
 
@@ -107,26 +111,3 @@ mechanism for `dialogue` / `think-with` pass 2, the watcher discipline (watcher 
 both, same turn — a dead watcher must never stall the consult), the refusal fallback, and the cost
 note. Write the consult prompt to a file and pipe it (compose-hang resilience); persist the reply
 beside the work it advised.
-
-## Anti-patterns
-
-1. **Audit drift** — a consult returning severity-rated findings. The prompt caused it; reshape.
-2. **Anchored consult** — sending your lean in the blind pass "for context." Blind or worthless.
-3. **Oracle treatment** — adopting its position wholesale without the reconcile step. The value is
-   the DELTA between two strong reads, not swapping which model you obey.
-4. **Consult theater** — invoking it, then neither engaging its points nor recording the residue.
-5. **Gate substitution** — "the advisor liked it" is not an audit pass, a council sitting, or an
-   operator GO. It changes none of the gates.
-6. **Devil-mode strawman** — a stance argued weakly to be knocked down. Full strength or don't
-   assign the stance.
-
-## Test prompts
-
-1. *"/advisor — should the scheduler own retry state, or the runner?"* → think-with: blind pass
-   (problem + files, no lean) → reveal pass (steelman → challenge → reconcile) → consolidate, record
-   adopted/rejected residue.
-2. *"Two fixes for this race both deadlocked — pair-reason it with me."* → dialogue, ≤3 rounds.
-3. *"Play devil's advocate on migrating the store to SQLite."* → devil mode with the stance
-   guardrail; close with what would change its mind.
-4. Main loop on the fallback tier, load-bearing design choice, about to decide solo → invoke
-   unasked (presumed-mandatory), or state why not.

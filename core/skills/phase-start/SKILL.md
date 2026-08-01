@@ -23,31 +23,22 @@ an existing doc.
 When in doubt, treat the boundary as a new phase: running this on something that wasn't quite a
 phase costs a few minutes; skipping it on something that was costs hours.
 
-## The reading order — no exceptions, no "I already know this"
+## The reading order
 
-Follow the **shared grounding ladder** end-to-end, in order:
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
+Follow the **shared grounding ladder** end-to-end, in order — every rung, including the lessons
+grep and the reference-doc reads:
 [`references/grounding-ladder.md`](references/grounding-ladder.md) — the reading spine shared with
 `session-start` (single-sourced so the two can't drift): plans → current-state / reference docs →
 lessons grep → memory grep → state → source → **verify the plan's premises against the runtime** →
-external research → only then hypothesize.
-
-Do not shortcut a rung. The lessons grep and the reference-doc reads in particular are hard rules
-— both have receipts in the ladder for what breaks when they're skipped.
-
-## The §0 Verified-Inputs note (rung 7, made concrete here)
-
-Before you propose anything, **probe the runtime to confirm the plan's premises still hold**, and
-open the artifact you produce with a short **§0 Verified-Inputs** note recording what you checked
-and what you found. A plan's premise ("the store is empty", "X isn't built yet", "Y is still on
-the old path") is a claim about a moving system — verify it with a live probe (`ls`, a count, a
-query, a fresh read), don't inherit it on faith. The §0 note makes the next reader's inputs
-*verified*, not *assumed*.
+external research → only then hypothesize. Each rung's rationale and receipts are in the ladder.
 
 ## What to produce
 
 After the ladder is complete: **what you read** (a sentence or two per source — proves the reads
-happened) · **§0 Verified-Inputs** (the premises you probed and what the runtime actually showed)
-· **what surprised you** (what's NOT in the plan but should be; any plan-vs-runtime conflict) ·
+happened) · **§0 Verified-Inputs** (rung 7 — the premises you probed and what the runtime actually
+showed) · **what surprised you** (what's NOT in the plan but should be; any plan-vs-runtime conflict) ·
 **which pending decisions touch this phase** · **your proposed approach**, grounded in the loaded
 design · **open questions** before starting.
 

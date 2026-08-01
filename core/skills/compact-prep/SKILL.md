@@ -21,6 +21,8 @@ unless a milestone genuinely landed mid-arc.
 
 ## The sweep
 
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
 ### 1. Save at-risk state (compaction-proof it)
 - **Commit / persist** anything in the working tree representing completed, coherent work
   (session-end step-1 discipline: explain WHY; follow the standing branch decision). A genuinely
@@ -110,11 +112,5 @@ read the checkpoint, re-read [the load-bearing sources] in full, and resume at [
 Name anything only THEY can act on.
 
 ## When to invoke
-"prep for compact" / "checkpoint before I compact" / "/compact-prep", or you sense compaction is
-near on a long-horizon arc and want to checkpoint proactively. Do NOT use when the work is
-actually ENDING (use `session-end`) or mid-task with no compaction imminent.
-
-## Pairs with
-- `compact-resume` — reads the checkpoint; re-hydrates the verbatim-lossy sources; resumes.
-- `session-end` — the heavier close (fresh session next, zero context). Use when work is DONE.
-- `session-start` — fresh-session pickup; `compact-resume` is its compaction-aware sibling.
+Proactively when you sense compaction is near on a long-horizon arc and want to checkpoint before
+it lands. The checkpoint's reader is `compact-resume`.

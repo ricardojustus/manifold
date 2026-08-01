@@ -1,7 +1,7 @@
 ---
 name: session-end
 description: >-
-  Runs the end-of-session sweep: commits, state-snapshot update with 4-way hygiene routing, memory saves, plan/doc updates, doc-freshness flags, lesson writeup, cold-start kickoff rewrite. Use on "wrap up", "end the session", "we're done", "/session-end". Not the mid-arc compaction checkpoint (compact-prep).
+  Runs the end-of-session sweep. Use on "wrap up", "end the session", "call it a day", "we're done", "let's commit and stop", "/session-end". Not the mid-arc compaction checkpoint (compact-prep).
 allowed-tools: Read, Write, Edit, Bash, Grep
 ---
 
@@ -26,6 +26,8 @@ rounds) · **one commit round per repo** · skip-checks for the conditional step
 not investigations. A typical sweep fits in ~6 tool-turns.
 
 ## The eight-step sweep
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 ### 1. Uncommitted state — survey every repo (`git status --short`)
 Per repo with changes: **logical commit boundaries** (one commit per coherent idea — code, docs,
@@ -84,7 +86,8 @@ section + sequencing. **Changed an architectural decision** → update the doc +
 **Found a blocking design issue** → flag it in-place (banner callout). **Empirical findings
 contradicting the plan** → integrate them. Do it through `plan-update` (owns the genre split,
 revision bumps, dual-update rules). Architecture docs stay current with shipped reality — archive
-superseded bodies, don't preserve them inline.
+superseded bodies, don't preserve them inline. **Done = every subsystem, plan and decision this
+session touched is accounted for — each one updated, or explicitly named as unchanged.**
 
 ### 5. Doc-freshness checks — consult the project's freshness surface
 If code or docs changed, consult **the project's doc-freshness mechanism** — the binding names it
@@ -116,6 +119,13 @@ the stable points NOT to relitigate; the workflow + "STOP at X" conditions; the 
 "this session" or "yesterday". **Skip the full rewrite if tomorrow is just "keep going"** — a
 date-stamp + minor edit suffices; the full rewrite is for a real pivot or milestone transition.
 
+**Closure reconciliation — the check that closes steps 2 and 7.** The close-out artifacts must
+carry the operator's FINAL-turn dispositions: when they settled or dismissed something late in the
+session, STATE/KICKOFF reflect that, or the next session grounds on stale artifacts and relitigates
+a settled thing at them (the transcript is ground truth, not the continuity files). Same pass: a
+ruling closes EVERY surface stating its question (packet, park entry, KICKOFF, STATE) — one
+surviving stale copy re-opens the decision.
+
 ### 8. Handoff note + log entry
 One dense line to the project's task-audit log:
 ```
@@ -129,9 +139,8 @@ what landed, not what's next; they read this tired — respect that with brevity
 
 ## When to invoke
 
-The session is wrapping: "wrap up" / "end the session" / "call it a day" / "we're done" / "let's
-commit and stop" / `/session-end`, a clean stopping point, or context approaching compaction *with
-the work actually ending* (if it's continuing, use `compact-prep`). Do NOT invoke on mid-task
+Fire it yourself at a clean stopping point, or when context approaches compaction *with the work
+actually ending* — if the work is continuing, that is `compact-prep`. Do NOT invoke on mid-task
 pauses, after a single mid-session commit, or while the operator is still proposing next work.
 
 ## Pairs with
@@ -140,11 +149,3 @@ pauses, after a single mid-session commit, or while the operator is still propos
 - `compact-prep` — the lighter mid-arc checkpoint when work continues across a compaction.
 - `memory-discipline` owns step 3's saves · `plan-update` owns step 4 · `reference-doc-writing`
   owns step 5's doc authoring.
-
-## Closure reconciliation
-
-The close-out artifacts must carry the operator's FINAL-turn dispositions — when they settled or
-dismissed something late in the session, STATE/KICKOFF reflect that, or the next session grounds on
-stale artifacts and relitigates a settled thing at them (the transcript is ground truth, not the
-continuity files). Same pass: a ruling closes EVERY surface stating its question (packet, park
-entry, KICKOFF, STATE) — one surviving stale copy re-opens the decision.

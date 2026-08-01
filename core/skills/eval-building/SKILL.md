@@ -1,7 +1,7 @@
 ---
 name: eval-building
 description: >-
-  Builds an empirical eval measuring whether a feature or agent-run actually works — pre-register the decision first, separate fixture corpus / system-under-test / grader, climb the cheapest-grader ladder (deterministic → LLM judge → human). Use for "build an eval", "bake-off", "quality regression", "A/B this", "is X better".
+  Builds an empirical eval measuring whether a feature or agent-run actually works — pre-register the decision first, separate fixture corpus / system-under-test / grader, climb the cheapest-grader ladder (deterministic → LLM judge → human). Use for "build an eval", "bake-off", "quality regression", "what should the unattended loop optimize toward".
 ---
 
 # Eval-building — measure whether it actually works
@@ -17,8 +17,8 @@ It is the **empirical arm of the goal-driven-execution principle**. Two neighbor
 - **audit-cycle** — adversarial *review* of one artifact by inspection. An eval *measures*: it
   runs the system over a corpus and grades outputs.
 
-The harness's **skill-eval gate** (skill-creator: 60/40 train/held-out split, each query run 3×
-for a stable trigger rate) is the canonical application of everything below.
+The harness's **skill-eval gate** (skill-creator) is the canonical application of everything below;
+its constants are in §4.
 
 ## 1. When to build an eval (and when NOT to)
 
@@ -70,8 +70,15 @@ If you can't point at each separately, you have a demo, not an eval.
   over-long input, and genuinely ambiguous cases where even humans wouldn't reach consensus.
 - **LOCK it, and hold out a slice.** Freeze the corpus (record a hash + date). Reserve a
   **held-out slice the system is never tuned against** — the skill-creator gate uses 60% train /
-  40% held-out. Contamination rule: *if you edited the corpus to make it pass, it is no longer a
-  test.*
+  40% held-out and runs each query **3×** for a stable rate. Contamination rule: *if you edited the
+  corpus to make it pass, it is no longer a test.*
+
+**The freeze protects comparability, not correctness.** Check eval CONTENT against the operator's-world
+ground-truth sources before trusting a frozen artifact — a frozen question can encode a
+transcription garble and then measure a phantom. Same discipline for the freeze itself: **a verify
+tool must NEVER mutate what it verifies** — freeze sealed captures at capture time (`chmod 0444`),
+split capture-once from verify-only so the verify path cannot re-fetch; same revision string ≠ same
+bytes — compare actual bytes.
 
 ## 5. Pick the cheapest grader that works — the assertion ladder
 
@@ -139,8 +146,7 @@ An uncalibrated judge is an opinion generator. Calibrate before you scale (Criti
   correct solution in k attempts (fine when a retry or human filter catches misses); **pass^k** =
   all k trials succeed (the honest metric when the system must be reliable every time — an
   autonomous loop with no human gate). A single run is a coin-flip, not a measurement.
-- **Repeat for stable rates.** The skill-creator gate runs each query **3×**; do likewise wherever
-  the system is stochastic.
+- **Repeat for stable rates** wherever the system is stochastic — §4's gate is the reference.
 - **Report train and held-out separately** (§4's split). The held-out slice predicts real behavior.
 
 ## 10. Read the transcripts — the score is provisional
@@ -176,8 +182,6 @@ a judge rewarding verbosity — you only see it in the traces.
 
 ## When to invoke
 
-- Building a bake-off, a quality-regression suite, or an autonomous-run goal function: "build an
-  eval", "bake-off", "quality regression", "A/B this", "is X better", "/eval-building".
 - Proactively when a decision hinges on "is this output good / better / reliable enough?" across
   many cases and you're about to eyeball it instead of measuring it.
 
@@ -186,15 +190,7 @@ a judge rewarding verbosity — you only see it in the traces.
 - **goal-driven-execution** (principle) — the parent; this is its empirical arm.
 - **test-driven-development** — unit-level correctness during construction.
 - **audit-cycle** — adversarial review by inspection, not measurement over a corpus.
-- **The skill-eval gate** (skill-creator: 60/40 split, 3× runs) — canonical application.
+- **The skill-eval gate** (skill-creator) — canonical application; its constants are in §4.
 - `references/pitfalls-and-sources.md` — the full pitfalls canon (rule + numbers + source URL),
   the framework-abstractions table, and all source URLs.
   `.claude/harness-templates/eval-scorecard.md` — the run artifact.
-
-## The freeze protects comparability, not correctness
-
-Check eval CONTENT against the operator's-world ground-truth sources before trusting a frozen
-artifact — a frozen question can encode a transcription garble and then measure a phantom.
-Same discipline for the freeze itself: **a verify tool must NEVER mutate what it verifies** —
-freeze sealed captures at capture time (`chmod 0444`), split capture-once from verify-only so the
-verify path cannot re-fetch; same revision string ≠ same bytes — compare actual bytes.

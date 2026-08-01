@@ -89,7 +89,7 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
     attack or maintenance surface on a security-relevant path = Medium+; inert excess = Low.
     Scope guard: an excess finding against material the OPERATOR ratified routes to the
     operator (ratified machinery is theirs to keep); against ladder-born material it drives
-    the mechanism-defect fork normally.
+    the mechanism-defect fork (audit-cycle's Finding authority section) normally.
 13. **Code-smell baseline** (CONDITIONAL — code subjects only; the classic Refactoring smell
     set) — judgment-call heuristics matched against the code this round audits (rounds 2+: the
     fix diff), never hard violations: label each "possible <smell>" and quote the hunk. A

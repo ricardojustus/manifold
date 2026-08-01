@@ -1,7 +1,7 @@
 ---
 name: parallel-workstreams
 description: >-
-  Dispatches multiple independent agent sessions in parallel — one terminal window and git worktree each, kicked off by a `/goal` one-liner pointing at an authored brief. Use on "parallelize", "spawn N sessions", "split the work into worktrees", once specs are locked. Pairs with merge-and-cleanup for consolidation.
+  Dispatches multiple independent agent sessions in parallel. Use on "parallelize", "spawn N sessions", "split the work into worktrees", once specs are locked. Pairs with merge-and-cleanup for consolidation.
 ---
 
 # Parallel workstreams — separate-terminal `/goal` dispatch
@@ -19,7 +19,8 @@ Consolidation after lanes return is a **separate skill** — `merge-and-cleanup`
 ## Pre-flight — is parallel right for this work?
 
 1. **Specs are locked.** Architectural choices ratified; no pending decisions of substance. Lanes
-   may surface ambiguity inline but should not be *designing*.
+   may surface ambiguity inline but should not be *designing* — designing-while-shipping across
+   parallel lanes produces current-state violations and confabulation.
 2. **Lanes are independent.** Different files, scopes, worktree branches. If two lanes touch the
    same hot file, plan merge sequencing (one merges first, the other rebases) and say so in BOTH
    briefs.
@@ -34,7 +35,10 @@ If any is *no*, redirect to an in-session teammate (messageable live) or single-
 
 ## Step 1 — Set up worktrees
 
-One worktree per lane, sibling to its source repo:
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
+
+One worktree per lane, sibling to its source repo — **never a shared worktree**: two lanes on one
+checkout produce branch-flip races, cross-test pollution, and lost commits.
 
 ```bash
 git -C <source-repo> worktree add -b <lane-branch> <worktree-path> <base-commit>
@@ -100,9 +104,12 @@ The controller is NOT idle but also NOT supervising. Use the time for architectu
 (pre-stage the merge order), memory saves for decisions that surface, and a cross-lane integration
 table (if multiple specs touch the same contract).
 
-Don't poll status files repeatedly — lanes surface when done. **Lane windows have no mailbox back
-to the controller**; cross-lane ambiguity is handled by lanes tagging the decision inline +
-continuing, and the operator can type a directive into any lane window directly.
+Lanes surface when done, so let them: **lane windows have no mailbox back to the controller**;
+cross-lane ambiguity is handled by lanes tagging the decision inline + continuing, and the operator
+can type a directive into any lane window directly.
+
+**Step 4 is complete when every lane has written its status report and the merge order is
+pre-staged** — that is what hands off to Step 5.
 
 ## Step 5 — Consolidation
 
@@ -122,18 +129,15 @@ pasted inline**:
 - **diff-package** — the lane's committed branch (the controller reads `git diff` at
   consolidation), not a pasted patch.
 
-The report opens with a **closed status word** — one of exactly four:
+The report opens with a **closed status word** — `DONE` / `DONE_WITH_CONCERNS` / `NEEDS_CONTEXT` /
+`BLOCKED`. Definitions and the controller response each one obliges live in the handoff-triad
+template (`.claude/harness-templates/`); a status word outside the set is itself a defect. The
+controller consumes the *word* first, then the report body.
 
-| Status | Meaning | Controller response |
-|---|---|---|
-| `DONE` | All acceptance criteria pass; audit clean. | Verify the criteria, proceed to consolidation/merge. |
-| `DONE_WITH_CONCERNS` | Criteria pass, but the lane flags a residual worry. | Read the concerns; decide whether each blocks (fix-pass) or becomes backlog. |
-| `NEEDS_CONTEXT` | The lane hit an ambiguity it could not resolve from the brief. | Supply the missing context; resume the lane or re-dispatch with an augmented brief. |
-| `BLOCKED` | The lane cannot proceed (missing dependency, broken precondition). | Clear the blocker, then resume or re-dispatch. |
-
-A status word outside this set is itself a defect. The controller consumes the *word* first, then
-the report body. Full brief/report templates ship in `.claude/harness-templates/`; the brief-side
-obligations live in `brief-authoring`.
+Lane-specific responses on top of the template's: a `DONE` proceeds to Step 5 consolidation; a
+`NEEDS_CONTEXT` or `BLOCKED` is cleared by typing into the lane window to resume it, or by
+re-dispatching that lane with an augmented brief. The brief-side obligations live in
+`brief-authoring`.
 
 ## Common failure modes during dispatch
 
@@ -143,21 +147,6 @@ obligations live in `brief-authoring`.
   grep-verify at brief-write time; correct the brief or tag the discrepancy for the operator.
 - **Cross-lane contract drift** → catch it at brief-write time: write the cross-lane coordination
   table FIRST, then verify both briefs honor it.
-- **Goal prompt missing the skill-suppression list** → lanes clobber the controller's lifecycle.
-
-## Anti-patterns (don't do these)
-
-- **Don't dispatch parallel without locked specs** — designing-while-shipping produces
-  current-state violations and confabulation.
-- **Don't share a worktree across lanes** — branch-flip races, cross-test pollution, lost commits.
-  Hard rule.
-- **Don't supervise lanes from the controller session** — once `/goal` is pasted the lane is
-  autonomous; polling steals the controller's focus.
-- **Don't tell lanes to message the controller** — independent sessions have no inter-process
-  mailbox; coordination is inline decision-markers + continue + resolve at consolidation.
-- **Don't put "the controller has loaded context" filler in the goal prompt** — lanes need worktree
-  + brief + goal + scope.
-- **Don't omit the skill-suppression list.**
 
 ## When NOT to use this skill
 

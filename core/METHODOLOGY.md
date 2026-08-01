@@ -146,7 +146,7 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Purpose.** Decide what we are building and why, and what "done" looks like.
 - **Owner.** Human owns the decisions; the Orchestrator does the writing.
 - **Activities.** Discuss the vision with the Human, who sets direction and content. The Orchestrator writes it into the **Vision Doc**, grounded by the Phase 0 note.
-- **Output.** Vision Doc, opening with the required plain-language top summary (self-sufficient; every load-bearing choice surfaced for explicit yes/no — the `brainstorming`/`spec-writing` shape). **Must include acceptance criteria / a definition of done.** Without falsifiable acceptance criteria, later audits have nothing objective to check against and degrade into opinion.
+- **Output.** Vision Doc, opening with the required plain-language top summary (self-sufficient; every load-bearing choice surfaced for explicit yes/no). **Must include acceptance criteria / a definition of done.** Without falsifiable acceptance criteria, later audits have nothing objective to check against and degrade into opinion.
 - **Exit criteria.** Vision Doc written and acceptance criteria are concrete enough that a third party could judge whether the finished thing meets them.
 
 ### Phase 2 — Deep research (bounded)

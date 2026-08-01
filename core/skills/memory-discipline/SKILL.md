@@ -1,7 +1,7 @@
 ---
 name: memory-discipline
 description: >-
-  Decides what durable cross-session signal to keep and WHICH memory system it belongs in — check the project binding's memory mode first (direct-write store vs routed capture door). Use on "remember this" / "note for future sessions", or when a decision, correction, or project fact lands. NOT the lessons store.
+  Decides what durable cross-session signal to keep and WHICH memory system it belongs in. Use on "remember this" / "note for future sessions", or when a decision, correction, or project fact lands. NOT the lessons store.
 allowed-tools: Read, Write, Edit, Bash, Grep
 ---
 
@@ -12,6 +12,8 @@ compaction would otherwise erase. Too little → future-you re-derives settled d
 answered questions; too much → the index bloats and loaded context wastes budget.
 
 ## Step zero: which memory mode does this project run?
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 Check the project binding FIRST — it names the mode. Getting this wrong means saving into a store
 nothing reads, or bypassing the machinery that makes a save durable.

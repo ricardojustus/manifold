@@ -1,7 +1,7 @@
 ---
 name: spec-adherence
 description: >-
-  Light conformance tripwire before audit-cycle: ONE pass over the spec's ratified surface (acceptance criteria + Decisions), evidence per verdict, the authority fork on dead machinery, at most one fix-pass — never an agent fleet. Run as Gate 0 before audit-cycle, or on "conformance pass" / "does the impl match the spec".
+  Light conformance tripwire before audit-cycle: ONE pass over the spec's ratified surface (acceptance criteria + Decisions), evidence per verdict, the authority fork on dead machinery, at most one fix-pass. Run as Gate 0 before audit-cycle, or on "conformance pass" / "does the impl match the spec".
 ---
 
 # Spec-adherence — the conformance tripwire before the audit
@@ -9,7 +9,7 @@ description: >-
 `audit-cycle` hunts **defects**; it can pass clean while the code quietly **fails to implement
 the contract** (a decision never wired, a branch silently dropped — divergent code reads as
 internally consistent). This gate catches that class CHEAPLY, before audit rounds are spent on
-it. It is a **tripwire, not a proof**: one pass, one sitting, no agent fleet. The audit's
+it. It is a **tripwire, not a proof**: one pass, one sitting. The audit's
 contract-fidelity and spec-vs-reality checks stay fully live behind it.
 
 *Settled — inherit: the prior clause-exhaustive shape (checklist
@@ -21,14 +21,16 @@ nobody had asked for. Do not regrow it.*
 
 ```
 implement → commit → [THIS GATE: one pass → adjudicate → at most ONE fix-pass → PASS @ sha]
-          → audit-cycle round-1 → … → lock gate → merge
+          → audit-cycle round-1 → … → lock gate → LOCK
 ```
 
 **A non-PASS never proceeds to the multi-model audit. The PASS is bound to a commit sha** —
 any later commit invalidates it (audit-cycle asserts `HEAD` == the PASS sha; re-verify the
 touched items first). Code implementations only; spec-LOCK cycles skip it (nothing to conform).
 
-## The pass — one sitting, no fleet
+## The pass — one sitting
+
+> Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 **The walk list is the RATIFIED surface, not every sentence of the spec**: the acceptance
 criteria, the Decisions, and — for a LOCKED-spec amendment — the delta + sibling-coordination
@@ -81,18 +83,6 @@ is the net catching what the tripwire missed.
 
 The walk table + captured `test-output.txt` / `typecheck-output.txt` →
 `<artifact-root>/audits/<topic>/spec-adherence/`. Never in the spec body.
-
-## Anti-patterns
-
-1. **Clause-exhaustive decomposition, agent fleets, a completeness critic, loop-until-green** —
-   the operator-killed predecessor shape. The walk list is the ratified surface.
-2. **Wiring a dead mechanism whose clause has no authority** — the clause is the defect;
-   deletion-candidate, operator's word.
-3. **A second fix-pass** — divergence after one pass surfaces to the operator.
-4. **Rubber-stamp CONFORMS** — no code span actually read = UNVERIFIABLE.
-5. **A stale PASS** — sha-bound; any later commit invalidates it.
-6. **Running it on a spec-LOCK cycle** — no impl to conform.
-7. **Telling auditors conformance is established** — the tripwire never lowers the net.
 
 ## Related skills
 
