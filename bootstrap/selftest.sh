@@ -466,6 +466,34 @@ if "$UPD" "$T16" --no-pull >"$SCRATCH/u2.log" 2>&1; then no "update.sh on a non-
 assert 'grep -q "not a manifold install" "$SCRATCH/u2.log"'             "non-install error names the problem"
 
 # ---------------------------------------------------------------------------
+# case 19: --bootstrap onboarding-kit mode
+# ---------------------------------------------------------------------------
+echo "== case 19: --bootstrap mode =="
+mkdir -p "$CORE/bootstrap/skills/harness-onboarding"
+printf -- '---\nname: harness-onboarding\ndescription: Onboarding dummy skill for selftest.\n---\nOnboarding body.\n' > "$CORE/bootstrap/skills/harness-onboarding/SKILL.md"
+T17="$SCRATCH/target17"; mkdir -p "$T17"
+if "$INST" "$T17" --bootstrap >"$SCRATCH/i17.log" 2>&1; then ok "--bootstrap install exits 0"; else no "--bootstrap install exits 0"; cat "$SCRATCH/i17.log"; fi
+assert '[ -f "$T17/.claude/skills/harness-onboarding/SKILL.md" ]'         "bootstrap: onboarding skill installed"
+assert '[ -f "$T17/.claude/manifold-onboarding-pending" ]'                "bootstrap: pending marker written"
+assert '[ ! -e "$T17/CLAUDE.harness.md" ]'                                "bootstrap: no constitution assembled"
+assert 'grep -q "^mode: bootstrap$" "$T17/.claude/manifold-manifest.yaml"' "bootstrap: manifest records mode: bootstrap"
+assert 'grep -q "^profile: base$" "$T17/.claude/manifold-manifest.yaml"'   "bootstrap: defaults to profile base"
+T18="$SCRATCH/target18"; mkdir -p "$T18"
+"$INST" "$T18" --bootstrap --overlay _selftest >"$SCRATCH/i18.log" 2>&1; RC18=$?
+assert '[ "$RC18" = 2 ]'          "--bootstrap with --overlay is rejected (exit 2)"
+assert '[ ! -d "$T18/.claude" ]'  "rejected --bootstrap --overlay wrote nothing"
+assert 'grep -q "takes no --overlay" "$SCRATCH/i18.log"' "rejection names the --bootstrap/--overlay conflict"
+T19="$SCRATCH/target19"; mkdir -p "$T19"
+"$INST" "$T19" --overlay _selftest >/dev/null 2>&1
+"$INST" "$T19" --bootstrap >"$SCRATCH/i19.log" 2>&1; RC19=$?
+assert '[ "$RC19" = 2 ]'                        "--bootstrap over a full install is refused (exit 2)"
+assert '[ -f "$T19/CLAUDE.harness.md" ]'        "refusal left the full install intact"
+if "$INST" "$T19" --force-bootstrap >"$SCRATCH/i19b.log" 2>&1; then ok "--force-bootstrap proceeds over a full install"; else no "--force-bootstrap proceeds over a full install"; cat "$SCRATCH/i19b.log"; fi
+assert 'grep -q "^mode: bootstrap$" "$T19/.claude/manifold-manifest.yaml"' "--force-bootstrap rewrote the manifest to mode: bootstrap"
+assert '[ ! -e "$T19/CLAUDE.harness.md" ]'          "--force-bootstrap stripped the assembled constitution"
+assert '[ ! -e "$T19/.claude/rules/ovr-rule.md" ]'  "--force-bootstrap pruned the overlay-sourced rule"
+
+# ---------------------------------------------------------------------------
 echo "======================================================"
 echo "selftest: $PASS passed, $FAIL failed"
 if [ "$FAIL" -ne 0 ]; then echo "SELFTEST FAILED"; exit 1; fi
