@@ -24,7 +24,7 @@
    block-edge / close-into) — upstream assumes a clean tracker.
 5. **Upstream's "never resolve more than one ticket per session" rule dropped** — it exists for
    short-context sessions; this harness's sessions are long-lived lanes. Replaced by the
-   one-decision-at-a-time chat discipline plus record-at-the-event map upkeep.
+   round discipline plus record-at-the-event map upkeep.
 6. **Decision-packet clause added**: reserved-authority/security-posture tickets produce the
    project's owed packet; the packet's ruling resolves the ticket.
 7. Setup reference (`/setup-matt-pocock-skills`), tracker-config indirection, and the

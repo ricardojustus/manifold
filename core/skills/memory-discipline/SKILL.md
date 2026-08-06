@@ -35,6 +35,23 @@ durable rule dropped on the floor is not). **A rule that must fire unprompted is
 it is armed**: promoted to the always-loaded tier (a pin, a constitution line, a rule file) per the
 binding. Filing is not arming.
 
+**In an Atlas project** (the repo carries `atlas/orientation.md`) one KIND leaves the memory
+system and becomes a file in the repo: a **settled architectural or direction decision that
+constrains future builders** mints a record in `adr/`. A **reversal of a settled decision routes
+the same way** — it mints the superseding record as a NEW file and flips the old record's
+`Decision status` to `superseded-by NNNN`; the old body stays as written, and the chain is the
+history. Write the substance ONCE, in the record, at the moment the decision settles; memory gets
+the gist plus a pointer to it. **On contradiction over project or architectural truth the ADR
+wins** — the agent that notices the contradiction fixes memory with a correction entry pointing
+at the record, rather than leaving two answers standing.
+
+Two boundaries hold that split honest. **ADRs are never generated from the diary or the memory
+store** — curation is a judgment act performed at the event, and a batch job over episodic
+entries produces plausible records nobody decided. And **facts about the operator's world**
+(their people, projects, preferences) never enter `adr/`: they stay in the memory system, which
+remains authoritative for them. In a project with no memory system at all, `adr/` simply IS the
+project's decision record.
+
 **The hot-buffer option (recommended for Mode B).** Promotion machinery has latency, but a
 correction given today should protect the very next session. A project may keep a small
 **always-loaded lessons buffer** (an @-imported file, capped ~20 entries): on any operator

@@ -179,10 +179,10 @@ The project maintains a small set of continuity files (canonical skeletons in `.
 
 ## Communication Style
 
-<!-- SLOT comms_style: how this agent talks to this operator — target voice, what to avoid,
-     any tune to the shipped `response-style` close (the rule already provides the close),
-     and language/format conventions. The operator profile (user_import) has the facts; this
-     slot has the register. -->
+<!-- SLOT comms_style: operator-facing communication absolutes and pointers only. Voice and
+     report shape belong to the `simple` output style (core/output-styles/simple.md), never
+     to this slot — contradictory voice sources blend unpredictably. The operator profile
+     (user_import) has the facts. -->
 {{HARNESS:comms_style}}
 
 ## Boundaries

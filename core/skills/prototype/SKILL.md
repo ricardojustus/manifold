@@ -2,8 +2,8 @@
 name: prototype
 description: >-
   Build a throwaway prototype to answer a design question the operator must react to rather than
-  reason about. Use when the question is "does this logic / state model feel right?" (a tiny
-  interactive terminal app driving the state by hand) or "what should this look like?" (several
+  reason about. Use when the question is "does this logic / state model feel right?" (a single
+  shareable HTML demo driving the state by buttons) or "what should this look like?" (several
   radically different UI variations switchable on one route), when a wayfinder prototype ticket
   fires, or when a design argument keeps going in circles on paper. The answer is the deliverable;
   the code is scaffolding — kept as a receipt on a scrap branch, never merged.
@@ -19,8 +19,9 @@ Identify which question is being answered — from the operator's prompt, the su
 by asking if they're around:
 
 - **"Does this logic / state model feel right?"** → [references/LOGIC.md](references/LOGIC.md).
-  A tiny interactive terminal app that pushes the state machine through cases that are hard to
-  reason about on paper.
+  A single shareable HTML demo — free-play buttons plus tabbed guided walkthroughs — that pushes
+  the state machine through cases that are hard to reason about on paper, and that a
+  non-developer can drive.
 - **"What should this look like?"** → [references/UI.md](references/UI.md). Several radically
   different UI variations on a single route, switchable via a URL param and a floating bottom
   bar.
@@ -36,8 +37,9 @@ assumption at the top of the prototype.
    will be used so context is obvious, named so a casual reader sees it's a prototype, not
    production. Obey the project's existing routing/layout conventions; don't invent new top-level
    structure.
-2. **One command to run**, via the project's existing task runner. The operator must be able to
-   start it without thinking.
+2. **Trivial to run.** A UI prototype starts from one command in the project's existing task
+   runner; a logic demo is a single HTML file the operator double-clicks. Either way, the
+   operator starts it without thinking.
 3. **No persistence by default.** State lives in memory — persistence is usually the thing being
    *checked*, not a dependency. If the question explicitly involves a database, hit a scratch
    store with a clear "PROTOTYPE — wipe me" name.

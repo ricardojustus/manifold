@@ -13,6 +13,8 @@ description: <one line — what this overlay adapts core to>
 #   inter-session — the peer-session messaging bus (ships a Python runtime; only useful when
 #                   the project runs multiple coordinated Claude Code sessions on one machine)
 #   multi-agent   — parallel-workstreams + merge-and-cleanup (multi-lane worktree dispatch)
+#   atlas         — decision records (adr/) + a hand-written architecture orientation file;
+#                   ships two templates and owns no skills
 # New adopters start at base; enable modules when the need is real, not speculatively.
 profile: base
 modules:                     # e.g.: inter-session multi-agent

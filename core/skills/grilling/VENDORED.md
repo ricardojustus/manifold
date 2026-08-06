@@ -2,17 +2,19 @@
 
 - **Upstream**: https://github.com/mattpocock/skills (`skills/productivity/grilling` +
   `skills/productivity/grill-me`)
-- **Version**: commit `2ab958093e83e0ec752e6c1c5932da465bf23e0c` (adapted 2026-07-30)
+- **Version**: commit `8b36d4fb2635b3c21998dcd8144439c9e5ba7302` (re-adapted 2026-08-05; first
+  adapted 2026-07-30 at `2ab958093e83e0ec752e6c1c5932da465bf23e0c`)
 - **License**: MIT (`LICENSE.upstream`, © 2026 Matt Pocock)
 - **Vetting**: full end-to-end read of both upstream skill dirs (two SKILL.md prompt texts + two
-  `agents/openai.yaml` interface stubs; no scripts), 2026-07-30. The adopting project keeps the
+  `agents/openai.yaml` interface stubs; no scripts), 2026-07-30; re-read of the rewritten upstream
+  `grilling/SKILL.md` end-to-end at the new pin, 2026-08-05. The adopting project keeps the
   analysis record in its own evidence store.
 - **Posture**: adapted, not tracked — this copy is OUR text under OUR review; upstream changes do
   not flow in automatically.
 
 ## Adaptation delta vs upstream
 
-1. Merged `grill-me` (a user-invoked 3-line wrapper) into the one `grilling` skill — upstream's
+1. Merged `grill-me` (a user-invoked one-line wrapper body) into the one `grilling` skill — upstream's
    split adds no capability in this harness (a described skill is both operator- and
    skill-reachable). The merge DROPS upstream `grill-me`'s `disable-model-invocation: true`
    restriction: there is no non-auto-invocable alias here.
@@ -27,7 +29,18 @@
    project's gates; reserved calls still owe their decision packet), and the dependency-sequencing
    instruction (upstream implies it via "resolving dependencies").
 5. Routing lines to `brainstorming` and `council` in the description (harness neighbors).
+6. **Frontier-rounds model adopted from upstream's rewrite** at the new pin: the design tree, the
+   frontier, one round per batch of currently-answerable questions, the `❓`/`➡️` question block,
+   recompute-and-repeat, done when the frontier is empty. It replaces this copy's earlier
+   one-question-at-a-time loop and absorbs delta 4's dependency-sequencing instruction (rounds
+   sequence by dependency by construction). Upstream folded its own `batch-grill-me` experiment
+   into `grilling` and deleted it, so the frontier model now lives in the one upstream `grilling`
+   skill (the `grill-me` wrapper is unchanged and still tracked above).
+7. Subagent fact-finding kept as upstream states it (dispatch, don't block, only downstream
+   questions wait); the four house additions ride unchanged — lean per question, capture at the
+   event, the completion-and-exit section (alignment never authorization; the wayfinder promotion),
+   and composition.
 
-Everything else preserves upstream's behavioral core: one question at a time · recommended answer
-per question · facts looked up, not asked · decisions are the operator's · no action until
+Everything else preserves upstream's behavioral core: the whole frontier per round · recommended
+answer per question · facts looked up, not asked · decisions are the operator's · no action until
 confirmed shared understanding.

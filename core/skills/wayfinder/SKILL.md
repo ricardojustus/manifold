@@ -83,8 +83,8 @@ folder as the archive.
 Every ticket carries a type — **HITL** (worked live with the operator, who speaks for themselves;
 an agent never answers the operator's side) or **AFK** (agent-driven alone):
 
-- **Grilling** (HITL, the default) — resolved by a `grilling` pass: one question at a time, the
-  operator rules.
+- **Grilling** (HITL, the default) — resolved by a `grilling` pass: one frontier round per
+  message, the operator rules.
 - **Research** (AFK) — a fact outside the working tree that a decision waits on; resolved by a
   `research` dispatch, findings linked from the ticket.
 - **Prototype** (HITL) — "how should it look / feel / behave" questions that die in prose;

@@ -30,6 +30,7 @@ A placement taxonomy + lifecycle. Only a subset of folders is indexed into the s
 Run top-down; stop at the first match.
 
 1. **Records a hard-to-reverse / future-constraining decision** (the "why" behind a choice future-you would otherwise re-litigate) → `specs/adr/` (an ADR — template below). Not indexed.
+   - **In an Atlas project** (the repo carries `atlas/orientation.md`) the record goes to **`adr/` at the repo root** instead, named `NNNN-slug.md`, on `.claude/harness-templates/atlas/ADR.md` — dual status (decision + implementation), and rejected alternatives each carrying a one-line cause of death. Root placement is deliberate: a dispatched seat reads the repo, not this taxonomy.
 2. **An implementation contract** — has acceptance criteria + names an owning-reference target it will promote into → `specs/`. Not indexed.
 3. **Documents observed *current runtime* behavior** ("how subsystem X works right now") → `reference/`. Indexed. Write via `reference-doc-writing`.
 4. **Durable design *intent*** independent of any one implementation session ("what we decided to build and why, at the roadmap/subsystem level") → `plans/` (with an authored short). Indexed. Maintain via `plan-update`.
@@ -50,12 +51,17 @@ When a spec finishes implementation, this is **part of definition-of-done in the
 - **(b)** If the spec embodied an **architecturally-significant decision**, write an **ADR** (`specs/adr/`).
 - **(c) Move** the spec → `specs/archive/` with an IMPLEMENTED banner back-linking the reference doc (+ ADR).
 
+**In an Atlas project the close-out is (a)/(b)/(c) on different targets**: **(a) distill** the spec's load-bearing choices — the ones that carry a rejected alternative — into `adr/` records, one decision per file; **(b) update the arrows** in `atlas/orientation.md` if this work moved a flow, a seam, an entry point, or a boundary (same arc, not later); **(c) move** the spec → `specs/archive/` with an IMPLEMENTED banner back-linking the minted ADRs. A spec that settled nothing worth constraining future builders mints no record — that is a real outcome, not a skipped step.
+
 **Provenance schema** (a machine-checkable backstop) — every active spec NAMES its target at authoring time, so close-out is never undefined:
 - Active spec header: `owning-reference: reference/<file>.md#<anchor>`.
 - Archived spec banner: `reference: reference/<file>.md#<anchor>` (required) + `adr: specs/adr/<name>.md` (if written).
 - Reference doc, in the promoted section: `<!-- provenance: spec specs/archive/<name>.md; adr specs/adr/<name>.md -->`.
+- **Atlas project**: the archived spec banner's REQUIRED pointer is `adr: adr/NNNN-<slug>.md` when the close-out minted records (plus `orientation: atlas/orientation.md` when arrows moved); a no-record close-out writes that outcome into the banner explicitly — `adr: none — settled nothing constraining future builders`. The active spec header's `owning-reference:` names its ADR target in the same form. The guarantee is unchanged — every spec reaching the archive carries a resolving pointer or the explicit no-record line; only the genre it resolves to changes.
 
 The `session-end` freshness sweep flags an archived spec whose `reference:` link doesn't resolve or whose target lacks the matching `provenance:` back-pointer (pointer presence only; semantic coverage stays human-reviewed). Every spec reaching `specs/archive/` via this loop carries a resolving `reference:` pointer — that's the close-out contract. If a genuine future case can't promote (a spent spec whose owning subsystem is being decommissioned with no reference doc), amend the locked placement spec with a narrow, machine-readable exemption field rather than a broad text match.
+
+**In an Atlas project the pointer that must resolve is the `adr:` form above** — same close-out guarantee, different genre; the explicit `adr: none …` line satisfies the sweep for a no-record close-out.
 
 ## ADR template (Nygard, short)
 
@@ -69,6 +75,8 @@ The `session-end` freshness sweep flags an archived spec whose `reference:` link
 ```
 
 Write an ADR only for an **architecturally-significant** decision: one that (a) is hard to reverse, (b) constrains future design, or (c) future-you would otherwise re-litigate. Routine specs with no novel decision get none — else busywork.
+
+**Atlas projects use `.claude/harness-templates/atlas/ADR.md` instead of the Nygard shape above** — its header carries what earns a record, what is not an ADR, and the supersede formatting.
 
 ## Relocation rules (moving a misfiled doc)
 

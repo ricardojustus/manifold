@@ -285,6 +285,25 @@ for m in $ALL_MODULES; do
   done
   if [ "$present" = 1 ]; then echo "module $m: READY"; else echo "module $m: UNAVAILABLE (not installed — enable via --modules $m)"; fi
 done
+# atlas owns no skills, so it is reported separately: the loop above keys on skill dirs and
+# would call it READY unconditionally. Its state is the manifest token plus the one artifact
+# that actually turns the layer on — the repo's own orientation file.
+case " $MF_MODULES " in
+  *" atlas "*)
+    if [ -f "$TARGET/atlas/orientation.md" ]; then
+      echo "module atlas: READY"
+    else
+      echo "module atlas: PENDING-ONBOARDING (author atlas/orientation.md — template: .claude/harness-templates/atlas/orientation.md)"
+    fi
+    ;;
+esac
+# Orientation cap: detection only, never blocking — the session that pushed the file over
+# brings it back under in the same arc. Keyed on the artifact alone (a repo carrying an
+# orientation file has the layer on, whatever the manifest records).
+if [ -f "$TARGET/atlas/orientation.md" ]; then
+  olines="$(wc -l < "$TARGET/atlas/orientation.md" | tr -d ' ')"
+  if [ "$olines" -gt 150 ]; then echo "WARN ORIENTATION-LONG atlas/orientation.md ($olines lines)"; WARNS=$((WARNS+1)); fi
+fi
 if [ -d "$SKILLS_DIR" ]; then
   for d in "$SKILLS_DIR"/*/; do
     [ -d "$d" ] || continue

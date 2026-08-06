@@ -96,6 +96,10 @@ short-vs-full sync, an implemented spec not promoted to a reference doc). Each e
 `FLAG <reason>`; **resolve every FLAG before ending** — a FLAG is an un-filed change, not a
 nuisance to silence.
 
+**In an Atlas project** (the repo carries `atlas/orientation.md`) the consult is one verify
+question: *did anything this session move flows / seams / entry points / boundaries, and does
+`atlas/orientation.md` say so?* A "yes, and it doesn't" is fixed here, in this session.
+
 **Tier rule**: write a reference doc when a subsystem *stabilizes* (roughly 1-2 months without
 rewrites); a mid-flight subsystem gets a HOLD/placeholder index entry, NOT a premature
 current-state doc. If a subsystem stabilized this session, consider writing its doc (via

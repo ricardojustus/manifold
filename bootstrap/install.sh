@@ -19,7 +19,8 @@
 # PROFILES: --profile base installs the core discipline set and SKIPS the optional
 # modules; --profile full installs everything. Optional modules (enable individually
 # with --modules): inter-session (the peer-session messaging bus + its Python runtime),
-# multi-agent (parallel-workstreams + merge-and-cleanup lane orchestration). The overlay
+# multi-agent (parallel-workstreams + merge-and-cleanup lane orchestration), atlas (the
+# decision-record + orientation templates; owns no skills). The overlay
 # manifest may pin `profile:` and `modules:`; the CLI overrides. Default: full
 # (back-compat for existing installs; the _template manifest pins base for new adopters).
 #
@@ -156,7 +157,7 @@ case "$ARTIFACT_ROOT" in '<'*'>') ARTIFACT_ROOT="" ;; esac
 [ "$BOOTSTRAP" = 1 ] && ARTIFACT_ROOT="."
 
 # --- profile + modules resolution: CLI > overlay manifest > default full ---
-ALL_MODULES="inter-session multi-agent"
+ALL_MODULES="inter-session multi-agent atlas"
 skill_module() { # <skill-name> -> module owning it, or ""
   case "$1" in
     inter-session)                        echo "inter-session" ;;
@@ -268,6 +269,7 @@ copy_tree() { # <src-root> <dest-prefix> <source-prefix> [skip_readme]
   done < <(find "$1" -type f ! -path '*/__pycache__/*' ! -name '*.pyc')
 }
 copy_tree "$HARNESS_ROOT/core/rules"      ".claude/rules"             "core/rules"  skip_readme
+copy_tree "$HARNESS_ROOT/core/output-styles" ".claude/output-styles"  "core/output-styles"
 copy_tree "$HARNESS_ROOT/core/templates"  ".claude/harness-templates" "core/templates"
 copy_tree "$HARNESS_ROOT/core/principles" ".claude/harness/principles" "core/principles"
 copy_tree "$HARNESS_ROOT/core/case-law"   ".claude/harness/case-law"   "core/case-law"

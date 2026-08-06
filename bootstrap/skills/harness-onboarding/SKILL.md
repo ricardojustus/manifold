@@ -224,8 +224,10 @@ strict version is the safe start and can be loosened later with a one-line edit.
 ### Group 6 — parallel sessions → the Act 2 input
 
 15. "Will more than one Claude Code session work this repo at the same time — different
-    workstreams, or parallel implementation lanes?" This single answer drives Act 2's module
-    questions. Also ask, if yes, whether one session owns the shared state files or each
+    workstreams, or parallel implementation lanes?" This single answer drives Act 2's
+    `inter-session` and `multi-agent` questions (`atlas` is asked on its own — it turns on a
+    need for durable decision records, not on parallelism). Also ask, if yes, whether one
+    session owns the shared state files or each
     workstream keeps its own folder; record their answer in `memory_paths`.
 
 **Close Act 1** by running the FILL grep above and showing the operator the list of files you
@@ -238,15 +240,18 @@ wrote. Offer to show any of them in full.
 Every install below is **asked before it runs and verified after it runs**. Nothing here is
 installed silently, and a "no" is final — the operator can enable it later with one command.
 
-### The two Manifold modules
+### The three Manifold modules
 
 | Module | What it gives them | Ask when |
 |---|---|---|
 | `inter-session` | A localhost messaging bus between parallel sessions on this machine (questions, FYIs, co-sign opinions — never remote) | they answered yes to Q15 |
 | `multi-agent` | `parallel-workstreams` + `merge-and-cleanup`: dispatching several implementation lanes in separate git worktrees, then merging them | they answered yes to Q15, or they expect long multi-lane builds |
+| `atlas` | Durable decision records in `adr/` (one small file per settled decision, with its rejected alternatives) + a hand-written `atlas/orientation.md` mapping how the repo's pieces connect | the project wants durable decision records + a hand-written architecture orientation |
 
-A "no" to both is the right default for a solo project — say so; they are re-enabled any time
-by re-running the installer with `--modules`.
+A "no" to all three is the right default for a solo project — say so; they are re-enabled any time
+by re-running the installer with `--modules`, whose list REPLACES the recorded set: the re-run must
+carry the union (the recorded modules plus the new one) or the omitted module's managed files are
+pruned.
 
 For each module they want, enable it now against the bootstrap install so the rest of Act 2 can
 verify it:
@@ -267,6 +272,25 @@ python3 .claude/skills/inter-session/bin/list.py --self
 
 Any error here (a missing-dependency line, an import traceback) means install-deps did not
 complete — say so plainly rather than leaving a module that looks enabled and isn't.
+
+**`atlas` yes-path needs its one authoring act.** The module ships two templates; the layer only
+turns on when the repo carries its own orientation file. In this order:
+
+1. **Author `atlas/orientation.md`** from `.claude/harness-templates/atlas/orientation.md` — one
+   sitting, at most 150 lines, covering only what no parser can derive: flows (each arrow naming
+   its file), seams that bite, entry points, ownership boundaries. Show it to the operator to
+   skim when it is done; they own the content, and the cap is theirs to raise.
+2. **Wire hop zero** — point the project's always-loaded context file (`CLAUDE.md`) at the
+   orientation file: an @-import where the project uses them, otherwise one pointer line. Print
+   the exact line and have the operator paste it, like every other manual wiring step. A project
+   with no always-loaded context file skips this — there, discovery is the root-visible `atlas/`
+   directory.
+3. **Leave `adr/` alone.** Never create it empty or backfill it. Where the repo has no `adr/`,
+   it appears at the first real decision, which the `doc-placement` and `memory-discipline`
+   skills mint; where the repo already has one, those files stay untouched and new records take
+   the next unused 4-digit ID.
+
+The Lexicon (`atlas/lexicon/`) is a later layer — do not improvise one here.
 
 ### The companion tools
 

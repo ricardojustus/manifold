@@ -48,7 +48,8 @@ Then open a Claude Code session in the project and run `/harness-onboarding`. Th
    session always knows where to look. Act 3 installs from there with
    `--overlay <target>/manifold-overlay`; keeping an overlay inside this harness clone
    (`overlays/<name>/`, the right home for a meta-project) stays available via the same flag.
-2. **Optional capabilities** — the two Manifold modules (`inter-session`, `multi-agent`) and
+2. **Optional capabilities** — the three Manifold modules (`inter-session`, `multi-agent`,
+   `atlas`) and
    the companion tools below, each asked before installing and verified after. The
    cross-model counterparty is *guided, never auto-installed*: it has its own account and
    billing.
@@ -68,11 +69,23 @@ flags. Run it from the harness clone; with no argument it updates the project yo
 in. All the re-install safety semantics below apply unchanged.
 
 **Profiles.** `--profile base` installs the core discipline set; `--profile full` adds the
-optional modules — `inter-session` (peer-session messaging bus + its Python runtime) and
-`multi-agent` (parallel-workstreams + merge-and-cleanup). Enable modules individually with
+optional modules — `inter-session` (peer-session messaging bus + its Python runtime),
+`multi-agent` (parallel-workstreams + merge-and-cleanup) and `atlas` (decision records in
+`adr/` plus a hand-written `atlas/orientation.md`; templates only, no skills). Enable
+modules individually with
 `--modules`. The overlay manifest may pin `profile:`/`modules:`; the CLI overrides; the
 default (nothing specified anywhere) is full, for back-compat. `doctor.sh` reports each
-module READY/UNAVAILABLE and flags skills whose referenced helper scripts are missing.
+skill-owning module READY/UNAVAILABLE — and `atlas`, which owns no skills, from its manifest
+token plus its one artifact: no atlas module line while the token is absent,
+`PENDING-ONBOARDING` once the token is recorded but `atlas/orientation.md` has yet to be
+written, `READY` when both are there — and flags skills whose referenced helper scripts are
+missing.
+
+**Enabling a module later.** A `--modules` list REPLACES the target's recorded set, so a re-run
+that turns one more module on must pass the UNION: the manifest's recorded `modules:` plus the
+new one, comma-joined (a recorded `modules: none` means pass the new module alone). Restate
+`--profile` too — and `--link` where the install was linked. A module left off the list has its
+managed files pruned.
 
 **Re-installing (upgrade).** A re-install reconciles against the prior manifest: files the
 harness retired are **pruned** (removed if unmodified since install; kept with a warning if
@@ -96,6 +109,7 @@ records which was used (`overlay: <name-or-abspath>`).
 |----------------------------------|--------------------------------------|-------|
 | `core/skills/*`                  | `.claude/skills/*`                   | overlay `skill-bindings/<skill>.md` appended to that skill's `SKILL.md` |
 | `core/rules/*`                   | `.claude/rules/*`                    | |
+| `core/output-styles/*`           | `.claude/output-styles/*`            | activate with `"outputStyle": "simple"` in the target's `.claude/settings.json` (manual, like hook wiring) |
 | `core/templates/*`               | `.claude/harness-templates/*`        | |
 | `core/METHODOLOGY.md`, `core/ENFORCEMENT.md`, `core/principles/`, `core/case-law/` | `.claude/harness/` | |
 | `FIELD_GUIDE.md` (repo root)     | `.claude/harness/FIELD_GUIDE.md`     | the onboarding narrative — ships with the installed project |

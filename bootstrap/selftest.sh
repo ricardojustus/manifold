@@ -494,6 +494,47 @@ assert '[ ! -e "$T19/CLAUDE.harness.md" ]'          "--force-bootstrap stripped 
 assert '[ ! -e "$T19/.claude/rules/ovr-rule.md" ]'  "--force-bootstrap pruned the overlay-sourced rule"
 
 # ---------------------------------------------------------------------------
+# case 20: atlas module — resolution, unknown-module guard, installed template shape
+# ---------------------------------------------------------------------------
+echo "== case 20: atlas module =="
+# The real atlas templates ride into the fixture core: the shape assertions below check the
+# shipped files, not a stand-in, and they reach the target through the ordinary templates copy.
+mkdir -p "$CORE/core/templates/atlas"
+cp "$HERE/../core/templates/atlas/ADR.md" "$HERE/../core/templates/atlas/orientation.md" "$CORE/core/templates/atlas/"
+T20="$SCRATCH/target20"; mkdir -p "$T20"
+if "$INST" "$T20" --overlay _selftest --profile base --modules atlas >"$SCRATCH/i20.log" 2>&1; then ok "--modules atlas resolves (exit 0)"; else no "--modules atlas resolves (exit 0)"; cat "$SCRATCH/i20.log"; fi
+assert 'grep -q "^modules: .*atlas" "$T20/.claude/manifold-manifest.yaml"' "atlas: manifest records the module"
+T21="$SCRATCH/target21"; mkdir -p "$T21"
+"$INST" "$T21" --overlay _selftest --modules nosuchmodule >"$SCRATCH/i21.log" 2>&1; RC21=$?
+assert '[ "$RC21" = 2 ]'                                    "unknown module still errors (exit 2)"
+assert 'grep -q "unknown module: nosuchmodule" "$SCRATCH/i21.log"' "unknown-module error names the module"
+ADRT="$T20/.claude/harness-templates/atlas/ADR.md"
+ORIT="$T20/.claude/harness-templates/atlas/orientation.md"
+assert '[ -f "$ADRT" ] && [ -f "$ORIT" ]'                   "atlas: both templates installed"
+assert 'grep -q "^- \*\*Decision status:\*\* proposed | accepted | superseded-by NNNN$" "$ADRT"'   "ADR template: decision status line"
+assert 'grep -q "^- \*\*Implementation status:\*\* not-started | in-progress | live$" "$ADRT"'     "ADR template: implementation status line"
+assert 'grep -q "^- \*\*Date:\*\* YYYY-MM-DD$" "$ADRT"'     "ADR template: date line"
+assert '[ "$(grep -c "^## " "$ADRT")" = 4 ]'                "ADR template: 4 sections"
+for h in "Context and problem statement" "Decision" "Consequences" "Rejected alternatives"; do
+  assert 'grep -q "^## '"$h"'$" "$ADRT"'                    "ADR template: section $h"
+done
+assert 'grep -q "CONSTRAINS FUTURE BUILDERS" "$ADRT"'       "ADR template header: what earns a record"
+assert 'grep -q "NOT AN ADR" "$ADRT"'                       "ADR template header: what is not an ADR"
+assert 'grep -q "IMMUTABLE" "$ADRT"'                        "ADR template header: immutability"
+assert 'grep -q "superseded-by NNNN" "$ADRT"'               "ADR template header: supersede formatting"
+assert '[ "$(grep -c "^## " "$ORIT")" = 4 ]'                "orientation template: 4 sections"
+for h in "Flows" "Seams" "Entry points" "Boundaries"; do
+  assert 'grep -q "^## '"$h"'$" "$ORIT"'                    "orientation template: section $h"
+done
+assert 'grep -q "LITMUS:" "$ORIT"'                          "orientation header: litmus"
+assert 'grep -q "CAP: 150 lines" "$ORIT"'                   "orientation header: cap"
+assert 'grep -q "OVERFLOW:" "$ORIT"'                        "orientation header: overflow procedure"
+assert 'grep -q "AUTHORING:" "$ORIT"'                       "orientation header: authoring instruction"
+assert 'grep -q "HOP ZERO:" "$ORIT"'                        "orientation header: hop-zero wiring step"
+assert 'grep -q "context file SKIPS this wire" "$ORIT"'     "orientation header: hop-zero skip"
+assert 'grep -q "EMPTY START:" "$ORIT"'                     "orientation header: empty-start note"
+
+# ---------------------------------------------------------------------------
 echo "======================================================"
 echo "selftest: $PASS passed, $FAIL failed"
 if [ "$FAIL" -ne 0 ]; then echo "SELFTEST FAILED"; exit 1; fi

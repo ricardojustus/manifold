@@ -1,5 +1,6 @@
-<!-- FILL comms_style: how this agent talks to this operator — target voice, what to avoid
-     (sycophantic openings, formal sign-offs, over-explaining), any tune to the shipped
-     `response-style` close (the rule already provides the close), and language/format
-     conventions (dates, numbers, language switching).
+<!-- FILL comms_style: operator-facing communication absolutes and pointers only —
+     hard delivery laws, per-operator format conventions (dates, numbers, language
+     switching). Voice and report shape belong to the `simple` output style
+     (core/output-styles/simple.md), never to this slot — contradictory voice sources
+     blend unpredictably.
      (The scaffold provides the `## Communication Style` heading.) -->
