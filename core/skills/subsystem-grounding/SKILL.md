@@ -1,7 +1,7 @@
 ---
 name: subsystem-grounding
 description: >-
-  Re-derives your model of a WHOLE internal subsystem from its own sources via cited fan-out lane reads, and captures a dated grounding doc. Fires on "ground yourself on X", a subsystem lacking a fresh current-state doc, or being corrected twice on one subsystem in a session. Not a single-fact lookup (atlas-search).
+  Re-derives your model of a WHOLE internal subsystem from its own sources via cited fan-out lane reads, and captures a dated grounding doc. Fires on "ground yourself on X", a subsystem lacking a fresh current-state doc, or being corrected twice on one subsystem in a session. Not a single-fact lookup.
 allowed-tools: Read, Grep, Glob, Bash, Write, Agent, Workflow
 ---
 
