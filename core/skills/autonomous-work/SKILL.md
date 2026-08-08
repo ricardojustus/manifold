@@ -111,11 +111,16 @@ progress, don't keep refilling — escalate. (`compact-resume` owns the guard.)
 
 ## Completion-promise loop (optional hardening)
 
-For a **bounded, unattended, mechanically-checkable-done** task only, the operator may arm a
-Stop-hook that re-injects the task prompt until an exact completion phrase appears or a
-max-iterations cap is hit — it complements, never replaces, the heartbeat + watcher discipline,
-and relaxes no STOP boundary. Never wired globally, never for interactive or judgment-open-ended
-work. Mechanism, guardrails, state-dir contract, wiring, and selftest:
+For a **bounded, unattended, termination-mechanically-checkable** task only — the done condition
+must be computable from recorded evidence, even where the work inside the loop is
+judgment-based — the operator may arm a Stop-hook that re-injects a continuation payload until
+an exact completion phrase appears or a cap is hit. Two shapes: **phrase exit + iteration cap**
+where the work itself is mechanical; **continuation sentinel + progress-keyed cap** where the
+loop's work is judgment-based — there the hook is stall recovery, not completion: the run's own
+stop rules own termination, and the phrase is ledger-gated with a mandatory done-declaration
+advisor consult. It complements, never replaces, the heartbeat + watcher discipline, and relaxes
+no STOP boundary. Never wired globally, never for interactive work, never where "done" itself is
+a judgment call. Mechanism, guardrails, state-dir contract, wiring, and selftest:
 [`references/completion-promise-loop.md`](references/completion-promise-loop.md).
 
 ## Commit as you go
