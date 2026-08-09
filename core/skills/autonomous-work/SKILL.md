@@ -102,6 +102,33 @@ autonomous operation. To recover a suspected-dead subagent: (1) wait out a long 
 completion notification; (2) confirm zero head/tree advancement over that window; (3) prefer
 waiting one more heartbeat over acting.
 
+**Bounded waits — the heartbeat's blind spot.** Scope: these rules govern
+waits on processes and commands the run ITSELF launches (players, builds,
+servers, scripts) — runtime-tracked subagents AND external broker jobs
+keep the watcher rules above for liveness and death calls: silence is not
+death, broker state comes from asking the broker, and no staleness kill
+applies to either. But no in-turn wait of any kind escapes rules 1 and
+3 — a loop polling a broker still carries a hard deadline (the deadline
+half of rule 1 only; its staleness kill stays forbidden for these), and
+past a few minutes it becomes background work with the heartbeat armed. The
+heartbeat guards idle-between-turns; a session blocked inside a
+synchronous wait is not idle — the wakeup queues behind the very wait it
+should have broken, and nothing can interrupt the turn from outside.
+Three rules, all mandatory:
+(1) **no unbounded waits** — every blocking command carries a hard
+deadline at the command itself (a timeout wrapper, a launch script with a
+budget and a staleness kill); a wait that can outlive its budget is a bug
+at authoring time, not a practice to discourage. (2) **completion by
+positive signal only** — a sentinel log line or marker file the work
+itself writes at genuine completion, never process state, which lies in
+both directions: aliveness is not work, and exit is not done (a process
+can finish its work and never exit). (3) **a wait longer than a few
+minutes becomes background work** — run it as a runtime-tracked background
+task, end the turn, heartbeat armed: that converts in-turn blocking, which
+nothing can interrupt, into idle-with-outstanding-work, which the
+heartbeat already guards. Never construct a wait the heartbeat cannot
+outlive.
+
 **Usage limits.** A rolling-window pause suspends and later resumes the session; a scheduled
 wakeup + up-to-date files mean the resumed-you picks up cleanly — another reason the journal is
 written continuously, since there may be no clean "end" before a pause hits.
