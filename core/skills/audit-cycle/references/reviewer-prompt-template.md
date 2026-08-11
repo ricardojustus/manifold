@@ -18,6 +18,12 @@ Files in scope (read end-to-end):
 
 # Mandatory reads — BEFORE forming opinions
 
+*(Lead, filling this in: this list IS the evidence base as the reviewer will understand it. Where
+the subject's record spans layers — a verification write-up plus the raw data it summarizes, a
+decision doc plus the transcript behind it — name every layer a finding could turn on. A co-equal
+source left off reads to the reviewer as non-evidence, and comes back as a confident finding
+against material an un-named layer already settles.)*
+
 - <AUDIT_DIR>/audit-state-notes.md (round-N disposition table + pre-known notes + special dimensions)
 - <the spec / implementation contract>
 - <the governing PLAN — FULL read, not excerpts: its Decisions, Non-Goals, rejected alternatives, and Security Posture section are the authority your findings must cite; kill-rulings scatter across sections>
@@ -27,6 +33,12 @@ Files in scope (read end-to-end):
   MACHINE where the flow differs; a default path / env-var / host assumption is a concrete
   claim about a named environment (Cat #15 treatment), and a gate's acceptance includes one
   real run in each environment its flow serves>
+- <where the subject is agent-consumed prose — a skill, rule, agent file, template, or any other
+  document that instructs an agent: the installed `writing-for-agents` skill body
+  (`.claude/skills/writing-for-agents/SKILL.md`) §Absolutes, and run its check over every
+  normative clause in this review's scope — added, rewritten, or, where the subject is existing
+  text rather than a change, the clauses under review. Your role carries no Skill tool, so read
+  the file directly.>
 
 # Threat model (from the project binding)
 
@@ -52,25 +64,39 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
 
 *Receipt: across a 9-round two-model ladder, the cross-model lens was the decisive finder in 6 of 7 rounds; in one impl round the primary returned a clean MERGE while the cross-model lens found three empirically-provable Highs — an error-fallback that silently restored a spec-forbidden state, an impossible calendar date accepted into a forever-raw store, and a size-limit RangeError in a shared security dependency that made a legal record uncapturable. The primary's empirical work was solid on the probes it CHOSE; it simply never ran these classes. This narrows the primary-lens gap — it never substitutes for the cross-model lens, whose orthogonal threat model remains the strongest signal there is.*
 
+# Repro hygiene — probes that can WRITE
+
+This covers **any probe you run** that can write anywhere real — a live store, a shared database, a
+path the running system reads — whether this brief names it or you devised it yourself. What the
+probe left behind is judged by what can be UNDONE, not by who made it:
+
+- **State the probe introduced**, except a durable write that is itself the thing under test —
+  that one is the next bullet's. A planted record, a scratch row, a test file, a receipt the
+  system appended because you poked it. Unwanted and the surface permits deletion: remove it before
+  reporting, and say that you did. Unwanted but the surface forbids deletion (an append-only store,
+  an immutable log): say in your report exactly what is now there and where. Residue outlives the
+  audit that made it, and the thing it breaks next is usually unrelated to the finding it was
+  proving — so it is found in your report, or it is found much later by someone debugging
+  something else.
+- **State you did not create, or a durable write that is itself the thing under test**: removal is
+  the wrong instinct — deleting it destroys what the probe was never given. Restore what you
+  changed where the data contract allows, and where it does not, name in your report exactly what
+  the probe left and where, so the next reader is not discovering it.
+
+*(Lead, filling this in: name any probe you are REQUIRING that writes to a real surface, along with
+its safe cleanup or restore command, so the reviewer is not inventing one against a store you know
+better than they do.)*
+
 # Rubric — universal categories
 
 1. **Contract fidelity** — does the code realize the spec verbatim?
 2. **Type discipline + boundary errors** — see the conditional Type-design category for layers introducing types.
 3. **Security primitives** — no secrets in tool args / logs / outputs; redaction at output boundaries; identity/authz invariants hold; no capability the layer wasn't granted.
-4. **Error handling** — scrutinize every error handler:
-   - **Catch specificity** — catches only expected error types? Could a broad catch silently swallow unrelated errors? List every unexpected error type the catch could hide.
-   - **Fallback behavior** — explicitly requested by design? Documented? Or silently masking the problem? Fallback to a mock/stub in production code is a red flag.
-   - **Error propagation** — should this error bubble up to a higher handler instead of being caught here? Does catching prevent proper cleanup?
+4. **Error handling** — per handler: catch specificity (list every unexpected type a broad catch could hide) · fallback behavior (design-requested and documented, or silently masking? a mock/stub fallback in production code is a red flag) · propagation (should it bubble to a higher handler; does catching prevent cleanup?) · logging quality (enough context — operation, IDs, state — to debug 6 months from now; appropriate severity).
    - **Hidden-failure anti-patterns** — empty catch (forbidden); log-and-continue without surfacing; null/undefined returns on error without logging; silent `?.` skips that drop operations; fallback chains that try multiple approaches with no explanation.
-   - **Logging quality** — would this log help debug 6 months from now? Sufficient context (operation, IDs, state)? Appropriate severity?
 5. **Concurrency** — parallel-collapse risk (a batch that fails all-or-nothing when it should be per-item), async/sync ordering invariants, lock/permit correctness, race windows.
-6. **Test coverage non-vacuity** — does each test exercise its claim?
-   - **Behavioral coverage NOT line coverage** — line coverage can be 100% with all tests still vacuous. The right question: would this test catch the specific regression it claims to cover?
-   - **Tests against contracts, not implementation** — resilient to reasonable refactoring? Or coupled to internals that should be free to change?
-   - **DAMP framing** — Descriptive And Meaningful Phrases. Test names should describe the regression they'd catch, not the function under test.
-   - **Critical gaps to scan for** — untested error paths, missing edge cases (boundary conditions), uncovered branches, absent negative test cases, missing concurrent/async tests.
-   - **Assertion specificity** — every assertion must check the SPECIFIC condition that would catch the regression, not a generic "no error thrown" or "returns truthy". A `toBeTruthy()` against a function that always returns `1` passes vacuously. Strong assertions name the value, the shape, the boundary.
-   - **No shared state between tests** — each test establishes its own preconditions; cleanup must actually reset state. Tests that pass in one order and fail in another are vacuous about whatever the order-dependence hides.
+6. **Test coverage non-vacuity** — does each test exercise its claim? Behavioral coverage NOT line coverage (100% lines can be 100% vacuous — would this test catch the specific regression it claims?) · tests against contracts, not internals that should be free to change · DAMP names describing the regression caught, not the function under test · assertion specificity (never a generic "no error thrown" / "returns truthy": a `toBeTruthy()` against a function that always returns `1` passes vacuously — name the value, the shape, the boundary) · no shared state between tests (each establishes its own preconditions; tests that pass in one order and fail in another are vacuous about whatever the order-dependence hides) · gaps to scan for: untested error paths, boundary edge cases, uncovered branches, absent negative cases, missing concurrent/async tests.
+   - **Path of record** — a test asserting on a deliverable whose installed or live copy sits outside the working tree must assert against the repo-relative path under test, not the absolute path to that installed copy. An absolute live path reports on whatever is installed regardless of the branch's content, so the assertion cannot go red on a wrong branch — and a gate that cannot fail is not a gate. The exception is a test whose SUBJECT genuinely is the installed artifact (an install or promotion check); that test says so explicitly.
 7. **Edge cases** — empty / max / threshold boundaries.
 8. **Cross-module imports / layering** — no forbidden cross-layer import; no circular deps; a leaf module stays importable in isolation.
 9. **Observability** — telemetry shape, retry counts, failure/redaction incident surfacing; enough signal to debug in production.
@@ -95,22 +121,11 @@ Your report MUST carry a line per class below: either the **probe RESULT** (what
     fix diff), never hard violations: label each "possible <smell>" and quote the hunk. A
     documented repo/project standard OVERRIDES the baseline where they conflict, and anything
     tooling already enforces is skipped. Default severity Low; rate higher only where
-    the instance compounds into a real defect, with normal authority. The set (what it is → the
-    fix): **Mysterious Name** (name doesn't reveal what it does/holds → rename; no honest name
-    coming = the design is murky) · **Duplicated Code** (same logic shape in 2+ hunks/files →
-    extract the shared shape) · **Feature Envy** (a method reaching into another object's data
-    more than its own → move it onto the data it envies) · **Data Clumps** (the same few
-    fields/params keep traveling together → bundle them into one type) · **Primitive Obsession**
-    (a primitive/string standing in for a domain concept → give it its own small type) ·
-    **Repeated Switches** (the same switch/if-cascade on the same type recurs → polymorphism, or
-    one map both sites share) · **Shotgun Surgery** (one logical change forces scattered edits
-    across many files → gather what changes together) · **Divergent Change** (one module edited
-    for several unrelated reasons → split so each changes for one reason) · **Speculative
-    Generality** (abstraction/hooks for needs the spec doesn't have → delete, inline back until a
-    real need shows; overlaps the Excess category — report there when it blocks) · **Message
-    Chains** (long `a.b().c().d()` navigation → hide the walk behind one method) · **Middle Man**
-    (mostly delegates onward → cut it, call the target direct) · **Refused Bequest** (an
-    implementer ignoring/overriding most of what it inherits → drop inheritance, compose).
+    the instance compounds into a real defect, with normal authority. The set: **Mysterious Name** ·
+    **Duplicated Code** · **Feature Envy** · **Data Clumps** · **Primitive Obsession** · **Repeated
+    Switches** · **Shotgun Surgery** · **Divergent Change** · **Speculative Generality** (overlaps
+    the Excess category — report there when it blocks) · **Message Chains** · **Middle Man** ·
+    **Refused Bequest**.
 
 # Rubric — project-specific categories (from the binding)
 

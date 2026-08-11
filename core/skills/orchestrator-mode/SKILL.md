@@ -7,15 +7,15 @@ description: >-
 # Orchestrator Mode — the main loop conducts, the counterparty plays
 
 A posture, declared by the operator, for stretches where the main model should not be the author —
-most commonly because the session fell back below the frontier tier and the counterparty's strong
-tier out-writes the fallback main. The main loop narrows to framing work, dispatching it well,
-verifying what comes back, and carrying decisions to the operator.
+most commonly a fallback below the frontier tier, where the counterparty's strong tier out-writes
+it. The main loop narrows to framing work, dispatching it well, verifying what comes back, and
+carrying decisions to the operator. (Which posture you are in: `brain-mode` §The sibling contrast.)
 
 > Project bindings may amend this contract — read the "## Project bindings" section (end of file) first.
 
-**No second model family available → this posture is unavailable.** The fallback is the sibling
-`brain-mode` posture (a stronger main-loop model where the project has one) or simply staying inline
-and authoring in-session.
+**No second model family available → this posture is unavailable**: fall back to the sibling
+`brain-mode` posture (a stronger main-loop model where the project has one), or stay inline and
+author in-session.
 
 **The posture is spoken, never assumed — only an EXPLICIT declaration counts.** "Go into
 orchestrator mode" / "defer everything to <the counterpart>" activates it;
@@ -27,7 +27,7 @@ intervening chat; until ended, every qualifying junction routes out.
 
 ## The contract
 
-**The main loop KEEPS (this is the job, not the leftovers):**
+**The main loop KEEPS:**
 
 - **Briefs** — every dispatch still gets a full `brief-authoring` brief; brief quality is the
   highest-leverage orchestration act.
@@ -65,10 +65,10 @@ intervening chat; until ended, every qualifying junction routes out.
 
 ## What is deliberately NOT deferred
 
-**The gates.** Deferring the checking would hand the builder self-review — the exact independence
-the cross-model doctrine protects. In this posture the main loop is MORE of a reviewer, not less:
-it authored nothing, so its read of the harvested work is the fresh-eyes read. Spec-adherence,
-audit rounds, verification, severity dispositions, and every operator-facing decision stay home.
+**The gates.** Deferring the checking would hand the builder self-review. In this posture the main
+loop is MORE of a reviewer, not less: it authored nothing, so its read of the harvested work is the
+fresh-eyes read. Spec-adherence, audit rounds, verification, severity dispositions, and every
+operator-facing decision stay home.
 
 **The thinking.** Orchestrator ≠ relay — **relay drift** (forwarding artifacts between the
 counterparty and the operator without verifying or forming a position) is a failed posture. The

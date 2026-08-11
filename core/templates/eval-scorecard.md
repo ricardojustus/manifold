@@ -5,9 +5,8 @@
   THE ORDER IS LOAD-BEARING. Fill the top block (Decision & pre-registered criterion, Fixture
   corpus, System(s), Grader) BEFORE you generate a single output — that is the pre-registration
   guard against criterion-fishing. Fill Results / Transcripts / Caveats / Verdict AFTER the run.
-  If the Verdict section is written and the Decision section is empty, the eval is invalid — you
-  decided what "good" means after seeing the scores. One scorecard per run; a rubric or corpus
-  change means a NEW scorecard (earlier scores are no longer directly comparable).
+  Verdict filled with Decision empty = an invalid eval (you decided what "good" means after
+  seeing the scores). One scorecard per run; a rubric or corpus change means a NEW scorecard.
   Delete these comments as you fill each section.
 -->
 
@@ -44,9 +43,9 @@
          (self-preference bias measured at up to +25% win rate). Pairwise → swap A/B and average. -->
   - **Rubric version:** <vN> — binary pass/fail + written critique (NOT a 1–5 scale), one
        dimension per judge call, reasoning-then-discard, "Unknown" escape hatch, reference answer
-       supplied where one exists, explicit length-neutral clause
+       where one exists, explicit length-neutral clause
   - **Calibration status:** <arbiter = who · judge↔arbiter precision/recall = _ / _ · iterations = _>
-    <!-- Uncalibrated judge = opinion generator. Report precision/recall, never a single accuracy. -->
+    <!-- Uncalibrated judge = opinion generator. Report precision/recall, never one accuracy. -->
 
 ## Results  — FILL AFTER RUNNING
 <!-- Per dimension: binary verdict + the critique. Train and held-out reported separately. -->

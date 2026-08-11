@@ -8,8 +8,7 @@ allowed-tools: Read, Grep, Glob, Bash
 # Compact resume
 
 You were just compacted. You retain a **lossy summary**: gist and decisions mostly survived;
-verbatim detail, exact file state, and precise reasoning did not — and the summary may carry a
-subtly-wrong framing as if it were fact.
+verbatim detail, exact file state, and precise reasoning did not.
 
 **The one rule that matters most: files beat your memory.** You were compacted; the files were
 not. Where your recollection and a file disagree, the file is authoritative — re-read it, don't

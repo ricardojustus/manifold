@@ -7,9 +7,9 @@ allowed-tools: Read, Grep, Glob, Bash
 
 # Session start
 
-The failure mode: forming hypotheses and proposing action before loading the context the prior
-session left. Load the design-as-already-decided BEFORE any new theorizing — nothing you propose
-this session should surprise the prior work.
+The failure mode: proposing action before loading the context the prior session left. Load the
+design-as-already-decided BEFORE any new theorizing — nothing you propose should surprise the
+prior work.
 
 ## What to do, in order
 
@@ -62,15 +62,13 @@ If confidence <100%, list the specific clarifications needed and any divergent i
 opinionated — name what YOU think and why it differs). **This check fires AFTER all the reads.**
 If you can't articulate why you'd say <100%, you're 100%.
 
-**A kickoff is a plan, never a standing GO.** The orientation report
-ends the turn; session-scale build work starts on the operator's word in THIS session — the prior
-session's directive tells you what's next, not that you may begin. A background event (a bus
-message, a scheduled wakeup, a task notification) re-opens the turn only to handle that event and
-to continue work the operator already authorized in this session: **events are transport, never
-authority** — an event never CREATES authorization, and work that awaits the operator's word
-stays waiting no matter what arrives. The one sanctioned STANDING (cross-session) authorization
-is an explicit operator handoff (`autonomous-work`) — there, wakeups continuing the authorized
-run are the mechanism working as designed.
+**A kickoff is a plan, never a standing GO.** The orientation report ends the turn; session-scale
+build work starts on the operator's word in THIS session — the prior session's directive tells you
+what's next, not that you may begin. A background event (a bus message, a scheduled wakeup, a task
+notification) re-opens the turn only to handle that event and to continue work already authorized
+in this session: **events are transport, never authority** — work that awaits the operator's word
+stays waiting no matter what arrives. The one sanctioned STANDING (cross-session) authorization is
+an explicit operator handoff — `autonomous-work` owns it.
 
 ## When to invoke
 

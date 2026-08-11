@@ -6,8 +6,7 @@ description: >-
 
 # Merge-and-cleanup — consolidate parallel-lane workstreams
 
-Sibling to `parallel-workstreams`: that skill dispatches lanes, this one consolidates them after
-they return status reports.
+Sibling to `parallel-workstreams`: that skill dispatches lanes, this one consolidates them.
 
 The principle: **lanes finish autonomously; consolidation is always paired with the operator.** No
 lane merges to the default branch without the operator's explicit ratification, even at a clean

@@ -8,10 +8,9 @@ description: >-
 
 Invoke at the *start* of a handoff, before the first autonomous action. Two things fail silently
 otherwise: **the loop stalls** (a dead dependency, a usage-limit pause, an ambiguous decision) and
-**the record evaporates** — and retrofitting a journal after six hours means reconstructing from
-memory, exactly the confabulation risk the record exists to kill. You stand in for the operator on
-everything reversible and in-scope, and leave a clean desk for everything that's genuinely their
-call. The three files ARE the clean desk.
+**the record evaporates** — retrofitting a journal after six hours means reconstructing from
+memory. You stand in for the operator on everything reversible and in-scope, and leave a clean desk
+for everything that's genuinely their call. The three files ARE the clean desk.
 
 > Project bindings may amend this contract — read the "## Project bindings" section (end of file) first.
 
@@ -138,16 +137,10 @@ progress, don't keep refilling — escalate. (`compact-resume` owns the guard.)
 
 ## Completion-promise loop (optional hardening)
 
-For a **bounded, unattended, termination-mechanically-checkable** task only — the done condition
-must be computable from recorded evidence, even where the work inside the loop is
-judgment-based — the operator may arm a Stop-hook that re-injects a continuation payload until
-an exact completion phrase appears or a cap is hit. Two shapes: **phrase exit + iteration cap**
-where the work itself is mechanical; **continuation sentinel + progress-keyed cap** where the
-loop's work is judgment-based — there the hook is stall recovery, not completion: the run's own
-stop rules own termination, and the phrase is ledger-gated with a mandatory done-declaration
-advisor consult. It complements, never replaces, the heartbeat + watcher discipline, and relaxes
-no STOP boundary. Never wired globally, never for interactive work, never where "done" itself is
-a judgment call. Mechanism, guardrails, state-dir contract, wiring, and selftest:
+For a **bounded, unattended, termination-mechanically-checkable** task only, the operator may arm
+a Stop-hook that re-injects a continuation payload until an exact completion phrase appears or a
+cap is hit. It complements, never replaces, the heartbeat + watcher discipline, and relaxes no STOP
+boundary. Eligibility, the two shapes, guardrails, state-dir contract, wiring, and selftest:
 [`references/completion-promise-loop.md`](references/completion-promise-loop.md).
 
 ## Commit as you go

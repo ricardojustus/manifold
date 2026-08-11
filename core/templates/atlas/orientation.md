@@ -1,29 +1,23 @@
 <!--
-  orientation.md — one per repo, at `atlas/orientation.md`. It carries the four kinds of truth no
-  parser can derive: how things FLOW, where the SEAMS bite, which ENTRY POINTS matter, and who
-  OWNS what. Everything box-internal belongs in the code.
+  orientation.md — one per repo, at `atlas/orientation.md`: how things FLOW, where the SEAMS bite,
+  which ENTRY POINTS matter, who OWNS what. Box-internal detail belongs in the code.
 
   LITMUS: a line with no arrow, no warning, and no pointer is regrown prose — cut it.
 
   CAP: 150 lines, hard. Raising it is the operator's call, never the agent's.
 
-  OVERFLOW: the session that pushes the file over brings it back under IN THE SAME ARC —
-  relocate, don't compress. Box-internal prose → the code. Mechanical listings → delete. Whys →
-  `adr/`. If nothing can honestly go, the cap question goes to the operator.
+  OVERFLOW: the session that pushes it over brings it back under IN THE SAME ARC — relocate, don't
+  compress (prose → the code; listings → delete; whys → `adr/`); nothing can go → ask the operator.
 
-  AUTHORING: written ONCE, at onboarding or when Atlas is enabled — one sitting, at most 150
-  lines, and the operator skims the result. It stays current by event: the arc that moves an
-  arrow updates the line, and session-end asks whether anything moved.
+  AUTHORING: written ONCE, one sitting, at onboarding or when Atlas is enabled; current by event —
+  the arc that moves an arrow updates the line, session-end asks whether anything moved.
 
-  HOP ZERO: wire the project's always-loaded context file (CLAUDE.md) to point here — an
-  @-import where the project uses them, otherwise one pointer line. A project with NO
-  always-loaded context file SKIPS this wire: there, discovery is the root-visible `atlas/`
-  directory.
+  HOP ZERO: wire the always-loaded context file (CLAUDE.md) to point here — @-import, else one
+  pointer line; no such file → skip the wire, discovery is the root-visible `atlas/` directory.
 
-  EMPTY START: Enabling Atlas never creates `adr/`. Where it does not exist, it appears at the first
-  real decision, and the Boundaries or Seams line that needs a "why" points at the record that
-  carries it. A repo that ALREADY has an `adr/` keeps those files untouched — new records take
-  the next unused 4-digit ID.
+  EMPTY START: enabling Atlas never creates `adr/` — it appears at the first real decision, the
+  Boundaries/Seams line needing a "why" points at the record; an existing `adr/` stays untouched,
+  new records take the next unused 4-digit ID.
 -->
 
 # {project} — orientation

@@ -10,10 +10,9 @@ description: >-
 enforcement-ladder doctrine and never-self-wire posture.*
 
 A correction evaporates at session end unless something durable catches it. ENFORCEMENT.md's ladder
-orders the homes: a **prose rule** (a judgment the model reads and applies — the default), a
-**native classifier rule** (a plain-English allow/soft_deny/hard_deny line the runtime's permission
-classifier enforces with judgment), an **informational or anti-escape hook**, or — rarest,
-operator-commissioned only — a **deny hook**. This skill triages and drafts; it installs nothing.
+orders the homes — prose rule (the default), native classifier rule, informational or anti-escape
+hook, or (rarest, operator-commissioned only) a deny hook. This skill triages and drafts; it
+installs nothing.
 
 Output is always a DRAFT parked for the operator; wiring is a separate, human, out-of-band step
 (Step 4 holds the boundary).
@@ -37,30 +36,20 @@ many times it has fired*. Do not editorialize; the operator's words are the grou
 
 ## Step 2 — Classify each: HOOKABLE or prose-tier
 
-Run each correction through ENFORCEMENT.md's **four escalation tests** ("Extending enforcement"),
-applied as a router:
-
-1. **Irreversibility / severity** — would one violation cause damage that cannot be cleanly undone
-   (a destructive command, an exfiltration, a write outside the blast-radius fence)? A recoverable
-   slip stays prose.
-2. **Native-layer check** — does the permission system or classifier already cover it, or would a
-   one-line classifier rule (autoMode allow/soft_deny/hard_deny in settings) cover it with judgment?
-   Then draft THAT rule, not a hook — plain English enforced by a model beats a regex.
-3. **Mechanical decidability** — can a hook decide "block or allow" from the tool call *alone*? A
-   regex over a command string, yes; "was this the right architectural call", no.
-4. **Routine-flow check** — is the "violation" actually a common, operator-sanctioned flow? Then the
-   enforcement point is the operator's approval; do not mechanize it.
+Run each correction through ENFORCEMENT.md's **four escalation tests** ("Extending enforcement") —
+irreversibility/severity · native-layer check · mechanical decidability · routine-flow check —
+applied as a router. On the native-layer test: where a one-line classifier rule (autoMode
+allow/soft_deny/hard_deny in settings) would cover it with judgment, **draft THAT rule, not a
+hook** — plain English enforced by a model beats a regex.
 
 **CANDIDATE** = passes all four. Prefer, in order: classifier rule > informational hook (warn) >
 anti-escape hook > deny hook (operator-commissioned only, with ownership verification — no hook may
 block a workstream from its own declared work surface). Draft it (Step 3).
 
 **Everything else routes to prose** = `memory-discipline`, and that is where most corrections
-correctly land: a judgment rule carrying its reasoning generalizes to cases a regex never
-anticipates. Hand these off as a memory-discipline entry (the correction + its why); forcing a
+correctly land. Hand these off as a memory-discipline entry (the correction + its why); forcing a
 mechanical guard onto a judgment call recreates the brittle-checklist failure the prose tier exists
-to avoid — and the over-block failure that got this harness's own deny tier retired. **When in
-doubt, prose.**
+to avoid. **When in doubt, prose.**
 
 ## Step 3 — Draft each hookable candidate
 
@@ -76,9 +65,9 @@ One draft file per hookable correction, carrying exactly four things:
   is a rule waiting to be deleted; the receipt is how a future reader judges when it applies.
 
 Match the draft to ENFORCEMENT.md's exit-code doctrine so ratification is mechanical: a `block`
-candidate must be authored to **exit 2** (the only blocking code — exit 1 fails OPEN) and must ship
-with **block-path** selftest fixtures (a should-BLOCK and a should-ALLOW input), because a guard
-whose block path is never tested can fail open in exactly the case it exists for.
+candidate must be authored to **exit 2** and must ship with **block-path** selftest fixtures (a
+should-BLOCK and a should-ALLOW input) — a guard whose block path is never tested can fail open in
+exactly the case it exists for.
 
 ## Step 4 — Write drafts to the hook-drafts dir (NEVER live paths)
 

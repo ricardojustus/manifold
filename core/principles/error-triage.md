@@ -2,7 +2,7 @@
 
 **Rule.** An error code tells you *what surfaced*, never *why*. Before you act on any error, anomaly, or failure: **enumerate the distinct causes this code can have, read the actual body and headers, then probe** — verify the cause against evidence before you diagnose. Your first reaction to an error is a hypothesis, and it will usually be wrong.
 
-This is the quick-reference companion to the constitution's *Errors — VALIDATE Before Diagnosing* rule; that section carries the full reasoning. Use this table shape at the moment an error lands.
+The constitution's *Errors — VALIDATE Before Diagnosing* section states the law in one line and points here; this kernel is its single home — the Why, the receipt, and the table below. Use the table at the moment an error lands.
 
 | Step | Do | Do NOT |
 |---|---|---|

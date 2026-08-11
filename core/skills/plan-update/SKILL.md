@@ -30,7 +30,7 @@ Do NOT update a plan for:
 
 ### 1. Read the existing section end-to-end
 
-Before editing, read the relevant section fully. Plan docs carry context you'll lose if you skip — prior audit notes, decision rationale, deferred items. Don't overwrite history you don't understand.
+Before editing, read the relevant section fully — plan docs carry prior audit notes, decision rationale, and deferred items. Don't overwrite history you don't understand.
 
 ### 2. Make the edit in place
 
@@ -77,12 +77,7 @@ Minor edits (typo, formatting) don't need a bump. Substantive edits do — skipp
 
 ### 4. Don't cross streams (the genre split)
 
-Plans describe design INTENT. Current-state reference docs describe what's actually running. They're **allowed to disagree** (the plan says "we'll do X in a later milestone"; the runtime is at an earlier one). When they disagree:
-
-- The **plan is right for direction** (what we're heading toward).
-- The **reference doc is right for current state** (what's actually running).
-
-Don't "fix" the plan to match current runtime — that loses forward-looking intent. Don't "fix" the reference doc to match the plan — that misrepresents current state. If the runtime has diverged from intent in a way that suggests the plan was *wrong*, flag it with a banner, discuss with the operator, and decide which catches up to which.
+Plans describe design INTENT; current-state reference docs describe what's actually running. They're **allowed to disagree** — the **plan is right for direction**, the **reference doc is right for current state**. Don't "fix" either to match the other: one loses forward-looking intent, the other misrepresents current state. If the runtime has diverged in a way that suggests the plan was *wrong*, flag it with a banner, discuss with the operator, and decide which catches up to which.
 
 ### 5. Cross-reference the ripple
 

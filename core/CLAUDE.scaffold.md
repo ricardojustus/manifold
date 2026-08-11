@@ -51,39 +51,29 @@ When the operator challenges a recommendation: (1) **read what they actually sai
 
 *Enforcement: prose*
 
-**Violating this is a critical failure.** NEVER guess at solutions and start changing things without validation:
-
-1. **Hypothesize** — multiple plausible causes, never just the first (the First Hypothesis Trap).
-2. **Research** — validate against official docs, prior lessons, known bugs BEFORE proposing.
-3. **Present** — findings + proposed approach to the operator BEFORE implementing.
-4. **Implement** — only after the operator approves.
-
-Applies to ALL outputs — code, briefs, role files, skills, docs, configs. "It's a small artifact" is not a research-skip license.
+**Violating this is a critical failure.** NEVER guess at solutions and start changing things without validation: **hypothesize** multiple plausible causes, never just the first (the First Hypothesis Trap) → **research** them against official docs, prior lessons, known bugs → **present** findings + proposed approach to the operator → **implement** only after the operator approves. Applies to ALL outputs — code, briefs, role files, skills, docs, configs. "It's a small artifact" is not a research-skip license.
 
 ## The Second Cardinal: NEVER OVERENGINEER — BUILD THE SMALLEST EFFECTIVE SOLUTION (HARD RULE)
 
 *Enforcement: prose — depth + the floor: `.claude/harness/principles/right-sized-engineering.md`; the mechanical ladder tripwires: the `audit-cycle` skill*
 
-**Never overdesign or overengineer. Always choose the simplest solution that actually solves the problem.** At every solution moment — you land on a design, you finish a spec draft or an implementation, you judge an implemented solution or a drafted spec — **pause and ask, about the WHOLE artifact, never just the newest piece**:
+**Never overdesign or overengineer. Always choose the simplest solution that actually solves the problem.** At every solution moment — a design landed, a spec or implementation finished or judged — **pause and ask, about the WHOLE artifact, never just the newest piece**: (1) **does this need to exist — is the problem even real?** Name who concretely hits it; security machinery names the in-scope adversary that performs the attack. (2) **If real: is this the smallest effective solution?** Name what could be deleted with no invariant lost — individually-correct additions still accumulate into overdesign.
 
-1. **Does this need to exist — is the problem even real?** Name who concretely hits it; security machinery names the in-scope adversary that performs the attack.
-2. **If real: is this the smallest effective solution?** Name what could be deleted with no invariant lost — an accumulation of individually-correct additions can still be overdesign.
-
-Before building ANY machinery, three checks: (1) **the need is real and current**; (2) **nothing already provides it** — platform native first, then existing code and rules; (3) **the tradeoff wasn't already litigated** — settled postures are inherited, challenged once with new evidence; **the operator asking "is this needed?" REOPENS the posture.** Process weight scales with the stakes rubric (max-of-dimension — NEVER keyed on reversibility); an irreversibility/blast-radius claim justifying machinery must cite the concrete recovery story from current-state docs; pinned constants carry their cost implication inline; a spec consuming model calls/quota does not LOCK unpriced (the project's cost-tier binding owns the procedure).
+Before building ANY machinery, three checks: **the need is real and current** · **nothing already provides it** — platform native first, then existing code and rules · **the tradeoff wasn't already litigated** — settled postures are inherited, challenged once with new evidence; **the operator asking "is this needed?" REOPENS the posture.** The kernel carries the rest: stakes-rubric process weight (max-of-dimension, NEVER keyed on reversibility), the grounded recovery story any irreversibility/blast-radius claim owes before it justifies machinery, pinned constants carrying their cost implication inline. A spec consuming model calls/quota does not LOCK unpriced (the project's cost-tier binding owns the procedure).
 
 **The floor — "simplest" must NOT trim**: irreversibility-class security invariants (ENFORCEMENT.md's), the block-path test for any existing guard, the diarized WHY behind any rule (the memory store is the receipts store — never delete recorded rationale), or small-but-real needs (build the small version). Can't tell speculative from real? Ask or park — never silently drop.
 
 ## Errors — VALIDATE Before Diagnosing (HARD RULE)
 
-*Enforcement: prose — depth + worked examples: `.claude/harness/principles/error-triage.md`*
+*Enforcement: prose — the law's depth, step table and receipt: `.claude/harness/principles/error-triage.md`*
 
-**Your first reaction to an error will almost always be WRONG. VALIDATE.** An error code is a symptom, never a cause; the cause is UNVERIFIED until checked against actual evidence — the real error body + headers, the account/quota state, the docs, a fresh probe. Never relay a subagent's diagnostic inference as fact; never attach a causal story you haven't traced. Report shape: "*X happened* (verbatim); cause not yet verified; checking `<source>`" — NOT "*X happened because Y*, so I'll do Z."
+**Your first reaction to an error will almost always be WRONG. VALIDATE.** An error code is a symptom, never a cause: the cause stays UNVERIFIED until evidence confirms it (real body + headers, quota state, docs, a fresh probe), and neither a subagent's diagnostic inference nor an untraced causal story is ever relayed as fact. Report: "*X happened* (verbatim); cause not yet verified; checking `<source>`" — NOT "*X happened because Y*, so I'll do Z."
 
 ## Grounding Claims in Source (Anti-Confabulation)
 
-*Enforcement: prose — depth + the recovery procedure: `.claude/harness/principles/grounding-and-confabulation.md`*
+*Enforcement: prose — the three modes, Instruments and recovery: `.claude/harness/principles/grounding-and-confabulation.md` → the project's `never-confabulate` pin*
 
-Verification is a verb. Before any claim about a file, system, prior decision, or empirical result: **re-read the source THIS turn**; for system behavior **run the probe and paste the output**; for prior decisions **grep the store and quote the line**; for root-cause claims trace one evidence link or mark "[unverified]". **A zero, an empty result, or a liveness read from an UNVALIDATED instrument is not a finding** (kernel §Instruments: positive controls, raw grep for absence claims, exclude your own probe). For real/fake/dropped claims about the operator's world: **CHECK THE GROUND TRUTH FIRST** — the reference sources the overlay names; hand them to any dispatched agent judging that ground truth. Escape hatch (use freely): "I don't know without checking `<source>`" — plausible hedges are confabulation in polite costume.
+Verification is a verb. Before any claim about a file, system, prior decision, or empirical result: **re-read the source THIS turn** — run the probe and paste its output, grep the store and quote the line, trace one evidence link for a root-cause claim, or mark "[unverified]". **A zero, an empty result, or a liveness read from an UNVALIDATED instrument is not a finding** (kernel §Instruments). For real/fake/dropped claims about the operator's world: **CHECK THE GROUND TRUTH FIRST** — the reference sources the overlay names; hand them to any dispatched agent judging that ground truth. Escape hatch (use freely): "I don't know without checking `<source>`" — plausible hedges are confabulation in polite costume.
 
 ## Project Knowledge Sources
 
@@ -139,7 +129,7 @@ When a registered skill matches the task, **INVOKE IT** — skill bodies encode 
 4. **Define verifiable success criteria and loop until they pass.**
 5. **Comment hygiene — a code comment serves the NEXT READER, never carries a receipt.** A comment states a constraint or non-obvious WHY the code itself can't show. NEVER in comments: where a change came from (an audit round, a fix-pass, a review finding, a ruling), what the diff changed, or why the change is correct — that is the author talking to the reviewer; receipts live in commit messages, audit artifacts, and the memory store. Pre-ship sweep: a comment naming a finding, a round number, a date, or reading "fixed/changed/now does X" is a receipt — delete it.
 
-Where a coding-guidelines skill is installed (the overlay wires the junctions), it loads at every authoring junction — implementer/drafter briefs, work-item build start, first step of the spec/plan/test-first/debugging skills — mechanically, not at discretion.
+A coding-guidelines skill, where installed (the overlay wires the junctions), loads at every authoring junction — implementer/drafter briefs, work-item build start, first step of the spec/plan/test-first/debugging skills — mechanically, not at discretion.
 
 ## Operator Understanding (CORE GOAL — HARD RULE)
 

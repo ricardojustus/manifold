@@ -5,9 +5,9 @@
 For a **bounded, unattended, termination-mechanically-checkable** task, the operator may arm a
 Stop-hook that intercepts the session's attempt to end its turn and re-injects a continuation
 payload until the last assistant message contains an exact agreed **completion phrase** OR a cap
-is hit. Where the wakeup heartbeat saves a run that *paused*, this saves a run that would
-otherwise *stop early*. It **complements, never replaces**, the heartbeat + watcher discipline;
-wire at most one loop mechanism per run and keep the heartbeat regardless.
+is hit — the heartbeat saves a run that *paused*, this saves one that would *stop early*. It
+**complements, never replaces**, the heartbeat + watcher discipline; wire at most one loop
+mechanism per run and keep the heartbeat regardless.
 
 **Eligibility — termination, not the work, must be mechanical.** The done condition must be
 computable from recorded evidence. Work INSIDE the loop may be judgment-based (a quality-pursuit

@@ -11,7 +11,7 @@ built so a number (or a pass/fail per case) answers a decision you wrote down fi
 without over-building it: cheapest grader that works, real failures as fixtures, and read the
 transcripts before believing the score.
 
-It is the **empirical arm of the goal-driven-execution principle**. Two neighbors it is NOT:
+It is the harness's **empirical measurement arm**. Two neighbors it is NOT:
 - **test-driven-development** — unit-level *correctness* while you build (RED→GREEN). If a
   deterministic test can express it, that's TDD's job, not an eval.
 - **audit-cycle** — adversarial *review* of one artifact by inspection. An eval *measures*: it
@@ -85,31 +85,28 @@ bytes — compare actual bytes.
 Climb from the bottom; stop at the first rung that captures the criterion.
 
 1. **Deterministic (free, first choice).** exact-match, contains, regex, is-json, is-refusal,
-   latency, cost, levenshtein / ROUGE / BLEU. Fastest and most reliable; it lacks nuance so it
-   can't grade open-ended quality — but most criteria have a deterministic core, and every case
-   settled here costs nothing.
+   latency, cost, levenshtein / ROUGE / BLEU. Can't grade open-ended quality — but most criteria
+   have a deterministic core, and every case settled here costs nothing.
 2. **Model-assisted (LLM-as-judge — only where determinism can't reach).** llm-rubric, g-eval,
-   factuality, answer-relevance, context-faithfulness. Flexible and scalable, but biased and
-   non-deterministic — §6 (rubric design), §7 (bias checklist) and §8 (calibration) are mandatory
-   before you trust it. Test reliability first, then scale.
-3. **Human (most flexible, highest quality, slowest — avoid at scale).** Reserve for calibrating
-   the judge (§8) and reading transcripts (§10), not for grading every case.
+   factuality, answer-relevance, context-faithfulness. Biased and non-deterministic — §6 (rubric
+   design), §7 (bias checklist) and §8 (calibration) are mandatory before you trust it.
+3. **Human (most flexible, slowest — avoid at scale).** Reserve for calibrating the judge (§8) and
+   reading transcripts (§10).
 
-You can **combine** rungs: weighted assertions → one pass/fail (assertion sets + threshold).
+**Combine** rungs where useful: weighted assertions → one pass/fail (assertion sets + threshold).
 Prefer the lowest rung that still captures the criterion (§12).
 
 ## 6. Rubric design for LLM-as-judge
 
-- **Binary pass/fail + a written critique — NOT a 1–5 scale.** People don't know what to do with a
-  3 or 4. Force correct/incorrect plus a one-line reason: a number without a critique is a vibe.
-- **One dimension at a time, isolated.** Don't ask one judge call for "overall quality" — score
-  correctness, then completeness, then tone, each on its own.
-- **Encourage reasoning, then discard it.** Grader emits reasoning in `<thinking>` tags and its
-  verdict in `<result>` tags; you keep the verdict, the reasoning only improved it.
-- **Give an escape hatch** — a way out, like returning "Unknown". A judge forced to choose on an
-  ambiguous case invents a verdict; route abstentions to a human.
+- **Binary pass/fail + a written critique — NOT a 1–5 scale.** Force correct/incorrect plus a
+  one-line reason.
+- **One dimension at a time, isolated** — correctness, then completeness, then tone; never one
+  judge call for "overall quality".
+- **Encourage reasoning, then discard it.** Reasoning in `<thinking>` tags, verdict in `<result>`
+  tags; keep the verdict.
+- **Give an escape hatch** — "Unknown" on an ambiguous case; route abstentions to a human.
 - **Supply a reference answer where one exists.** Excluding it causes the greatest performance
-  degradation; a known-good reference both defines the target and sharpens the judge.
+  degradation.
 
 `.claude/harness-templates/open-output-judge.md` is a ready rubric shell for the no-ground-truth
 case (a research brief, a synthesis) — scored dimensions with anchors + hard pass/fail gates.
@@ -148,6 +145,10 @@ An uncalibrated judge is an opinion generator. Calibrate before you scale (Criti
   autonomous loop with no human gate). A single run is a coin-flip, not a measurement.
 - **Repeat for stable rates** wherever the system is stochastic — §4's gate is the reference.
 - **Report train and held-out separately** (§4's split). The held-out slice predicts real behavior.
+- **A factor you dropped because it is awkward to measure, but that varies in the deployment this
+  eval decides, is a second ARM — not noise.** Excluding it doesn't clean the experiment; it makes
+  the experiment answer a question nobody asked. Either run the arm, or state in the report which
+  deployment factor the result does not cover.
 
 ## 10. Read the transcripts — the score is provisional
 
@@ -160,6 +161,12 @@ a judge rewarding verbosity — you only see it in the traces.
   corpus is broken)? Unfair failures mean fix the instrument, not the system.
 - Attest explicitly: "N transcripts read; failures seem fair — yes/no." An unattested score is
   provisional.
+- **An absolute rate from a model judge is partly a property of the judge.** Strictness cancels out
+  of a comparison between arms the same judge graded; it does not cancel out of a standalone
+  number. Before shipping an absolute quality or defect rate, hand-adjudicate the flagged cases
+  against the source — all of them, or a sample whose size you report — and publish the adjudicated
+  figure. Relative claims may ride raw judge output; absolute ones may not. Adjudication also
+  re-reads the defect CLASS: what a judge files under one label is often a different failure.
 
 ## 11. Honest reporting
 
@@ -167,6 +174,13 @@ a judge rewarding verbosity — you only see it in the traces.
   launder it into false precision. (Say small-N + prefer pass^k — this is not a statistics course:
   no power analysis, no confidence intervals.)
 - **Precision/recall over a single accuracy number** — §8's rule, in the report too.
+- **A result belongs to the ARM that produced it** — the whole outcome-affecting configuration
+  (model × prompt × transport, plus any harness behavior that can change the evaluated outputs),
+  never to one component of it. "Model X scores 82%" is a misattribution the moment another arm
+  factor changes. When one does, re-derive the number from the new arm's own artifact instead of
+  carrying the previous figure forward — including into summaries and specs, where a carried
+  headline outlives the run that earned it. **Where the new arm has not been run, report no number
+  for it and say so**: a carried figure is a misattribution, not an estimate.
 - **State the eval's cost** — §12. A result nobody can afford to re-run isn't a regression guard.
 - **Watch for saturation → graduate to regression.** When everything passes, the eval has stopped
   *measuring* — retire it into the always-on regression suite or make it harder. 100% means the
@@ -187,7 +201,6 @@ a judge rewarding verbosity — you only see it in the traces.
 
 ## Pairs with
 
-- **goal-driven-execution** (principle) — the parent; this is its empirical arm.
 - **test-driven-development** — unit-level correctness during construction.
 - **audit-cycle** — adversarial review by inspection, not measurement over a corpus.
 - **The skill-eval gate** (skill-creator) — canonical application; its constants are in §4.

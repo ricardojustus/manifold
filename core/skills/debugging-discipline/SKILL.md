@@ -7,10 +7,9 @@ allowed-tools: Read, Edit, Bash, Grep, Glob
 
 # Debugging discipline
 
-Bugs get fixed badly in one recurring way: the symptom is treated as the problem — a plausible cause
-is pattern-matched, something near the symptom changes, the symptom moves, and the real defect
-survives under a new patch. The discipline: **understand before you change, one variable at a time,
-and know when to stop digging and escalate.**
+Bugs get fixed badly in one recurring way: the symptom is treated as the problem — the patch moves
+the symptom and the real defect survives under it. The discipline: **understand before you
+change, one variable at a time, and know when to stop digging and escalate.**
 
 ## Step 0 — Load the project's coding guidelines where the binding names them
 
@@ -42,9 +41,9 @@ before the cause is understood is a guess, and a guess that moves the symptom is
   - **Genuinely cannot build a loop → stop and say so explicitly** — list what you tried; ask the
     operator for the reproducing environment, a captured artifact (log dump, trace, recording), or
     permission for temporary instrumentation. Do NOT proceed to hypotheses loopless.
-- **An error code / message is not a cause** — it's a symptom (the constitution's error-triage rule
-  is the parent discipline). A 500, a null-deref, a timeout, a non-zero exit tells you *where it
-  surfaced*, never *why*. The cause is unverified until traced to its origin with evidence in hand.
+- **An error code / message is not a cause** — the error-triage discipline
+  (`.claude/harness/principles/error-triage.md`) is the parent; the cause is unverified until
+  traced to its origin with evidence in hand.
 - **Trace backward from the symptom** — start where it breaks and walk *upstream* (what called this,
   with what inputs, from what state) until you reach the first place reality diverges from what
   should be true. That divergence is the root cause.

@@ -2,24 +2,22 @@
 
 Two checklists the SKILL.md points at. Both test the **spec**, not the implementation. Use the coverage scan during Step 3 (am I missing a whole dimension?) and the self-review during Step 5 (are the requirements I wrote any good?).
 
-Provenance: the coverage taxonomy is the public ambiguity-and-coverage scan; the self-review is the "unit tests for English" checklist concept. Both adapted for implementation-contracts.
-
 ---
 
 ## Coverage scan (Step 3)
 
 Walk these categories and mark each **Clear / Partial / Missing** for the spec at hand. You won't need every category in every spec — but the point is to *notice* the one you'd otherwise skip (the forgotten failure mode, the unstated security posture). Don't dump the raw map into the spec; use it to find the gaps, then fill them in the right sections.
 
-- **Functional scope & behavior** — core goals + success criteria; **explicit out-of-scope declarations** (the Non-Goals); actor/role differentiation.
-- **Data model & identity** — entities, attributes, relationships; identity & uniqueness rules; lifecycle / state transitions; volume / scale assumptions.
-- **Interaction & flow** — the critical sequences / data paths; empty / loading / error states; (for behavioral surfaces) the user journey.
-- **Non-functional quality** — performance (latency/throughput targets); scalability (limits); reliability & availability (recovery expectations); **observability** (what's logged / measured / traced); **security & privacy** (authN/Z, data protection, threat assumptions — cross-check the project's security baseline); compliance constraints if any.
-- **Integration & external dependencies** — external services / APIs and their **failure modes**; import/export formats; protocol / version assumptions; which of the project's services / subsystems / daemons this touches.
-- **Edge cases & failure handling** — negative scenarios; rate-limiting / throttling; conflict resolution (concurrent edits, races); partial-failure + cleanup paths.
-- **Constraints & tradeoffs** — technical constraints (language, storage, runtime); explicit tradeoffs taken; **rejected alternatives** (feeds the Decisions section).
-- **Terminology & consistency** — canonical terms; avoided synonyms / deprecated names. (A project usually has load-bearing vocabulary — distinctions where the wrong word means the wrong thing; get it right, and don't invent synonyms for a term the codebase already fixes.)
-- **Completion signals** — acceptance criteria testability; a measurable Definition-of-Done. Maps to the spec's Success Criteria + the audit gate.
-- **Placeholders / unresolved** — TODO / TKTK / `???` / `<placeholder>` markers; vague adjectives lacking quantification.
+- **Functional scope & behavior** — core goals · success criteria · **explicit out-of-scope declarations** (Non-Goals) · actor/role differentiation.
+- **Data model & identity** — entities/attributes/relationships · identity & uniqueness rules · lifecycle / state transitions · volume / scale assumptions.
+- **Interaction & flow** — critical sequences / data paths · empty / loading / error states · user journey (behavioral surfaces).
+- **Non-functional quality** — performance (latency/throughput targets) · scalability limits · reliability & recovery expectations · **observability** (logged / measured / traced) · **security & privacy** (authN/Z, data protection, threat assumptions — cross-check the project's security baseline) · compliance constraints.
+- **Integration & external dependencies** — external services/APIs + their **failure modes** · import/export formats · protocol / version assumptions · which of the project's services / subsystems / daemons this touches.
+- **Edge cases & failure handling** — negative scenarios · rate-limiting / throttling · conflict resolution (concurrent edits, races) · partial-failure + cleanup paths.
+- **Constraints & tradeoffs** — technical constraints (language, storage, runtime) · tradeoffs taken · **rejected alternatives** (feeds Decisions).
+- **Terminology & consistency** — canonical terms · no synonyms for load-bearing vocabulary the codebase already fixes · no deprecated names.
+- **Completion signals** — acceptance-criteria testability · a measurable Definition-of-Done (maps to Success Criteria + the audit gate).
+- **Placeholders / unresolved** — TODO / TKTK / `???` / `<placeholder>` markers · vague adjectives lacking quantification.
 
 ---
 
@@ -34,11 +32,11 @@ What you are NOT doing here (those are audit-cycle / implementation tests):
 
 What you ARE checking — the requirement-quality dimensions:
 
-- **Completeness** — are all the necessary requirements present? (e.g. "is behavior defined for when the upstream fetch fails?")
-- **Clarity** — is each requirement unambiguous and specific? (e.g. "is 'prominent' / 'fast' / 'large' quantified?")
-- **Consistency** — do the requirements agree with each other, and with the locked invariants? (no clause contradicts another or the constitution)
-- **Measurability** — can each success criterion be objectively verified? (no unfalsifiable "robust" / "clean" / "scalable")
-- **Coverage** — are all the scenarios and edge cases from the coverage scan actually addressed in the body?
+- **Completeness** — every necessary requirement present ("is behavior defined for when the upstream fetch fails?").
+- **Clarity** — each requirement unambiguous and specific ("is 'prominent' / 'fast' / 'large' quantified?").
+- **Consistency** — requirements agree with each other, with the locked invariants, and with the constitution.
+- **Measurability** — each success criterion objectively verifiable (no unfalsifiable "robust" / "clean" / "scalable").
+- **Coverage** — the coverage scan's scenarios and edge cases actually addressed in the body.
 
 ### Flags to catch on this pass
 

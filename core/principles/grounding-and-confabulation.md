@@ -1,6 +1,6 @@
 # Grounding and confabulation — the three modes and their defenses
 
-**Rule.** Confabulation — asserting something ungrounded as fact — is the worst failure class an agent has, and it is not one bug with one fix. It has **three distinct modes**, each with a different tell and a different defense. The constitution's *Grounding Claims in Source* rule is the general law; this file is its operational field guide.
+The constitution's *Grounding Claims in Source* rule is the general law; this file is its operational field guide. Confabulation — asserting something ungrounded as fact — is not one bug with one fix: it has **three distinct modes**, each with a different tell and a different defense.
 
 ## The three modes
 
@@ -15,9 +15,9 @@
 
 ## Why
 
-Each mode defeats a *different* check, which is why a single "verify before asserting" rule isn't enough — the existence check catches Mode 1 but not the transcript gap-fill; the roster check catches Mode 2 but not the coined label. Layered defenses matched to the taxonomy are the only thing that closes all three. And confabulation compounds: an ungrounded claim written to memory or relayed upstream becomes a *source* for the next session, laundering a guess into apparent fact.
+Each mode defeats a *different* check — the existence check catches Mode 1 but not the transcript gap-fill; the roster check catches Mode 2 but not the coined label — so no single "verify before asserting" rule closes all three. And confabulation compounds: an ungrounded claim written to memory or relayed upstream becomes a *source* for the next session, laundering a guess into apparent fact.
 
-Recovery when caught: stop, acknowledge cleanly, re-verify, replace with the grounded claim — and do **not** invent a "why I confabulated" story, which is second-order confabulation.
+Recovery when caught: the project's `never-confabulate` memory pin owns the procedure.
 
 *Receipt: an agent extracting from a garbled transcript emitted a fully-invented relationship — the noisy source trailed off and the model filled it with a plausible fabrication (Mode 2), which then read as fact downstream. A separate session coined a tidy label for an event and later cited its own label as evidence (Mode 3). Neither is caught by a generic "verify" reflex; each needs its own defense.*
 

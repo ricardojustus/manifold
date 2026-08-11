@@ -89,10 +89,7 @@ Once briefs are written + committed to their lane branches, give the operator on
 lane. Use `references/goal-oneliner-template.md` — it encodes the proven shape (entry point +
 worktree + branch + scope fence + the skill-suppression list + the completion gate).
 
-The **skill-suppression list is load-bearing.** Without it, lanes reflexively invoke the
-session-lifecycle skills (session-start clobbers the controller's context loading; session-end
-clobbers its state-file updates; plan-update / doc-placement / reference-doc-writing /
-memory-discipline are the controller's to own for the multi-lane arc).
+The **skill-suppression list is load-bearing** — the template names which skills and why.
 
 Label each line clearly with its lane window name (matching the worktree). Pasting the wrong line
 into the wrong window = wrong worktree = unmergeable state.

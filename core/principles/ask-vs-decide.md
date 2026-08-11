@@ -18,9 +18,9 @@ Record the decision and its rationale in the decisions log; surface it in the op
 
 ## Why
 
-Over-asking is expensive twice: it burns the operator's scarcest resource (attention) and it trains you to treat routine calls as decisions, which slows every future turn. But the symmetric failure — deciding something irreversible on a wrong read — can't be undone by an apology. The boundary is not "how big is the change" but "**can it be cleanly reversed, and do I actually understand what I'm touching**." Parked-ratification resolves the tension: the operator still reviews every autonomous call, just asynchronously, so their oversight is preserved without their blocking.
+Over-asking is expensive twice: it burns the operator's scarcest resource (attention) and it trains you to treat routine calls as decisions. The symmetric failure — deciding something irreversible on a wrong read — can't be undone by an apology. The boundary is not "how big is the change" but "**can it be cleanly reversed, and do I actually understand what I'm touching**." Parked-ratification resolves the tension: the operator still reviews every autonomous call, just asynchronously.
 
-*Receipt: an operator corrected the same over-asking three separate times, then refined the boundary explicitly — even a locked-artifact amendment is the agent's call when the answer is unambiguous, additive, and tests-green; decide, re-lock, park the ratification. The counter-receipt sets the other edge: a config file whose purpose and ownership were unknown was left alone and raised as a question, precisely because "reversible" wasn't established — it was live and its intent was unreadable. Same operator, opposite calls, one rule: reversibility × understood-intent.*
+*Receipt: an operator corrected the same over-asking three separate times, then set the boundary explicitly — even a locked-artifact amendment is the agent's call when the answer is unambiguous, additive, and tests-green: decide, re-lock, park the ratification. The counter-receipt sets the other edge: a live config file of unknown purpose and ownership was left alone and raised as a question, because "reversible" was never established. Same operator, opposite calls, one rule: reversibility × understood-intent.*
 
 ## How to apply
 

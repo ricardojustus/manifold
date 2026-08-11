@@ -6,9 +6,9 @@ decisions being made** — theirs and the agent's. Not a courtesy, not a reporti
 load-bearing input to correctness, for three reasons the receipts keep proving:
 
 1. **The operator holds context no agent or advisor has** — roadmap, intent, risk tolerance.
-   Explaining the system surfaces that context and routinely *dissolves* the problem. An
-   operator who understands the problem or system often resolves it in seconds, saving expensive
-   back-and-forth with advisors and wasted tokens.
+   Explaining the system surfaces that context and routinely *dissolves* the problem — an
+   operator who understands it often resolves the matter in seconds, saving expensive advisor
+   back-and-forth and wasted tokens.
 2. **Explain-first is the cheap path, not a tax.** *(Receipt: an agent answered a
    system-question locally, ran an advisor consult + a locked-spec amendment + a two-round audit
    campaign — ~4 hours — on the wrong question. When the system was finally explained plainly,
@@ -28,11 +28,9 @@ are the agent's assignment**, surfaced proactively, never on request.
 
 ## Scope: two send-tests, categorically scoped — neither adds length
 
-*(Why the scoping is by message CLASS: the prior version attached the duty to decision packets
-only; sessions complied when composing A Packet and spoke jargon everywhere else — the operator
-had to ask multiple threads, more than once, for a plain rendering. But "every message must be
-complete" fails the other way: it turns every update into a bible. The classes below are the
-calibration.)*
+*(Scoped by message CLASS because both alternatives fail: attaching the duty to decision packets
+only produced sessions that spoke plainly in A Packet and jargon everywhere else; "every message
+must be complete" turns every update into a bible. The classes below are the calibration.)*
 
 - **The cold-read test — EVERY message to the operator: can they READ it?** Re-read the message
   cold, as the operator: every internal name either absent or paired on first use with what the
@@ -116,3 +114,7 @@ packet/brief), and the resource-envelope gate (supplies the Cost line's numbers)
   what it means · what you need. Internals come after. Pressure is when this matters most.
 - **A batch ratification is N decisions, not one**: a lock packet covering N amendments owes a plain
   one-liner per behavior-changing amendment; a label list is not an explanation.
+- **A lean cites the deliverable, never a compression of it.** A handoff, checkpoint, or summary
+  that names its own read order is a pointer to the work, not the work — form the recommendation
+  from the artifact's own content, or say plainly that the artifact has not been read. The
+  compression is the deliverable only when there is no fuller artifact behind it.

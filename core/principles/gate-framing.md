@@ -4,9 +4,9 @@
 
 ## Why
 
-Downstream reviewers — a fresh audit, a second model, a conformance gate, a human eyeball — are valuable precisely because they don't share your blind spots. The moment you tell one "conformance is established, just look for defects," you have transplanted your blind spot into the one process designed to catch it. The reviewer trusts the framing, skips the surface you vouched for, and the defect you were confident about survives *because* you were confident about it. Framing that pre-decides what's true is not efficiency; it is the review equivalent of marking your own homework and handing over only the answers you like.
+Downstream reviewers — a fresh audit, a second model, a conformance gate, a human eyeball — are valuable precisely because they don't share your blind spots. Tell one "conformance is established, just look for defects" and you have transplanted your blind spot into the one process designed to catch it: the reviewer trusts the framing, skips the surface you vouched for, and the defect survives *because* you were confident about it. Framing that pre-decides what's true is not efficiency; it is marking your own homework and handing over only the answers you like.
 
-The same failure has a subtler form: a handoff brief that lists "known-good" invariants without inviting challenge, a fix-pass log that asserts "verified via grep" without pasting the grep, a spec that presents a design decision as final rather than as a claim with evidence. In each case the next reader inherits a conclusion they were meant to test.
+Subtler forms: a handoff brief listing "known-good" invariants without inviting challenge, a fix-pass log asserting "verified via grep" without pasting the grep, a spec presenting a design decision as final rather than as a claim with evidence. In each the next reader inherits a conclusion they were meant to test.
 
 *Receipt: a conformance gate's handoff once told the auditors "conformance is established — concentrate on defects." That single framing turned a gate meant to independently re-verify the contract into a gate that assumed the contract and hunted only for incidental bugs. The rule that came out of it: the gate states what was checked and hands every result forward as CHALLENGE-able, never as a settled premise the reviewer should build on.*
 

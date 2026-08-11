@@ -4,9 +4,9 @@
 
 ## Why
 
-A one-line fix to the instance in front of you leaves every other instance latent, and latent siblings surface later as "new" bugs that cost a fresh diagnosis each. Worse, a partial fix *looks* complete — tests pass, the reported symptom is gone — so the class silently persists behind a green check. The cheapest moment to find the siblings is right now, while you understand the exact shape of the mistake and the exact grep that finds it. An hour later that context is gone and each sibling is a cold start.
+A one-line fix to the instance in front of you leaves every other instance latent, and latent siblings surface later as "new" bugs costing a fresh diagnosis each. Worse, a partial fix *looks* complete — tests pass, the reported symptom is gone — so the class persists behind a green check. The cheapest moment to find the siblings is now, while you still hold the exact shape of the mistake and the exact grep that finds it.
 
-The discipline generalizes past code. A drifted decision in one doc is usually drifted in three. A missing guard on one write path is usually missing on the others. A stale claim in one section of a spec usually has copies. When you fix one, search the whole surface for the distinctive phrase or pattern and fix them together.
+The discipline generalizes past code: a drifted decision in one doc is usually drifted in three, a missing guard on one write path is usually missing on the others, a stale claim in a spec usually has copies. Fix one → search the whole surface for the distinctive pattern and fix them together.
 
 *Receipt: a shell-string extraction routine was found to un-escape only one of the four characters that need un-escaping — every glob-pattern rule that used any of the other three had been silently broken for days. The fix that mattered wasn't "handle this one character"; it was generalizing the routine to all four at once, then grepping the codebase for every place the same extraction pattern appeared. One character fixed is one character; the class fixed is the bug gone.*
 

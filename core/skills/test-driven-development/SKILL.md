@@ -6,13 +6,13 @@ description: >-
 
 # Test-driven development — RED → GREEN → REFACTOR
 
-TDD is not "write tests." It is a specific order — **the test comes before the code** — and the
-order is the point: a test written *after* the code encodes what the code happens to do, including
-its bugs; a test written *before* encodes what it *should* do. This skill is that loop as a
-checkable procedure, plus the bank of ways tests lie (`references/testing-anti-patterns.md`).
+TDD is not "write tests." It is a specific order — **the test comes before the code**: a test
+written *after* encodes what the code happens to do, bugs included; a test written *before*
+encodes what it *should* do. This skill is that loop as a checkable procedure, plus the bank of
+ways tests lie (`references/testing-anti-patterns.md`).
 
-It specializes the harness's **goal-driven-execution** principle to the construction of new
-behavior. Two neighbors it is NOT:
+It is the test-first discipline applied to the construction of new behavior. Two neighbors it is
+NOT:
 - **debugging-discipline** DIAGNOSES a live defect — its fix phase is also test-first (the failing
   repro), but the skill is about root-causing, not building new behavior.
 - **spec-adherence** verifies a *finished* implementation against a locked spec. TDD runs during
@@ -31,17 +31,15 @@ behavior. Two neighbors it is NOT:
    fails with "undefined" when you expected "wrong value", your test is aimed wrong; fix the test
    before writing any code. **A test that has never been seen to fail is not yet a test — it is a
    hope.**
-3. **One behavior at a time.** RED covers exactly one new fact about the system. Batching five
-   behaviors into one test means you can't tell which one drove the code, and a later regression
-   won't tell you which broke.
+3. **One behavior at a time.** RED covers exactly one new fact about the system; a batched test
+   tells you neither which behavior drove the code nor which one a later regression broke.
 
 ## GREEN — the minimum code to pass
 
 - Write the **least** code that turns this specific test green. Not the general solution, not the
-  abstraction you can already see. Over-building here is how you get untested branches: code the
-  test never asked for, and so never checked.
+  abstraction you can already see — over-building here is how you get untested branches.
 - Run the full test suite, not just the new test. GREEN means *this* test passes AND nothing else
-  broke. An old test going red is a regression — that is information, handle it now.
+  broke. An old test going red is a regression — handle it now.
 - Resist "while I'm here." The generalization is a later RED with its own test.
 
 ## REFACTOR — improve with the test as a net
@@ -64,17 +62,13 @@ What you must never do:
 - wrap it in a skip/quarantine "for now" (the "for now" that never returns),
 - delete it because it's inconvenient.
 
-Each converts a signal into a lie. A quarantined test is worse than no test: it looks like
-coverage and provides none. If a test genuinely must be disabled, that is a decision with a
+Each converts a signal into a lie. If a test genuinely must be disabled, that is a decision with a
 receipt (why, and the trigger to re-enable), not a quiet edit to reach green.
 
 ## The anti-pattern bank
 
-Tests lie in recurring, recognizable ways — assert-nothing tests, tests that mirror the
-implementation instead of the contract, weakened assertions, over-mocking until nothing real is
-exercised, vacuous structural tests (asserting only a function's *arity*), snapshot-everything,
-and quarantined tests that never return. Each one, with its rationale and how to recognize it, is
-in `references/testing-anti-patterns.md`. Read it before writing a test suite you'll rely on; a
+Tests lie in recurring, recognizable ways. Each pattern, with how to recognize it, is in
+`references/testing-anti-patterns.md` — read it before writing a test suite you'll rely on; a
 green suite full of these is more dangerous than no suite at all.
 
 ## When to invoke
@@ -95,8 +89,6 @@ green suite full of these is more dangerous than no suite at all.
 
 ## Pairs with
 
-- **goal-driven-execution** (principle) — the parent discipline; TDD is its test-first
-  specialization for new construction.
 - **debugging-discipline** — the diagnosis procedure; its fix phase shares TDD's
   failing-test-first step but targets live bugs, not new behavior.
 - **spec-adherence** — the post-implementation conformance gate.

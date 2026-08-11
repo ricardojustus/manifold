@@ -80,8 +80,8 @@ each seat is briefed through its own mandate (full text in `references/seat-mand
 
 Model-to-seat mapping is the default, not a law — the Orchestrator may remap (e.g. a saturated
 cross-model provider → a third strong-reasoning seat). **Cross-model is the point**: the two
-cross-model seats come from a genuinely different family than the primary reasoner, because a
-second instance of the same model shares the first's blind spots.
+cross-model seats come from a genuinely different family than the primary reasoner — a second
+instance of the same model shares the first's blind spots.
 
 ## Run format
 
@@ -157,12 +157,9 @@ mechanism:
 
 ## Findings schema
 
-Every finding (mirror `audit-cycle` severity vocabulary — C / H / M / L):
-```
-{ severity: C|H|M|L, target: vision|plan, claim, assumptions, confidence, steelman, suggested_disposition }
-```
-`suggested_disposition` ∈ { re-open, waiver, refine-in-place, **abandon** } — a *suggestion only*.
-The real disposition is the Orchestrator + Human's call, never the Council's.
+Every finding is the object defined in `references/seat-mandates.md` §Common framing (severity
+vocabulary mirrors `audit-cycle` — C / H / M / L). `suggested_disposition` is a *suggestion only*:
+the real disposition is the Orchestrator + Human's call, never the Council's.
 
 ## Output + authority
 

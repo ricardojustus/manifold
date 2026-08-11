@@ -61,37 +61,22 @@ paths, plan-doc sections with line numbers, memory entries, current-state docs) 
 sources to read FIRST. Otherwise the subagent re-derives settled knowledge and misses
 project-specific nuance the internal sources already captured.
 
-### Brief template
+### The brief
 
-```
-Research <specific question>. I'll act on the findings; this is not exploratory browsing.
+Author it with `brief-authoring`. Four things a research brief adds:
 
-## Pre-feed — read these FIRST (don't re-derive)
-
-- <relevant knowledge/lesson file paths>
-- <relevant plan-doc sections with line numbers>
-- <relevant memory entries>
-- <relevant current-state / reference docs>
-- <specific source files if implementation detail matters>
-
-## Research questions (priority order)
-
-1. <specific, answerable question 1>
-2. <specific, answerable question 2>
-...
-
-## Output format
-
-<dense / factual / URLs required / version numbers / <N>-word cap>
-<if recommending a library pick, name the specific version>
-<if ANY answer is uncertain, say so — don't confabulate>
-<paste raw content verbatim when it's going to be the primary reference>
-```
-
-**Briefing principles**: specific > broad ("RSS parsing libraries for Node in 2026" beats "RSS") ·
-say what you'll do with the findings (focuses it on what's decision-relevant) · cap the output
-("under 500 words" forces prioritization) · require URLs + version numbers (defeats
-plausible-sounding guesses) · ask for **flagged unknowns** — what it could NOT verify.
+- **Pre-feed, read FIRST** — the rank-1 project sources (lesson paths, plan-doc sections with line
+  numbers, memory entries, current-state / reference docs, specific source files where
+  implementation detail matters), marked "don't re-derive".
+- **Research questions in priority order** — specific and answerable ("RSS parsing libraries for
+  Node in 2026" beats "RSS"), plus what you'll do with the findings (focuses it on what's
+  decision-relevant).
+- **Output format** — dense / factual · URLs + version numbers required (defeats
+  plausible-sounding guesses; name the specific version for a library pick) · an `<N>`-word cap
+  ("under 500 words" forces prioritization) · raw content pasted verbatim where it will be the
+  primary reference.
+- **Flagged unknowns** — what it could NOT verify; if any answer is uncertain, say so, don't
+  confabulate.
 
 **Background it** when the research is substantial and you have parallel work, or you'd otherwise
 idle at a decision point. Don't background when the next step depends entirely on the outcome (just
@@ -99,8 +84,8 @@ wait), or the research is short (under a minute).
 
 ## Output discipline
 
-Before acting on findings: **read critically** — subagent output is not trusted; spot-check any
-load-bearing claim against a primary source. **Separate facts from recommendations** — facts cite
+Before acting on findings: **subagent output is not trusted** — the constitution's grounding rule
+applies to every load-bearing claim it returns. **Separate facts from recommendations** — facts cite
 sources, recommendations name the tradeoff. **Present findings to the operator before implementing**
 (Cardinal Rule step 3).
 
@@ -112,7 +97,8 @@ endorsed unverified" · "no primary source — inferred from `<secondary signal>
 
 ## Related
 
-`phase-start` (invokes this in its reading order before any new phase) · `scoped-adversarial-audit`
+`research-sufficiency` (principle — when the research is enough to act on) · `phase-start` (invokes
+this in its reading order before any new phase) · `scoped-adversarial-audit`
 (the sibling pre-fed-subagent pattern, for adversarial review of a code surface) · `brief-authoring`
 (the full dispatched-brief discipline — a research brief is one instance) · the constitution's
 **Cardinal Rule** + **Grounding Claims in Source**.

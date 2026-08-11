@@ -25,20 +25,17 @@ intervening chat; until ended, every qualifying junction routes per the table.
 
 ## The sibling contrast (know which posture you are in)
 
-- **orchestrator-mode**: the main model sits BELOW the frontier tier (typically after a quota
-  fallback) and the cross-model counterparty out-writes it — so authoring routes OUT, spec and
-  design drafting included, and the advisor consult is mandatory at every decision.
-- **brain-mode**: the main model IS the frontier tier — so thinking stays HOME and only
-  implementation routes DOWN. Cross-model consults stay optional, junction-triggered, exactly as
-  outside the posture.
-
-If the main model falls below the frontier tier mid-session, brain-mode's premise is gone: say
-so, and put the posture question back to the operator (orchestrator-mode is usually the fitting
-successor).
+**brain-mode**: the main model IS the frontier tier — thinking stays HOME, only implementation
+routes DOWN, and cross-model consults stay optional and junction-triggered, exactly as outside the
+posture. **orchestrator-mode**: the main model sits BELOW the frontier tier (typically after a
+quota fallback) and the cross-model counterparty out-writes it — authoring routes OUT, spec and
+design drafting included, with a mandatory advisor consult at every decision. If the main model
+falls below the frontier tier mid-session, brain-mode's premise is gone: say so, and put the
+posture question back to the operator (orchestrator-mode is usually the fitting successor).
 
 ## The contract
 
-**The main loop KEEPS (this is the point of the posture, not the leftovers):**
+**The main loop KEEPS:**
 
 - **Thinking and discussion** — design reasoning, option analysis, decisions with the operator.
 - **Vision docs, plans, briefs** — every dispatch still gets a full `brief-authoring` brief;

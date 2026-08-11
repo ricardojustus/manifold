@@ -87,9 +87,9 @@ cross-model lens, never replaces it.
 
 ## Why
 
-Dispatching everything at the top tier feels safe and is quietly the most expensive habit an agent can have: it burns both metered spend and the flat-rate quota that gates *all* work, on tasks a cheaper tier would have done identically. The inverse — implementing a subtle contract on a cheap tier — fails differently: the cheap tier relaxes contracts it doesn't fully grasp, and you pay for the miss in audit rounds. The tier is a judgment call about where the *judgment* in the task actually lives.
+Top-tier-everything feels safe and is quietly the most expensive habit an agent has: it burns both metered spend and the flat-rate quota that gates *all* work, on tasks a cheaper tier would have done identically. The inverse fails differently — a cheap tier relaxes contracts it doesn't fully grasp, and you pay for the miss in audit rounds. The tier is a judgment call about where the *judgment* actually lives.
 
-Quota is the axis that's easy to forget because it doesn't show up as a dollar figure. A periodic cap is exhaustible; spending it on a mechanical sweep that a cheap tier could have run is a real cost that surfaces later as a stall. Treat throughput quota as a budget you are spending, always. (This is the runtime-cost sibling of the methodology's "quota IS cost" principle — assess *recurring* spend, both metered and flat-rate, before shipping.)
+Quota is easy to forget because it shows no dollar figure. A periodic cap is exhaustible; spending it on a mechanical sweep a cheap tier could have run surfaces later as a stall. Treat throughput quota as a budget you are spending, always — the runtime-cost sibling of the methodology's "quota IS cost" principle (assess *recurring* spend, metered and flat-rate, before shipping).
 
 *Receipt: a batch of read-and-summarize, grep, and probe subagents were dispatched at the top tier by omission — the default inherited the expensive model when every one of them was cheap-tier work. Nothing was wrong with the output; the cost was pure waste. Naming the tier explicitly at dispatch, matched to where the judgment sits, is the whole fix.*
 

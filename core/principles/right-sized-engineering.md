@@ -58,13 +58,13 @@ and dies on first contact with the account it runs on.
 
 A best-effort force-push guard hook — whose limits were *declared at design time* ("it cannot
 anticipate every exotic path… the backstop for the obvious ones, not the whole guarantee") and
-whose threat model had *already been litigated* in a prior system decision (pattern-defenses guard
-the careless case; the malicious case belongs to structural layers) — consumed **three expensive
-audit rounds** of hardening anyway. Each pass either missed another encoding or over-blocked
-innocent commands (`rm -rf pushcache/` was denied by a "safety" belt — the harmful direction,
-because a guard that blocks normal work gets disabled). The operator's resolution: **radical
-simplification** — 170 lines → ~60 obviously-correct lines, a written waiver for the disguise
-tail, selftest-pinned. The audit rounds were the failure mode, not diligence.
+whose threat model had *already been litigated* (pattern-defenses guard the careless case; the
+malicious case belongs to structural layers) — consumed **three expensive audit rounds** of
+hardening anyway. Each pass either missed another encoding or over-blocked innocent commands
+(`rm -rf pushcache/` denied by a "safety" belt — the harmful direction, because a guard that
+blocks normal work gets disabled). The operator's resolution: **radical simplification** —
+170 lines → ~60 obviously-correct lines, a written waiver for the disguise tail, selftest-pinned.
+The audit rounds were the failure mode, not diligence.
 
 ## Receipt — the certification fortress (the other direction)
 

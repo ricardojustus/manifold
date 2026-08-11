@@ -531,7 +531,7 @@ assert 'grep -q "CAP: 150 lines" "$ORIT"'                   "orientation header:
 assert 'grep -q "OVERFLOW:" "$ORIT"'                        "orientation header: overflow procedure"
 assert 'grep -q "AUTHORING:" "$ORIT"'                       "orientation header: authoring instruction"
 assert 'grep -q "HOP ZERO:" "$ORIT"'                        "orientation header: hop-zero wiring step"
-assert 'grep -q "context file SKIPS this wire" "$ORIT"'     "orientation header: hop-zero skip"
+assert 'grep -q "skip the wire" "$ORIT"'     "orientation header: hop-zero skip"
 assert 'grep -q "EMPTY START:" "$ORIT"'                     "orientation header: empty-start note"
 
 # ---------------------------------------------------------------------------

@@ -8,9 +8,8 @@ allowed-tools: Read, Grep, Glob, Bash
 # Phase start
 
 Phase boundaries are where the Cardinal Rule (hypothesize → research → present → implement) is
-most often violated: familiarity tempts "I already know how this should work, let me start
-coding" — the first-hypothesis trap, fired before any research. Load the design-as-already-decided
-BEFORE any new theorizing; nothing you propose in a new phase should surprise the prior work.
+most often violated — familiarity fires the first-hypothesis trap before any research. Load the
+design-as-already-decided BEFORE any new theorizing.
 
 ## What counts as "a new phase"
 
@@ -20,8 +19,7 @@ new permission tier or security-adjacent change · a routing / scheduling / urge
 schema or data-migration change · anything landing as a new file or a substantive new section in
 an existing doc.
 
-When in doubt, treat the boundary as a new phase: running this on something that wasn't quite a
-phase costs a few minutes; skipping it on something that was costs hours.
+When in doubt, treat the boundary as a new phase (the ladder carries the cost math).
 
 ## The reading order
 
@@ -47,12 +45,10 @@ without surfacing the contradiction explicitly.
 
 ## Failure modes this prevents
 
-Cardinal-Rule violations at phase boundaries: theorizing about a subsystem interaction without
-reading its current-state doc (load-bearing invariant wrong, work redone); proposing an
-implementation without reading the prior-art research (rebuilding what a previous investigation
-settled); re-deriving a lifecycle/contract instead of reading the reference doc that documents it
-(wrong edge semantics); starting downstream work without the upstream LOCKED invariants (drift a
-later review has to catch).
+Cardinal-Rule violations at phase boundaries: theorizing about a subsystem without its
+current-state doc, proposing an implementation without the prior-art research, re-deriving a
+lifecycle/contract the reference doc documents, starting downstream work without the upstream
+LOCKED invariants.
 
 ## Pairs with
 

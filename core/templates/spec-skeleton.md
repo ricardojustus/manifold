@@ -48,20 +48,16 @@
      telemetry semantics, import boundaries, invariants. This is the spec, not pseudo-code. -->
 
 ## §4 Requirements & acceptance grammar (optional but high-value)
-<!-- Make each requirement machine-checkable. Use EARS for the requirement statements and
-     Given-When-Then for at least one acceptance scenario per requirement.
+<!-- Make each requirement machine-checkable: one EARS statement + ≥1 Given-When-Then scenario.
 
-     EARS (Easy Approach to Requirements Syntax) — pick the pattern per requirement:
+     EARS patterns — pick one per requirement:
        • Ubiquitous:   THE SYSTEM SHALL <response>.
        • Event-driven: WHEN <trigger> THE SYSTEM SHALL <response>.        (nominal paths)
        • State-driven: WHILE <in state> THE SYSTEM SHALL <response>.
        • Optional:     WHERE <feature is present> THE SYSTEM SHALL <response>.
        • Unwanted:     IF <condition/error> THEN THE SYSTEM SHALL <response>.  (error paths)
 
-     Every requirement needs ≥1 Given-When-Then acceptance scenario:
-       GIVEN <precondition>  WHEN <action>  THEN <observable outcome>.
-     Cover the nominal path with WHEN/SHALL and the error path with IF/THEN, and give each
-     at least one GWT so the audit can check the code against the clause, not the prose. -->
+     GWT: GIVEN <precondition> WHEN <action> THEN <observable outcome>. -->
 
 ### R-NNN — <requirement name>
 - **EARS:** WHEN <trigger> THE SYSTEM SHALL <response>.  <!-- or IF/THEN for an error path -->

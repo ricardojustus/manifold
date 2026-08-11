@@ -6,7 +6,7 @@ description: >-
 
 # Scoped adversarial audit
 
-Spawn a context-less subagent pre-fed with the project's threat model, point it at an exact change, and let it critique without the author's confirmation bias. The value comes from four things done **together**: **tight scope**, a **pre-fed threat model**, the subagent **reasoning as the attacker**, and the author **reading the output critically**. Drop any one and the audit degrades into vague reassurance.
+Spawn a context-less subagent pre-fed with the project's threat model, point it at an exact change, and let it critique without the author's confirmation bias. The value comes from four things done **together**: **tight scope**, a **pre-fed threat model**, the subagent **reasoning as the attacker**, and the author **reading the output critically**. Drop any one and the audit degrades into reassurance.
 
 ## When to invoke
 
@@ -42,11 +42,11 @@ Fill `references/subagent-brief-template.md` — it owns the brief's mandatory e
 
 ### 4. Read the output CRITICALLY
 
-The subagent can also be wrong. Spot-check before acting:
+A subagent's finding is a claim, never a fact (constitution §Grounding Claims in Source). Spot-check before acting:
 
-- **High-severity claims**: does the finding actually reproduce? Try to construct the concrete path. If you can't, it may be a false positive.
+- **High-severity claims**: does the finding reproduce? Construct the concrete path; if you can't, it may be a false positive.
 - **"No issues found"**: did it actually look, or bail early? A suspiciously clean output on a complex surface usually means the brief was too narrow.
-- **Disagreements with your own intuition**: that's signal — either you were wrong (update) or it was wrong (sharpen the brief). Both resolutions are useful.
+- **Disagreements with your own intuition**: signal — either you were wrong (update) or it was (sharpen the brief).
 
 Done when EVERY Critical/High finding carries a written reproduced-or-rejected verdict and every adversarial question in the brief is accounted for — answered by a finding or by the subagent's explicit "no findings on <question>" line. A question with neither is an unaudited question: go back to the brief.
 

@@ -8,16 +8,15 @@ allowed-tools: Read, Write, Edit, Bash
 # Compact prep
 
 Compaction is **not** session end. After it the next-you retains a **lossy summary**: gist and
-decisions survive; verbatim spec text, exact file contents, line numbers, nuanced reasoning, and
-the evidence you verified are lost or flattened — and worse, the summary can carry a subtly-wrong
-framing forward as if it were fact, because a summary feels like memory.
+decisions survive; verbatim text, exact file contents, line numbers, and verified evidence are lost
+or flattened — and a summary feels like memory, so a subtly-wrong framing rides forward as fact.
 
 So the checkpoint is written for a **you-who-half-remembers** — not a cold stranger (session-end's
 job), not full-context-you (gone). Four jobs: **anchor durable state to files** (anything not in a
-file evaporates); **name what to RE-READ VERBATIM** (acting on a summarized memory of a
-spec/contract/file is confabulation); **lock the decisions** so summarized-you doesn't reopen what's
-settled; **pin the exact resume point**. Keep it lighter than session-end — no full close ceremony
-unless a milestone genuinely landed mid-arc.
+file evaporates); **name what to RE-READ VERBATIM** (constitution §Grounding Claims in Source;
+depth: `grounding-and-confabulation`); **lock the decisions** so summarized-you doesn't reopen
+what's settled; **pin the exact resume point**. Keep it lighter than session-end — no full close
+ceremony unless a milestone genuinely landed mid-arc.
 
 ## The sweep
 
@@ -91,9 +90,8 @@ If the arc hit a notable point: `<ts> — compact checkpoint. Arc: <x>. Resume: 
 task-audit log.
 
 ## Compaction hardening
-- **Older skill/rule bodies are silently dropped post-compaction** (the re-attachment budget is
-  finite). `compact-resume` must **re-invoke** the skills it needs — note in the checkpoint any
-  skill the resume step depends on.
+- Note in the checkpoint any skill the resume step depends on — `compact-resume` step 3 owns the
+  re-invocation rule and the reason for it.
 - **The overlay MAY wire a `SessionStart(compact)` hook** re-injecting the checkpoint pointer on
   the post-compaction turn. If the binding provides it, the pointer arrives deterministically; if
   not, the operator triggers `compact-resume` manually. Either way the checkpoint file is the

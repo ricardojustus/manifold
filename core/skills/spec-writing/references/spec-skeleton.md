@@ -1,8 +1,6 @@
 # Spec skeleton — recommended section-set
 
-A menu, not a mandate. Take the sections the spec actually needs; a contained LIGHT spec might use five of these, a HEAVY cross-subsystem amendment most of them. In an implementation-contract project, specs deliberately blend *what/why* with *how* — file paths, signatures, invariants — unlike the hard split some tools draw between a tech-free spec and a plan. State which genre you're writing and let that set the depth.
-
-Provenance: plundered from the public spec/plan templates, the specs-as-source-of-truth `design.md` shape (Context / Goals / Non-Goals / Decisions), and classic design-doc practice (Non-Goals, Alternatives Considered).
+A menu, not a mandate. Take the sections the spec actually needs; a contained LIGHT spec might use five of these, a HEAVY cross-subsystem amendment most of them. In an implementation-contract project, specs deliberately blend *what/why* with *how* — file paths, signatures, invariants. State which genre you're writing and let that set the depth.
 
 ## Top matter
 
@@ -29,7 +27,7 @@ Right under the top matter, an attestation the author fills and a reviewer can c
 |---|---|---|
 ```
 
-An unchecked gate or an unjustifiable Complexity row is a finding, not a silent omission — this block is what generalizes the audit's Low-triage waiver discipline to authoring time.
+An unchecked gate or an unjustifiable Complexity row is a finding, not a silent omission.
 
 ## Core sections
 
@@ -51,7 +49,7 @@ Concrete acceptance scenarios in **Given / When / Then** form. Prioritize them (
 Entities, attributes, identity/uniqueness rules, lifecycle/state transitions, schema fields. Include when the change touches data shape.
 
 ### Decisions (with rationale + rejected alternatives)
-Enumerate each non-obvious choice: **what was decided · why · which simpler/alternative approach was rejected and why.** This is the `design.md` "Decisions" pattern. It's what stops a future reader (or a round-3 auditor) re-opening a settled question — and it's where the "justify complexity" hygiene item from Step 3 lands.
+Enumerate each non-obvious choice: **what was decided · why · which simpler/alternative approach was rejected and why.** It's what stops a future reader (or a round-3 auditor) re-opening a settled question — and it's where the "justify complexity" hygiene item from Step 3 lands.
 
 ### Success Criteria
 How you'll know the spec is satisfied, in **measurable / objectively checkable** terms (`SC-001 …`). This is what the `audit-cycle` gate then verifies against. Avoid unfalsifiable criteria ("robust", "clean").
@@ -63,11 +61,11 @@ The informed defaults you chose where the input was silent (Step 3 clarification
 Negative paths, boundary conditions, concurrency/race behavior, partial-failure and recovery. The coverage scan (`coverage-and-self-review.md`) will prompt the ones you'd otherwise miss.
 
 ### Slice / layer decomposition
-For anything non-trivial, decompose into a **foundational/blocking layer** (must land before any slice) followed by **independently-auditable slices**, marking those that can run in parallel `[P]` (different files, no inter-dependency). This is the tasks-by-user-story + `[P]` pattern, and it's already how the pipeline dispatches (per-layer locks, parallel lanes). Writing the decomposition into the spec makes the dispatch plan fall out for free.
+For anything non-trivial, decompose into a **foundational/blocking layer** (must land before any slice) followed by **independently-auditable slices**, marking those that can run in parallel `[P]` (different files, no inter-dependency). Writing the decomposition into the spec makes the dispatch plan fall out for free.
 
 ## Amendment variant (delta to a LOCKED spec)
 
-A LOCKED-spec amendment is HEAVY by definition. Don't restate the whole spec — spec the **delta**, brownfield-style (specs-as-source-of-truth vs changes-as-deltas):
+A LOCKED-spec amendment is HEAVY by definition. Don't restate the whole spec — spec the **delta**, brownfield-style:
 
 - **What changes** — the specific sections/clauses being amended, quoted by `§` reference, with old → new.
 - **What's preserved** — the locked invariants the amendment explicitly does *not* touch (reassures the auditor and prevents accidental scope creep).

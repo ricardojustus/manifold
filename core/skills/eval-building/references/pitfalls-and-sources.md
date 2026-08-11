@@ -108,20 +108,10 @@ source URL.
 
 ## Framework abstractions — patterns to steal, tools NOT to adopt
 
-Plunder the PATTERNS; do not install the frameworks (matches the harness's plunder-not-depend
-stance). Each row: what transfers to a prose skill + the distinctive mechanism worth stealing.
-
-| Framework | What TRANSFERS | Mechanism worth stealing |
-|---|---|---|
-| **promptfoo** | The assertion taxonomy as a **checklist** — pick the cheapest assertion that captures the criterion (the §5 ladder). | **Tiered assertions**: deterministic (equals, contains, regex, is-json, is-refusal, latency, cost, levenshtein/rouge/bleu) → model-assisted (llm-rubric, g-eval, factuality, answer-relevance, context-faithfulness, select-best). Plus **assertion sets + weights + threshold** → one pass/fail, and `not-` negation on every type. |
-| **inspect_ai** (UK AISI) | Clean **separation of concerns**: fixture corpus ≠ system-under-test ≠ grader — force naming all three (§3). | **Dataset → Solver → Scorer → Task.** `model_graded_qa()` gives the grader ONLY question/answer/criterion, "optionally with several graders voting" — grader-isolation + juror voting are prose-portable. |
-| **openai/evals** | The **registry / manifest idea**: a locked, versioned, checked-in eval definition separate from code (§4 LOCK). | Declarative no-code eval templates ("if you follow an existing template… you don't need to write any evaluation code") + "human experts periodically audit these graders." |
-| **Braintrust autoevals** | Ready-made **judge rubrics** as starting templates instead of blank-page rubric writing (§6). | **Rubric-versioning discipline**: "Rubrics should be versioned alongside prompts, and when a rubric changes, earlier scores are no longer directly comparable" (the §7 regression-comparability rule). `Battle` = pairwise A-vs-B scorer. |
-| **deepeval** | **Eval-as-test-suite** framing — evals live beside unit tests, same muscle memory (bridges TDD). | **G-Eval** (LLM-as-judge with chain-of-thought over any custom criterion) + RAG metrics (faithfulness / hallucination compare output against provided context) as named reusable metric shapes. |
-
-*RAG-specific note (one line, not a subsection):* decompose an answer into claims and check each
-against the retrieved context (Ragas / deepeval faithfulness) — covered by promptfoo
-`context-faithfulness`; reference it as an assertion type, don't teach the plumbing.
+Plunder the PATTERNS, do not install the frameworks: promptfoo's tiered assertion taxonomy (the §5
+ladder), inspect_ai's dataset/solver/scorer separation (§3), openai/evals' locked versioned eval
+definition (§4), Braintrust autoevals' rubric-versioning and ready-made judge rubrics (§6/§7), and
+deepeval's G-Eval + RAG faithfulness metrics (assertion types, not plumbing to teach).
 
 ---
 

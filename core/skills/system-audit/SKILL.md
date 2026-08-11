@@ -6,7 +6,7 @@ description: >-
 
 # System audit
 
-A STRUCTURED audit of a *whole subsystem*, producing a severity-sorted finding list + proposed fixes + implementation sequence. The output shape is what makes an audit ACTIONABLE instead of aspirational — without it, audits produce vague concerns that never convert to commits.
+A STRUCTURED audit of a *whole subsystem*, producing a severity-sorted finding list + proposed fixes + implementation sequence. The output shape is what makes an audit ACTIONABLE instead of aspirational.
 
 ## When to invoke
 
@@ -89,7 +89,7 @@ For subsystems where audit rigor matters (security-sensitive, architectural, pre
 
 The audit artifact is the INPUT to hardening work, not the work itself. Ship the fixes in a follow-up pass (or the same session if scope is small); reference the audit in commit messages ("Block 1 of <subsystem>-audit-<date>: fixes #1+#3+#7").
 
-**Leave the audit doc in the audits directory** — it's the historical record of what was found, what shipped, and what deferred. Future audits cross-reference it *there*. Do NOT move it into the current-state reference corpus: an audit report is a different genre (severity matrix + findings, not "how the subsystem works now"), and a current-state doc corpus that's also a search index treats a stray audit report as retrieval poison (see `doc-placement` and `reference-doc-writing` on genre purity).
+**Leave the audit doc in the audits directory** — it's the historical record of what was found, what shipped, and what deferred; future audits cross-reference it *there*. Do NOT move it into the current-state reference corpus: an audit report is a different genre (`doc-placement` and `reference-doc-writing` own genre purity).
 
 ## Related
 

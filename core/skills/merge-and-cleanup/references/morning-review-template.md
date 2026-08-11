@@ -58,9 +58,7 @@ All branches based on `<base-commit>`.
 
 ## Hard rules during consolidation
 
-- Do NOT merge to the default branch until the operator ratifies each lane individually.
-- Apply cross-repo diff proposals only after the operator approves each diff block.
-- Inline decision-markers need explicit ratification before resolving.
+`merge-and-cleanup/SKILL.md` owns them (the pairing principle + Steps 2-3).
 
 ## Token cost retrospective
 

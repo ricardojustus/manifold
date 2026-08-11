@@ -7,8 +7,8 @@ allowed-tools: Read, Write, Edit, Bash, Grep
 
 # Session end
 
-The failure mode: finishing the task, committing code, declaring done — while the state snapshot
-is stale, memory-worthy decisions unsaved, plan docs out of sync, and standing questions hanging.
+The failure mode: declaring done while the state snapshot is stale, memory-worthy decisions
+unsaved, plan docs out of sync, and standing questions hanging.
 
 With `file-at-the-event` in force, steps 2–6 are VERIFICATION checks ("anything unfiled?") —
 finding production work there is exception repair for a mid-session miss, not the normal
@@ -20,10 +20,9 @@ A sweep's context growth is dominated by the session's own per-turn reasoning, n
 (measured: ~2/3 of one sweep's growth was thinking/output). The sweep is MECHANICAL — write what
 the session already knows, don't re-deliberate it: **no re-reads** of files you wrote or read in
 this same sweep (a claim about any file NOT touched this sweep still gets the Grounding-Claims
-fresh read) · **one consolidated write per file** (STATE
-in a single rewrite; the corrections buffer in a single batched edit — never sequential edit
-rounds) · **one commit round per repo** · skip-checks for the conditional steps are one sentence,
-not investigations. A typical sweep fits in ~6 tool-turns.
+fresh read) · **one consolidated write per file** (STATE in a single rewrite; the corrections
+buffer in one batched edit — never sequential edit rounds) · **one commit round per repo** ·
+one-sentence skip-checks for the conditional steps. A typical sweep fits in ~6 tool-turns.
 
 ## The eight-step sweep
 
@@ -138,8 +137,8 @@ One dense line to the project's task-audit log:
 Then a **final message to the operator**: commits shipped (with hashes); open items needing THEIR
 action (rotate a key, approve a sequencing, verify a regression next run); what next-session-you
 will find on `session-start`; a pointer to the rewritten kickoff. If something needed an explicit
-rollback and you didn't do it, SAY SO. Tone: plain English, substantive, not formal; lead with
-what landed, not what's next; they read this tired — respect that with brevity.
+rollback and you didn't do it, SAY SO. Voice per `response-style`; lead with what landed, not
+what's next.
 
 ## When to invoke
 

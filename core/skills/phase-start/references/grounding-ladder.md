@@ -1,18 +1,17 @@
 # The grounding ladder — the shared reading spine
 
 Both `session-start` and `phase-start` load the design **as already decided** BEFORE any
-new theorizing. This is the reading order they share. It lives in one file so it can't drift
-into two half-maintained copies; each skill points here and adds its own distinct steps
-around it.
+new theorizing. This is the reading order they share — one file, so it can't drift into two
+half-maintained copies; each skill points here and adds its own distinct steps around it.
 
 **The rule the ladder enforces**: nothing you propose should surprise the prior work. Forming
 a hypothesis before reading what was already decided is the single most-corrected failure
-mode in this discipline — the ladder is the structural defense against it.
+mode in this discipline.
 
-Read the rungs **in order**. Do **not** skip a rung because you "already know" the topic;
-pattern familiarity is exactly the trap ("I already know how this works, let me start") that
-fires the first-hypothesis trap before any research. When in doubt whether something is
-"enough of a phase" to warrant the ladder, run it — the cost is a few minutes; the cost of
+Read the rungs **in order**. Do **not** skip a rung because you "already know" the topic —
+pattern familiarity is exactly the trap that fires the first hypothesis before any research.
+When in doubt whether something is "enough of a phase" to warrant the ladder, run it — the
+cost is a few minutes; the cost of
 skipping it is hours spent building the wrong thing.
 
 ## The rungs

@@ -10,9 +10,7 @@ A current-state reference doc describes **what's actually running, right now**, 
 
 ## Diátaxis context
 
-Diátaxis (https://diataxis.fr) splits technical docs into four genres: **Tutorial** (learn by doing / study), **How-to guide** (solve a specific problem / work), **Reference** (look up facts / work), **Explanation** (understand concepts / study).
-
-This skill is the **reference** genre: information-oriented, precise, structured for lookup (not narrative). A step-by-step walkthrough (tutorial) or concept deep-dive (explanation) is a different genre with a different home — it doesn't go in the current-state reference corpus.
+This skill is the **reference** genre of Diátaxis (https://diataxis.fr): information-oriented, precise, structured for lookup (not narrative). A step-by-step walkthrough (tutorial), a how-to guide, or a concept deep-dive (explanation) is a different genre with a different home — it doesn't go in the current-state reference corpus.
 
 ## The tier-by-stability rule
 
@@ -25,12 +23,10 @@ Signals a subsystem is ready: shipped to production; survived at least one incid
 
 ## Spec → reference promotion (close-out)
 
-A second, event-triggered reason to write/update a reference doc — independent of the tier clock: **when a spec finishes implementation, its durable behavior promotes into a reference doc as part of definition-of-done, in the SAME implementing session** (not deferred doc-debt). Procedure (full taxonomy in `doc-placement`):
+A second, event-triggered reason to write/update a reference doc — independent of the tier clock: **when a spec finishes implementation, its durable behavior promotes into a reference doc as part of definition-of-done, in the SAME implementing session** (not deferred doc-debt). `doc-placement` owns the close-out checklist, the provenance schema, and the Atlas variant; this skill owns the reference-doc half:
 
 - **Fold the spec's durable behavior into the OWNING SUBSYSTEM's reference doc — subsystem-shaped, not spec-shaped.** A small spec becomes a *section* of a bigger subsystem's doc; it does NOT get its own reference doc per spec.
-- **If no owning subsystem doc exists yet, CREATE it** (canonical structure below). Every active spec should name its owning-reference target at authoring time, so the fold target is never undefined at close-out.
-- **Add the forward pointer.** The reference doc is the only *searchable* surface, so it's the discovery path to the un-indexed provenance — add, in the promoted section: `<!-- provenance: spec <archived-spec-path>; adr <adr-path> -->` (drop the `adr` clause if none was written).
-- **Bump the as-of + register the doc** (Process below), then archive the spec + write an ADR if the decision was architecturally significant — those two steps belong to `doc-placement`; this skill owns the reference-doc half.
+- **If no owning subsystem doc exists yet, CREATE it** (canonical structure below), then bump the as-of + register the doc (Process below).
 
 This does NOT conflict with the tier rule: that rule bars *preemptive* docs (unshipped design that will churn). An *implemented* spec has shipped, so it IS current state — fold it in this session, scoping the section to what shipped plus an honest "not yet in scope" for the rest. If you can't write a coherent subsystem-shaped section for it, the spec isn't actually done — resolve that, don't defer the promotion.
 
@@ -107,10 +103,7 @@ Cross-references to other docs + canonical source files (the audit with the seve
 
 ## Tone + voice
 
-- **Factual, not conversational.** "Atomic state writes — rename-based, no half-written files on crash", not "you might want to note that...".
-- **Imperative for procedures** ("Filter all related events: `grep ...`"); passive is fine for state descriptions.
-- **No sales language.** Don't tell the reader how well-designed the system is; show it via the module map + invariants.
-- **Concrete over abstract.** Real command names, file paths, event kinds, config keys.
+- **Factual, not conversational; concrete over abstract** — real command names, file paths, event kinds, config keys. Imperative for procedures ("Filter all related events: `grep ...`"); passive is fine for state descriptions. No sales language.
 - **Ironclad about current state.** If the doc says something's implemented, it IS. No "we'll add this later" inside a reference doc — that goes in "What's NOT in this layer" or in the plan.
 
 ## Length
@@ -139,7 +132,7 @@ If the project indexes its reference corpus for retrieval, docs get chunked on h
 
 ## Genre purity — only current-state docs in the reference corpus
 
-The reference corpus is the project's current-state ground truth (and, if indexed, its retrieval corpus), so it must stay genre-pure: only current-state reference docs + the index + a README. A genre violation there becomes retrieval poison. Other genres: audit reports → the audits directory; explanations / concept deep-dives → the lessons store or inline in a plan's rationale; working docs → the workspace. (See `doc-placement`.)
+The reference corpus is the project's current-state ground truth (and, if indexed, its retrieval corpus), so it must stay genre-pure: only current-state reference docs + the index + a README. A genre violation there becomes retrieval poison; `doc-placement` routes the other genres.
 
 ## Related
 

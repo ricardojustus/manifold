@@ -38,8 +38,7 @@ having read anything.
   read the current-state doc / latest grounding capture end-to-end, freshness-check it
   (below), spot-verify the claims your work touches. Minutes.
 - **Full fan-out** — whole-subsystem grounding: no current doc, a stale model (circuit
-  breaker), or operator-ordered. Expensive by design; it fires on the triggers, not
-  routinely — and it pays for itself by producing the capture.
+  breaker), or operator-ordered. Expensive by design; it fires on the triggers, not routinely.
 
 ## The fan-out procedure
 
@@ -90,14 +89,13 @@ capture's date and changed rows.
 
 ## What this is NOT
 
-- **Not the single-assertion lookup** (the project's doc-retrieval discipline covers "check
-  the doc before asserting one fact") — this rebuilds the whole model.
+- **Not the single-assertion lookup** — this rebuilds the whole model.
 - **Not `compact-resume`** — that re-reads the checkpoint's named working set; this covers
   subsystems OUTSIDE the checkpoint that you're about to advise on anyway.
 - **Not `research`** — that answers open questions from external + project sources; this
   re-derives internal ground truth from the system itself.
-- **Not `system-audit`** — that hunts defects in a subsystem; this establishes what the
-  subsystem IS. (An audit often wants this first.)
+- **Not `system-audit`** — that hunts defects; this establishes what the subsystem IS. (An
+  audit often wants this first.)
 
 ## Pairs with
 

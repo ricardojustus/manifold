@@ -40,8 +40,8 @@ task) on top. A citation only helps if the docs are filled.
 ## Required: codebase-verified concrete claims
 
 Every concrete code reference MUST be grep-verified against actual current code BEFORE dispatch.
-**Spec ratification + LOCK status do NOT confer code-truth; only fresh grep does.** The Cardinal
-Rule applies to brief authoring, not only code authoring.
+**Spec ratification + LOCK status do NOT confer code-truth; only fresh grep does** — the Cardinal
+Rule and constitution §Grounding Claims in Source govern brief authoring too.
 
 A **concrete claim** is any of: file path · directory existence · function/class/symbol name ·
 line-number citation · schema column or enum value · pattern reference ("follow the existing X
@@ -70,6 +70,24 @@ Probes, before pasting:
 3. **Surface as `DECISION-PENDING-<owner>`** — the claim depends on a choice not yet made.
 
 ❌ **Never**: paste a plausible-sounding claim "as if" it were verified.
+
+## Required: what was already ruled, and what was already run
+
+Authoring is the junction where a wrong premise becomes ground truth for everyone downstream.
+Before writing a brief that DESIGNS work, two lookups:
+
+- **Prior rulings and prior facts** — where the project has a memory/recall system, run the whole
+  set of triggers its own read discipline names, not a single query on the headline decision: the
+  operator may have ruled this in another thread, and the project facts the brief is about to
+  assert may already be on record. A ruling found constrains the brief rather than being re-derived
+  inside it. Decision packets and cards run the already-ruled check in `operator-translation`,
+  which owns that surface — this bullet governs dispatch briefs.
+- **Prior runs** — grep the project's research / audit / experiment corpus for the investigation
+  the brief proposes. A brief commissioning work the corpus already did spends the budget twice
+  and reaches the operator carrying claims its own record contradicts.
+
+Both are minutes against hours: the failure they prevent is a brief that reads as authoritative
+and spends the operator's attention on facts discoverable by grep.
 
 ## Required TASK + protocol
 
@@ -149,8 +167,7 @@ If any answer is no, the brief is not ready to dispatch.
 
 - **Audit-reviewer briefs** — templated in `audit-cycle`'s reviewer-prompt-template. This skill
   governs implementer briefs + ad-hoc dispatches without a templated locus.
-- **Self-discipline** (the Cardinal Rule's "research FIRST") — the constitution owns that. This
-  skill governs briefs you WRITE, not your own behavior.
+- **Self-discipline** — the constitution owns that; this skill governs briefs you WRITE.
 
 ## Read-only dispatches cover the FILESYSTEM
 

@@ -65,12 +65,11 @@ a proof: one pass, at most one fix-pass, never an agent fleet and never a loop.
 
 ## Finding authority — the anti-ratchet rule
 
-Adversarial review has a structural bias: a reviewer's job is finding what's MISSING, so every
-finding proposes an addition and none proposes a deletion — and each round under a lock gate
-converts reviewer preference into contract text. Ungoverned, this compounds into pure accretion
-(the receipt: a spec arc that ran 8 rounds and locked ~11,000 lines of spec+code around a task
-honestly needing ~1,000, including a mechanism its governing plan had explicitly killed).
-The counterweight is an authority discipline on findings:
+Adversarial review has a structural bias: every finding proposes an addition, none a deletion, and
+each round under a lock gate converts reviewer preference into contract text — ungoverned, pure
+accretion (receipt: 8 rounds locked ~11,000 lines of spec+code around a task honestly needing
+~1,000, including a mechanism its governing plan had explicitly killed). The counterweight is an
+authority discipline on findings:
 
 **Every finding carries an `Authority:` line answering "what EXISTING requirement does this
 enforce?"** Two classes:
@@ -135,9 +134,9 @@ findings). Two lead-owned mechanical checks close the gap:
    artifact size + AC count + regime vs the ROUND-1 baseline, and this round's blocking-finding
    mix — targets ROUND-BORN (material a fix-pass introduced during the ladder) vs ORIGINAL,
    remedies ADD vs CORRECT vs REMOVE.
-2. **The ratchet signature** (measured across a 10-arc sweep — healthy ladders converge to
-   CORRECT-dominated tails regardless of length; the accretion incident ran ADD-dominated
-   rounds 2–5): **round ≥3 AND blocking findings majority ROUND-BORN AND remedies
+2. **The ratchet signature** (10-arc sweep: healthy ladders converge to CORRECT-dominated tails
+   regardless of length; the accretion incident ran ADD-dominated rounds 2–5): **round ≥3
+   AND blocking findings majority ROUND-BORN AND remedies
    ADD-dominated → RED FLAG.** Also RED FLAGS, regardless of arithmetic: a regime upgrade
    (LIGHT→HEAVY) during the ladder · an operator re-grounding request mid-arc on a small
    feature (the operator losing the thread of a small artifact IS the legibility alarm).
@@ -223,9 +222,8 @@ would inspect text about to be rewritten five times.
   outranks the spec; a subordinate artifact cannot repeal a ratified decision.
 - Write the result to `AUDIT_DIR/spec-vs-plan-gate.md`: governing docs read, clauses checked,
   contradictions + dispositions. A clean pass is a few lines per governing doc.
-- *Receipt: the gap this closes shipped a boot-time freeze mechanism its governing plan had
-  killed in four separate places — every existing gate passed, because none compared spec to
-  plan.*
+- *Receipt: a boot-time freeze mechanism the governing plan had killed in four separate places
+  shipped — every existing gate passed, none compared spec to plan.*
 
 ## Low triage (mandatory per Low)
 
@@ -309,19 +307,16 @@ signal there is.
   what code-reading misses.
 - **Prompt framing matters MORE than model family** — vary framing per reviewer for max
   angle-coverage.
-- **Independence = fresh eyes + both families, NOT "exclude the author's family."** Two seats from
-  two families, each seeing the work fresh — satisfied whether the author was a Claude or a Codex.
-  A fresh same-family-as-author reviewer plus a cross-family reviewer IS the cross-model pair; a
-  fresh seat carries none of the authoring session's blind spots. Exclude the author's *session*,
-  never the author's *family*.
+- **Independence = fresh eyes + both families, NOT "exclude the author's family."** A fresh
+  same-family-as-author reviewer plus a cross-family reviewer IS the cross-model pair. Exclude the
+  author's *session*, never the author's *family*.
 
 **No second lens available (solo fallback)**: the pair is the goal, not a precondition. No second
 family reachable — none configured, fleet offline, or you are a lone agent — **do not skip the
 audit**. Run the single lens you have plus an explicit self-review at the subject's tier floor,
 and record the degradation: verdict **DONE_WITH_CONCERNS** with a line stating plainly that a
-single-lens result is *weaker evidence* — it shares the author's blind spots, exactly the failure
-the cross-model rule prevents. A one-lens LOCK is provisional: flag it for re-audit if a second
-lens becomes reachable before the stakes justify shipping on one. Recorded, never hidden.
+single-lens result is *weaker evidence*. A one-lens LOCK is provisional: flag it for re-audit if a
+second lens becomes reachable before the stakes justify shipping on one. Recorded, never hidden.
 
 ## Pre-flight (lead does this BEFORE dispatching reviewers)
 
@@ -384,10 +379,9 @@ dispatch doesn't restate them. **The MODEL travels on the `Agent` call** (`model
 per-invocation beats frontmatter); the project's model pins name the reviewer tier.
 
 **Independent cross-model reviewer** — a genuinely different model family, dispatched through the
-project's cross-model mechanism, **paired with a completion-watcher** (cross-model reviewers
-typically don't auto-notify like a subagent does; without the watcher the lead misses completion —
-a recurring failure mode). The concrete dispatch command, completion-watcher, and
-result-extraction are project-specific — **the binding names them and ships the `scripts/`**. Have
+project's cross-model mechanism, **paired with a completion-watcher**. The concrete dispatch
+command, completion-watcher, and result-extraction are project-specific — **the binding names
+them and ships the `scripts/`**. Have
 it write (or persist its returned result) to `<AUDIT_DIR>/reviewer-<model>-round-<N>.md` — same
 `AUDIT_DIR`, never a second tree.
 
@@ -425,9 +419,7 @@ the AUDIT is wrong — save the correction to the memory store and add it to the
 **Empirical-truth carve-out** — a higher-rated finding resting on bad evidence:
 1. Document the disposition in the round-N+1 audit-state-notes.
 2. **Re-capture the stale artifact and PASTE it inline in the disposition entry.** The carve-out is
-   **INVALID unless the re-captured artifact is pasted** — evidence-or-it-didn't-happen, the same
-   bar the skill holds reviewers to. A note merely asserting "the artifact was stale" is not a
-   carve-out but an ungrounded severity dodge; MAX-severity stands until the evidence is shown.
+   **INVALID unless the re-captured artifact is pasted**; MAX-severity stands until it is.
 3. Then decide pragmatically: (a) accept-as-resolved with the pasted disposition note, (b) apply
    the recommended fix anyway if small (concrete code-change closure), or (c) dispatch a focused
    round-N+1 with fresh artifacts (architectural divergence).
@@ -468,6 +460,17 @@ reused search terms). Sweep greps — and ANY grep-backed absence claim ("no res
 agent shell's grep skips it silently (no output, an exit that reads as clean) and BSD/GNU grep
 prints only `Binary file X matches`, never the matching lines; either way the sweep's evidence
 is gone.
+
+**Three fix-pass shapes carry a verification duty beyond re-reading the hunk:**
+- **A pass that CUTS runs what remains**, wherever what remains can be run — the deletion the cut
+  table describes and the deletion that happened are different objects.
+- **A pass that designs a REPLACEMENT probes the replacement itself**, fresh against the live
+  system where one exists and against its source text otherwise — not only the defect being
+  retired. Size is not an exemption: a single clause naming a code mechanism is a code-shape claim
+  and earns the same probe as any other.
+- **Before commit, one sweep over the claims the pass edited — grep their distinctive phrasing
+  across the whole artifact.** The sweep is how you learn which of them were multi-site; the copy
+  you already know about is the one the finding cited.
 
 **Consolidated findings output shape** — write to
 `<AUDIT_DIR>/round-<N>-consolidated-findings.md`:
@@ -513,11 +516,9 @@ owner-flagged, since a Medium-deferral bends the gate). Lows: triage.
 
 ## Evidentiary discipline — verify at edit time
 
-Before any load-bearing claim in audit consolidation / fix-pass commit msg / spec amendment: file
-content claim → Read fresh, paste relevant lines · system behavior claim → run the probe, paste
-output inline · prior decision claim → grep the memory/lessons store, quote the line · empirical
-result claim → check the tool output, don't paraphrase from working memory. Can't verify → mark
-`[unverified]` and ask.
+Every load-bearing claim in audit consolidation / fix-pass commit msg / spec amendment is governed
+by the constitution's *Grounding Claims in Source* rule (depth:
+`.claude/harness/principles/grounding-and-confabulation.md`).
 
 Two claim shapes that read as evidence and aren't: a **coverage claim** (a test asserting N×M
 combinations while seeding only N+M fixtures) — hold it to positive controls + explicit nested

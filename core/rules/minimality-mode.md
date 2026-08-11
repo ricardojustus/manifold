@@ -7,12 +7,12 @@ levels, and its own over-engineering review and repo-audit skills. Where one is 
 - **Every DISPATCHED seat runs the persona at standard intensity**: implementers specced and
   specless, audit-fix seats, and reviewer/audit-lens seats alike. Activation is **ARC-WIDE**: set
   the tool's flag once when a build/review arc starts, clear it at session end — no per-dispatch
-  set/clear, no pre-reviewer assert. Standing tripwires (either fires → that seat class reverts
-  to OFF and the operator is informed): one persona-attributable spec-conformance failure, or one
-  persona-attributable missed finding in a review round — downstream audit rounds and the
-  operator's own reading are the instruments. Unchanged inside implementer seats: a rung-1 "does
-  this need to exist?" hit on a ratified clause is **flagged to the operator, never silently
-  cut** — jurisdiction is NEW code.
+  set/clear, no pre-reviewer assert. Inside implementer seats, a rung-1 "does this need to
+  exist?" hit on a ratified clause is **flagged to the operator, never silently cut** —
+  jurisdiction is NEW code. Standing tripwires — either fires → that seat class reverts to OFF
+  and the operator is informed (instruments: downstream audit rounds + the operator's reading):
+  - one persona-attributable spec-conformance failure;
+  - one persona-attributable missed finding in a review round.
 - **Judgment seats stay persona-free by default** — the LEAD session that authors specs,
   consolidates severities, and writes operator decision packets. No downstream gate checks these
   seats, so they run clean unless the operator explicitly opts a session in. **The session
@@ -32,6 +32,3 @@ levels, and its own over-engineering review and repo-audit skills. Where one is 
 - **Its review / repo-audit skills are invoke-on-ask and mode-independent** — a deletion hunt over a
   diff or a repo is useful at any time. Its output is a list of PROPOSALS: they never bypass the owner
   gate (`operator-owns-criticality-and-complexity`) or the floor above.
-
-Scope note: such a tool overlaps most of `right-sized-engineering` already; it earns its keep as a
-second, plan-blind lens on CODE — complementary to, never a substitute for, the harness's own gates.

@@ -1,32 +1,12 @@
 #!/usr/bin/env bash
 # stop-loop-hook.sh — OPTIONAL Stop-hook for the autonomous-work completion-promise loop.
-# Pattern adapted from anthropics/claude-code plugins/ralph-wiggum (MIT), rewritten for this
-# harness (never wired globally; fail-SAFE; explicit max-iterations + cancel path).
+# Pattern adapted from anthropics/claude-code plugins/ralph-wiggum (MIT).
 #
-# WHAT IT DOES. When ARMED, it intercepts the session's attempt to end its turn (the Stop
-# event) and re-injects the task prompt until the session's last message contains an exact
-# completion phrase OR a max-iteration cap is hit. This is the ralph-wiggum loop mechanism as a
-# dependency-free hardening of an unattended run — it complements, never replaces, the wakeup
-# heartbeat + watcher discipline in autonomous-work/SKILL.md.
-#
-# ARMING (the hook is a NO-OP until all of this exists). It reads a state directory:
-#   $STOP_LOOP_DIR  (else  $CLAUDE_PROJECT_DIR/.claude/stop-loop  else  <cwd>/.claude/stop-loop)
-#     prompt.txt  (required) — the task prompt to re-inject on each loop
-#     promise     (required) — the exact completion phrase; when it appears in the last
-#                              assistant message, the loop ends and the stop is allowed
-#     max         (optional) — integer max iterations (default 20)
-#     count       (managed)  — the hook creates/increments this; delete it to reset
-#     cancel      (optional) — if this file exists, the loop ends immediately (allow stop)
-#   If prompt.txt or promise is missing, the hook allows the stop and does nothing. This is the
-#   safety property that makes it safe to leave wired: unarmed == inert. NEVER arm it for an
-#   interactive session — it would fight normal conversation.
-#
-# CONTRACT. A Stop hook blocks the stop (forces continuation) by emitting
-# {"decision":"block","reason":...} on exit 0; emitting nothing allows the stop. This hook
-# FAILS SAFE: on ANY error (bad JSON, unreadable transcript, python3 missing, un-persistable
-# counter) it emits nothing and exits 0 — allowing the stop. It must NEVER block on an error,
-# because a block it cannot later clear is an infinite loop. (No `set -e`: a stray nonzero must
-# not change the exit path.)
+# Mechanism, arming contract (the $STOP_LOOP_DIR state files), guardrails, and wiring:
+# autonomous-work/references/completion-promise-loop.md. Inert until armed.
+# Blocks a stop only by emitting {"decision":"block","reason":...} on exit 0; FAILS SAFE — on ANY
+# error it emits nothing and exits 0, allowing the stop (a block it cannot clear is an infinite
+# loop). (No `set -e`: a stray nonzero must not change the exit path.)
 
 PAYLOAD="$(cat)"
 

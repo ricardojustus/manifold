@@ -82,6 +82,19 @@ You win twice: fewer tokens, and a sharper hook for the agent to hang its thinki
 
 **Negation** is the failure mode beside this lever: steering by prohibition drags the forbidden behaviour into context and makes it _more_ available, not less. _Don't think of an elephant_, and the elephant is all there is; the negation is a weak modifier the strongly-activated concept overruns, so the ban half-reads as an instruction to do the thing. Prompt the **positive** — state the target behaviour ("write one-line comments") so the banned one is never spoken. A prohibition earns its place only as a hard guardrail you cannot phrase positively; even then, pair it with the positive target so attention lands on what to do.
 
+## Absolutes
+
+An **absolute** is a clause admitting no exception — _always_, _never_, _every_, _only_, a bare imperative with no stated scope, or a closed enumeration. Absolutes are what make a document decidable, so the goal is not fewer of them. The goal is that each one survives contact with the runs the document actually governs.
+
+The check, run when you write or review **normative** agent material — a skill, a rule, an agent file, a template, anything that instructs: **name each absolute, then name the legitimate run shape that breaks it.** A run shape is a real way the work arrives — a mode the same document also defines, a subject class outside the one you pictured while writing, a stage where the mechanism the clause names does not exist yet. Finding one does not mean deleting the rule. The repair is **scoping with deference**: state the condition the absolute holds under, and name what governs the case outside it. Material that only records or describes — a changelog, a glossary, an incident write-up — is governed by its own accuracy and completeness rules instead; a statement about the past has no future run to break it. The test is whether the passage instructs, not what shape it takes: a table that tells an agent what to do is normative and stays in scope.
+
+- "Every round seats both lenses" → survives; its outage path is written beside it.
+- "Every piece closes with a critic pass" → breaks where the same document defines a second mode that has no critics. Repair: name the mode the clause holds in, and defer the other mode to its own gate.
+
+A closed enumeration is an absolute wearing a list, and it takes the same break test. It reads as complete, so a reader holding an unlisted-but-legitimate case concludes the document forbids it — and complies. If a legitimate case sits outside the list, write the class and its test, or mark the list open. If the contract genuinely makes the set exhaustive — a status vocabulary, a set of mutually exclusive dispositions — keep it closed and say what makes it so; loosening a set the document depends on being complete is the opposite failure.
+
+Absolutes multiply where the author is writing from one vivid run and generalising it. That is the tell: a rule whose wording still carries the shape of the single case that prompted it.
+
 ## Pruning
 
 - Keep each meaning in a **single source of truth**: one authoritative place, so changing the behaviour is a one-place edit. **Duplication** — the same meaning in more than one place — costs maintenance and tokens, and inflates a meaning's prominence on the ladder past its real rank. (The accidental inverse of a leading word, which repeats a token on purpose, never the meaning.)
