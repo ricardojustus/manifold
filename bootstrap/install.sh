@@ -20,7 +20,8 @@
 # modules; --profile full installs everything. Optional modules (enable individually
 # with --modules): inter-session (the peer-session messaging bus + its Python runtime),
 # multi-agent (parallel-workstreams + merge-and-cleanup lane orchestration), atlas (the
-# decision-record + orientation templates; owns no skills). The overlay
+# decision-record + orientation templates; owns no skills), statusline (the status-bar
+# script + Codex job board; owns no skills, needs manual settings wiring). The overlay
 # manifest may pin `profile:` and `modules:`; the CLI overrides. Default: full
 # (back-compat for existing installs; the _template manifest pins base for new adopters).
 #
@@ -157,7 +158,7 @@ case "$ARTIFACT_ROOT" in '<'*'>') ARTIFACT_ROOT="" ;; esac
 [ "$BOOTSTRAP" = 1 ] && ARTIFACT_ROOT="."
 
 # --- profile + modules resolution: CLI > overlay manifest > default full ---
-ALL_MODULES="inter-session multi-agent atlas"
+ALL_MODULES="inter-session multi-agent atlas statusline"
 skill_module() { # <skill-name> -> module owning it, or ""
   case "$1" in
     inter-session)                        echo "inter-session" ;;
@@ -287,6 +288,14 @@ copy_tree "$OVERLAY_DIR/hooks"  ".claude/harness-hooks"  "$OVERLAY_SRCREF/hooks"
 # binding is appended: skill-bindings are for CORE skills; a project-only skill ships complete.
 # README.md placeholders skipped; each file is manifest-recorded like every other copy. ---
 copy_tree "$OVERLAY_DIR/skills" ".claude/skills"         "$OVERLAY_SRCREF/skills" skip_readme
+
+# --- statusline module: the core script + helpers, plus any overlay statusline-local.sh
+# beside them. The README is NOT skipped — like the hooks README it carries the manual
+# wiring step (statusLine in settings.json), which no installer can perform. ---
+if module_enabled statusline; then
+  copy_tree "$HARNESS_ROOT/core/statusline" ".claude/statusline" "core/statusline"
+  copy_tree "$OVERLAY_DIR/statusline"       ".claude/statusline" "$OVERLAY_SRCREF/statusline"
+fi
 
 # --- skill-binding support scripts -> .claude/harness-scripts/ (the installed location the
 # appended bindings reference). Without this, a binding that invokes a watcher/detector script

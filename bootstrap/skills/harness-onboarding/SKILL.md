@@ -240,15 +240,16 @@ wrote. Offer to show any of them in full.
 Every install below is **asked before it runs and verified after it runs**. Nothing here is
 installed silently, and a "no" is final — the operator can enable it later with one command.
 
-### The three Manifold modules
+### The four Manifold modules
 
 | Module | What it gives them | Ask when |
 |---|---|---|
 | `inter-session` | A localhost messaging bus between parallel sessions on this machine (questions, FYIs, co-sign opinions — never remote) | they answered yes to Q15 |
 | `multi-agent` | `parallel-workstreams` + `merge-and-cleanup`: dispatching several implementation lanes in separate git worktrees, then merging them | they answered yes to Q15, or they expect long multi-lane builds |
 | `atlas` | Durable decision records in `adr/` (one small file per settled decision, with its rejected alternatives) + a hand-written `atlas/orientation.md` mapping how the repo's pieces connect | the project wants durable decision records + a hand-written architecture orientation |
+| `statusline` | A status bar showing model, context usage, rate limits, the logged-in account, and a live tally of this session's Codex jobs — plus `codex-top`, a full-screen board of Codex jobs across every session | ask everyone; it costs one settings edit and pays back on any long session |
 
-A "no" to all three is the right default for a solo project — say so; they are re-enabled any time
+A "no" to all four is the right default for a solo project — say so; they are re-enabled any time
 by re-running the installer with `--modules`, whose list REPLACES the recorded set: the re-run must
 carry the union (the recorded modules plus the new one) or the omitted module's managed files are
 pruned.
@@ -291,6 +292,36 @@ turns on when the repo carries its own orientation file. In this order:
    the next unused 4-digit ID.
 
 The Lexicon (`atlas/lexicon/`) is a later layer — do not improvise one here.
+
+**`statusline` yes-path needs its one wiring step**, which no installer can perform: Claude Code
+only renders a status bar once a settings file points at the script. Print this and have the
+operator paste it into `.claude/settings.json` (this project) or `~/.claude/settings.json`
+(everywhere) — their choice, ask which. **Fill in the repo's ABSOLUTE path** (the directory the
+command runs in is unspecified, so a relative path may not resolve):
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash <abs-repo-path>/.claude/statusline/statusline.sh",
+    "refreshInterval": 3
+  }
+}
+```
+
+Then verify — the render must print a line, and `doctor.sh` must report the module READY rather
+than PENDING-WIRING:
+
+```bash
+echo '{"model":{"display_name":"Claude"},"workspace":{"current_dir":"'"$PWD"'"}}' \
+  | bash "$PWD/.claude/statusline/statusline.sh"
+```
+
+Two things to tell them, both in `.claude/statusline/README.md`: the account segment shows the
+config dir's logged-in email, and a `statusline-local.sh` beside the script replaces it with a
+short label; `codex-top` (the cross-session Codex job board) runs from the same directory and is
+worth a PATH launcher for anyone who dispatches Codex jobs. `jq` is required; the Codex segment
+also needs `node` and the Codex plugin, and is simply absent without them.
 
 ### The companion tools
 

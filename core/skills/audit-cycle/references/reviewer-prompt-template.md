@@ -22,7 +22,8 @@ Files in scope (read end-to-end):
 the subject's record spans layers — a verification write-up plus the raw data it summarizes, a
 decision doc plus the transcript behind it — name every layer a finding could turn on. A co-equal
 source left off reads to the reviewer as non-evidence, and comes back as a confident finding
-against material an un-named layer already settles.)*
+against material an un-named layer already settles. Completeness means layers, not volume —
+every listed file costs reviewer tokens; list only what findings could turn on.)*
 
 - <AUDIT_DIR>/audit-state-notes.md (round-N disposition table + pre-known notes + special dimensions)
 - <the spec / implementation contract>

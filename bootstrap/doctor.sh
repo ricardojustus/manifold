@@ -297,6 +297,20 @@ case " $MF_MODULES " in
     fi
     ;;
 esac
+# statusline owns no skills either, and its files alone are not the whole story: the script
+# only renders once settings.json points at it, which no installer can do.
+case " $MF_MODULES " in
+  *" statusline "*)
+    if [ ! -f "$TARGET/.claude/statusline/statusline.sh" ]; then
+      echo "module statusline: UNAVAILABLE (recorded but not installed — re-run with --modules statusline)"
+    elif grep -q '"statusLine"' "$TARGET/.claude/settings.json" 2>/dev/null ||
+         grep -q '"statusLine"' "${CLAUDE_CONFIG_DIR:-$HOME/.claude}/settings.json" 2>/dev/null; then
+      echo "module statusline: READY"
+    else
+      echo "module statusline: PENDING-WIRING (add statusLine to settings.json — see .claude/statusline/README.md)"
+    fi
+    ;;
+esac
 # Orientation cap: detection only, never blocking — the session that pushed the file over
 # brings it back under in the same arc. Keyed on the artifact alone (a repo carrying an
 # orientation file has the layer on, whatever the manifest records).

@@ -535,6 +535,24 @@ assert 'grep -q "skip the wire" "$ORIT"'     "orientation header: hop-zero skip"
 assert 'grep -q "EMPTY START:" "$ORIT"'                     "orientation header: empty-start note"
 
 # ---------------------------------------------------------------------------
+# case 22: statusline module — gated off by default, ships core + overlay files when on
+# ---------------------------------------------------------------------------
+echo "== case 22: statusline module =="
+mkdir -p "$CORE/core/statusline" "$CORE/overlays/_selftest/statusline"
+printf 'core script\n'  > "$CORE/core/statusline/statusline.sh"
+printf 'wiring doc\n'   > "$CORE/core/statusline/README.md"
+printf 'local labels\n' > "$CORE/overlays/_selftest/statusline/statusline-local.sh"
+T22="$SCRATCH/target22"; mkdir -p "$T22"
+"$INST" "$T22" --overlay _selftest --profile base >"$SCRATCH/i22a.log" 2>&1
+assert '[ ! -d "$T22/.claude/statusline" ]'                 "statusline: absent when the module is off"
+T23="$SCRATCH/target23"; mkdir -p "$T23"
+if "$INST" "$T23" --overlay _selftest --profile base --modules statusline >"$SCRATCH/i22b.log" 2>&1; then ok "--modules statusline resolves (exit 0)"; else no "--modules statusline resolves (exit 0)"; cat "$SCRATCH/i22b.log"; fi
+assert 'grep -q "^modules: .*statusline" "$T23/.claude/manifold-manifest.yaml"' "statusline: manifest records the module"
+assert '[ -f "$T23/.claude/statusline/statusline.sh" ]'     "statusline: core script installed"
+assert '[ -f "$T23/.claude/statusline/README.md" ]'         "statusline: README (the manual wiring step) installed"
+assert '[ -f "$T23/.claude/statusline/statusline-local.sh" ]' "statusline: overlay local file lands beside the script"
+
+# ---------------------------------------------------------------------------
 echo "======================================================"
 echo "selftest: $PASS passed, $FAIL failed"
 if [ "$FAIL" -ne 0 ]; then echo "SELFTEST FAILED"; exit 1; fi
