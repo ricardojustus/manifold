@@ -50,12 +50,12 @@ missing information yourself. Don't stop to ask permission for work you were alr
 At a STOP: park the question with your lean and keep the loop moving on anything else in-scope.
 When nothing reversible remains — completed or blocked — sweep and END the session (see "Close
 at the idle boundary"). A halt is not a failure; the failure mode is guessing on their call to
-avoid the pause. For which forks are yours to decide and which to park, see the **ask-vs-decide**
-principle — `.claude/harness/principles/ask-vs-decide.md`.
+avoid the pause. For which forks are yours to decide and which to park, weigh reversibility and
+cost against the pause: decide-and-park what's additive and reversible, halt-and-ask what isn't.
 
 ## Advisor consults during the run (where the runtime has one)
 
-The model-economy principle's advisor rules, applied when there's no operator to ask. With
+These advisor rules apply when there's no operator to ask. With
 `advisorModel` set, four run moments warrant a fresh-context second opinion — and only these;
 routine loop iterations never do (each consult ships the full transcript, uncached):
 

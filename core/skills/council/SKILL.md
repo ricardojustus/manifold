@@ -158,8 +158,8 @@ not adopt is recorded as not adopted.
 
 ## Related
 
-- `audit-cycle` — code against a locked spec; graded review lives there. A security-sensitive
-  surface → `scoped-adversarial-audit`; a whole subsystem → `system-audit`.
+- `audit-cycle` — code against a locked spec; graded review lives there, including a
+  security-sensitive surface or a whole-subsystem pass scoped to the round.
 - `cross-model-advisor` — one peer consult, not a panel.
 - `grilling` — a live interview with the operator; the council is a panel against a written artifact.
 

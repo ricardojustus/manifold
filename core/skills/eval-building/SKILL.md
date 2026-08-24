@@ -12,8 +12,8 @@ without over-building it: cheapest grader that works, real failures as fixtures,
 transcripts before believing the score.
 
 It is the harness's **empirical measurement arm**. Two neighbors it is NOT:
-- **test-driven-development** — unit-level *correctness* while you build (RED→GREEN). If a
-  deterministic test can express it, that's TDD's job, not an eval.
+- **unit tests** — unit-level *correctness* while you build (RED→GREEN). If a
+  deterministic test can express it, that's the unit test's job, not an eval.
 - **audit-cycle** — adversarial *review* of one artifact by inspection. An eval *measures*: it
   runs the system over a corpus and grades outputs.
 
@@ -28,7 +28,7 @@ inputs and the answer isn't a single deterministic assertion:
 - **Quality regression** — a suite guarding against a known failure class coming back.
 - **Autonomous-run goal function** — the pass/fail signal an unattended loop optimizes toward.
 
-Do NOT build one when: a **deterministic unit test** captures it (→ `test-driven-development`);
+Do NOT build one when: a **deterministic unit test** captures it (→ write the unit test instead);
 you want **adversarial inspection** of one artifact (→ `audit-cycle`); or the decision is a
 **one-off judgment call**. An eval earns its cost only when the measurement is *repeated* or
 *scaled*.
@@ -201,7 +201,7 @@ a judge rewarding verbosity — you only see it in the traces.
 
 ## Pairs with
 
-- **test-driven-development** — unit-level correctness during construction.
+- **unit tests** — unit-level correctness during construction.
 - **audit-cycle** — adversarial review by inspection, not measurement over a corpus.
 - **The skill-eval gate** (skill-creator) — canonical application; its constants are in §4.
 - `references/pitfalls-and-sources.md` — the full pitfalls canon (rule + numbers + source URL),

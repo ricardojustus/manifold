@@ -2,14 +2,14 @@
 
 Copy-paste source. One line per lane. Hand to the operator to paste into the corresponding terminal window.
 
-The skill-suppression list is **load-bearing** — without it, lanes reflexively invoke `session-start` (clobbers the controller's context loading), `session-end` (clobbers the controller's state-file updates), and `plan-update` / `doc-placement` / `reference-doc-writing` / `memory-discipline` (the controller owns those for the multi-lane arc).
+The skill-suppression list is **load-bearing** — without it, lanes reflexively invoke `session-start` (clobbers the controller's context loading), `session-end` (clobbers the controller's state-file updates), and `doc-placement` / `memory-discipline` (the controller owns those for the multi-lane arc).
 
 ---
 
 ## Default template — spec / impl lane with audit-cycle
 
 ```
-/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, plan-update, doc-placement, reference-doc-writing, or memory-discipline (the controller session owns those). DO invoke audit-cycle + brief-authoring per the brief's "Audit-cycle" section. After the pre-flight reads + BEFORE drafting anything, complete the brief's "Confidence gate" (print the confidence assessment; HALT if <100% and wait for operator clarification in this terminal). Final action: full audit-cycle to the lock gate. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity DURING WORK inline via the decision-marker; do not stop and wait.
+/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, doc-placement, or memory-discipline (the controller session owns those). DO invoke audit-cycle + brief-authoring per the brief's "Audit-cycle" section. After the pre-flight reads + BEFORE drafting anything, complete the brief's "Confidence gate" (print the confidence assessment; HALT if <100% and wait for operator clarification in this terminal). Final action: full audit-cycle to the lock gate. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity DURING WORK inline via the decision-marker; do not stop and wait.
 ```
 
 ## Variant — operator / ops lane (no audit-cycle)
@@ -17,7 +17,7 @@ The skill-suppression list is **load-bearing** — without it, lanes reflexively
 For lanes whose deliverable is operator evidence, not a spec or impl (e.g. an implementation-plus-soak, a bootstrap, a migration run):
 
 ```
-/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, plan-update, doc-placement, reference-doc-writing, or memory-discipline (the controller session owns those). This is OPERATOR/OPS work — non-spec, so the audit gate is builder's judgment: run the methodology's light review at minimum, and invoke audit-cycle if the work turns out to warrant it. DO invoke brief-authoring if sub-dispatching. Final action: <one-sentence acceptance condition>. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
+/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, doc-placement, or memory-discipline (the controller session owns those). This is OPERATOR/OPS work — non-spec, so the audit gate is builder's judgment: run the methodology's light review at minimum, and invoke audit-cycle if the work turns out to warrant it. DO invoke brief-authoring if sub-dispatching. Final action: <one-sentence acceptance condition>. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
 ```
 
 ## Variant — proposal / research lane (no audit-cycle, no impl)
@@ -25,7 +25,7 @@ For lanes whose deliverable is operator evidence, not a spec or impl (e.g. an im
 For lanes whose output is a research artifact or a proposal the operator reviews manually. Use sparingly — audit-cycle is the default trust gate; skip it only when the deliverable shape is "proposal for the operator to review":
 
 ```
-/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, plan-update, doc-placement, reference-doc-writing, or memory-discipline (the controller session owns those). Final action: write the status report per the brief's "Final status report" section. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
+/goal Execute the brief at <ABSOLUTE-BRIEF-PATH> end-to-end. Work in <ABSOLUTE-WORKTREE-PATH> on branch <BRANCH-NAME>. Your scope is THIS LANE ONLY — do NOT invoke session-start, session-end, compact-prep, compact-resume, doc-placement, or memory-discipline (the controller session owns those). Final action: write the status report per the brief's "Final status report" section. Goal complete when all "Acceptance criteria" checkboxes in the brief pass. Surface ambiguity inline via the decision-marker; do not stop and wait.
 ```
 
 ## Field guide

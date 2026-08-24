@@ -16,12 +16,12 @@
 
 ## Root cause
 <!-- Traced, not assumed. One evidence link (the line, the trace, the probe output). An
-     error code is a symptom, never a cause — see the error-triage principle. If you can't
-     trace it, you're not ready to fix it. -->
+     error code is a symptom, never a cause. If you can't trace it, you're not ready to
+     fix it. -->
 
 ## Fix
 <!-- The change, scoped to the root cause. Before closing: grep for the SIBLINGS of this
-     bug (the fix-the-class principle) — the same mistake was probably made elsewhere. -->
+     bug (fix the class, not the instance) — the same mistake was probably made elsewhere. -->
 
 ## Unchanged-behavior invariants
 <!-- What MUST still hold after the fix: the behaviors the surrounding code depends on that

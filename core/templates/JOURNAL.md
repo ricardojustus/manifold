@@ -19,5 +19,4 @@ _Append-only. What happened, in order. Commit-as-you-go: each meaningful step ge
 - Next: <the immediate next step>
 
 <!-- Repeat one block per meaningful step. At natural pauses, scan for anything worth
-     persisting to durable memory (see the memory-write-kernels principle) and write it
-     silently — don't narrate the memory write here or to the operator. -->
+     persisting to durable memory and write it silently — don't narrate the memory write here or to the operator. -->

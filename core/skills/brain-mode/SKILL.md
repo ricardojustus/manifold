@@ -47,7 +47,7 @@ posture question back to the operator (orchestrator-mode is usually the fitting 
   agent-selected, and a standing conservation directive from outside the posture does not carry
   in. (With the posture OFF, the overlay's cross-model draft/revise pattern is unaffected.)
 - **Research consolidation** — research subagents fan out as usual; the synthesis is thinking.
-- **The gates** — spec-adherence, audit-cycle convening, severity dispositions, harvest
+- **The gates** — the contract's definition of done, audit-cycle convening, severity dispositions, harvest
   verification: a builder's green is a claim until the main loop re-verifies it.
 - **Decision packets + operator comms + memory/diary/state** — never delegated, in any mode.
 - **Mechanical APPLICATION, never authoring** — applying a harvested diff or artifact, a one-line
@@ -74,7 +74,7 @@ stays home.
 | Junction | Route |
 |---|---|
 | Implementation, specced | Implementer seat per the overlay's model pins — a full brief, the spec, verifiable success criteria |
-| Implementation, un-specced (quick fixes, glue — above the trivial-edit threshold below) | Implementer seat, with the minimality-mode seat rules the overlay wires for specless work |
+| Implementation, un-specced (quick fixes, glue — above the trivial-edit threshold below) | Implementer seat, with the `minimality-persona` card's seat rules the overlay wires for specless work |
 | Audit fix-pass | Main loop writes the fix brief from the findings; implementer seat applies; the next round re-checks |
 | Bulk mechanical non-code work | Cheap-tier dispatch per the overlay's triage |
 | Spec to write | Main loop authors — always, unless the operator explicitly routes THIS spec to a cross-model draft (their per-spec word; never agent-selected) |

@@ -7,8 +7,9 @@ description: >-
   at a time until the way is clear. Use when an
   effort fails the one-sitting test ("depends on X, which depends on Y"), when the operator asks to
   chart a map, or when a `grilling` session keeps surfacing questions it cannot settle. NOT for a
-  well-scoped feature — that routes `grilling` → spec. Hands off to `spec-writing` when the fog
-  clears; `grilling`, `research`, and `prototype` resolve its tickets.
+  well-scoped feature — that routes `grilling` → spec. Hands off to authoring the contract's
+  definition of done (`contract-template.md`) when the fog clears; `grilling`, `research`, and
+  `prototype` resolve its tickets.
 ---
 
 # Wayfinder
@@ -140,8 +141,9 @@ clear. Then:
    and globally contradictory, and the contradiction surfaces in the writing.
 2. **The adversarial design gate challenges the brief with the map behind it** (where the
    project's methodology convenes a council/design review, this is its slot for map-fed efforts).
-3. The surviving brief becomes the **spec's intent front-matter** — `spec-writing` proceeds from
-   it into the project's normal lock cycle. The brief is not a standing artifact of its own.
+3. The surviving brief becomes the **spec's intent front-matter** — authoring against the
+   contract's definition of done (`contract-template.md`) proceeds from it into the project's
+   normal lock cycle. The brief is not a standing artifact of its own.
 
 **The commitment gradient**: fluid ledger (the map — never locks, closes as the archive of how
 we got there) → challenged narrative (the brief) → LOCKED contract (the spec, exactly as the

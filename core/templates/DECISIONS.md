@@ -1,6 +1,6 @@
 <!--
   DECISIONS.md — the "what I decided autonomously, and why" log for an unattended run.
-  The audit trail for the ask-vs-decide boundary: every call you made WITHOUT stopping to
+  The audit trail for the decide-vs-ask boundary: every call you made WITHOUT stopping to
   ask, with its rationale, so the operator can review (and ratify or reverse) asynchronously.
   This is what makes "decide and park the ratification" safe — the operator's oversight is
   preserved, just async. One of the three thread-local hygiene files; keep it in the owning
@@ -10,7 +10,7 @@
 
 # Decisions — <thread/lane> — <run start YYYY-MM-DD>
 
-_Autonomous calls made this run, for async ratification. Each is reversible + in-scope (per ask-vs-decide); genuine halts live in QUESTIONS-FOR-OPERATOR._
+_Autonomous calls made this run, for async ratification. Each is reversible + in-scope (per decide-vs-ask); genuine halts live in QUESTIONS-FOR-OPERATOR._
 
 ## D-NNN — <the decision, one line>
 - **What I decided:** <the call>

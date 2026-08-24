@@ -40,8 +40,8 @@ reasoning tier.
 2. **Author the brief — invoke `brief-authoring`.** All four obligations apply unchanged (GIVEN
    block with locked-spec refs, grep-verified code references, ambiguity protocol, verifiable
    success criteria). For the spec-drafter seat the "spec refs" are the design inputs: the vision,
-   the plan section, the code paths to read end-to-end, and the spec-writing conventions the draft
-   must land in.
+   the plan section, the code paths to read end-to-end, and the contract's definition-of-done
+   conventions (`contract-template.md`) the draft must land in.
 3. **Dispatch per the project binding.** Write jobs run in a linked worktree; the counterparty's
    sandbox typically cannot write the worktree's git metadata, so **the controller commits on the
    counterparty's behalf** after harvest. Read-only jobs (spec drafts) need no worktree isolation.
@@ -56,14 +56,14 @@ reasoning tier.
      read and the open questions it could not settle. A draft with no open-questions list didn't
      look hard enough — probe it.
 6. **Route to the mandatory downstream gate.**
-   - *Implementation* → `spec-adherence` (when a spec governs) → `audit-cycle` per the project's
+   - *Implementation* → the contract's definition of done (when a spec governs) → `audit-cycle` per the project's
      one-gate rule. **The builder's family never carries its own review**: when the counterparty
      built the artifact, the same-counterparty audit lens loses independence — the OTHER family's
      reviewer seat carries the round. Note this in the audit dispatch.
    - *Spec draft* → the main model's **revision pass, in-file** (the main model owns coherence with
      the project's architecture and prior specs; the draft is raw material) → then the normal
-     `spec-writing` flow (constitution gate, lock ladder). A drafted spec LOCKS on the same
-     evidence bar as any other.
+     spec-lock flow (the contract's definition-of-done gate, lock ladder). A drafted spec LOCKS on
+     the same evidence bar as any other.
 7. **Refusal fallbacks are LANE-SPECIFIC** (the binding pins them): a refused *build* falls back
    in-family (the main model's own implementer tier — the build lens doesn't need to be
    cross-model); a refused *spec draft* falls back to the counterparty's alternate model first (the

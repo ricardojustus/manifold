@@ -19,11 +19,20 @@
 #  11. source-path lint FLAGs an installed core/ path (informational); FIELD_GUIDE exempt
 #  12. doctor block-scalar description-length lint fires
 #  13. the real _template FAILS CLOSED on its FILL sentinels; installs with
-#      --allow-placeholder-template (the installer-smoke escape hatch)
+#      --allow-placeholder-template (the installer-smoke escape hatch). NB: this is the one
+#      case that uses the REAL core/CLAUDE.scaffold.md — it fails whenever the shipped
+#      _template's slot set and the real scaffold's {{HARNESS:...}} tokens disagree.
 #  14. re-install PRUNES a file the harness retired (manifest-owned, unmodified)
 #  15. re-install ABORTS on a locally-edited managed file; --overwrite-local proceeds
 #  16. doctor survives a skill with no frontmatter name (FLAG NO-NAME, no crash)
 #  17. --profile base skips module-owned skills; --profile full installs them
+#  18. update.sh reconstructs the install from the target's own manifest
+#  19. --bootstrap onboarding-kit mode (and its two refusals)
+#  20. atlas module resolution + the installed template shape
+#  22. statusline module: off by default, ships core + overlay files when on
+#  23. doctor --overlay reports ORPHAN-SLOT + ORPHAN-BINDING, exit 0
+#  24. a core-generation-behind overlay makes update.sh stage the migration kit and exit 3
+#  25. once the overlay manifest is stamped, update.sh proceeds and prunes the kit
 #
 # case 1 also asserts: FIELD_GUIDE installs into the target; skill-binding scripts install to
 # .claude/harness-scripts/ (README skipped); and <artifact-root> is bound from the overlay
@@ -51,7 +60,7 @@ trap 'rm -rf "$SCRATCH"' EXIT
 # ---------------------------------------------------------------------------
 CORE="$SCRATCH/harness"
 mkdir -p "$CORE/core/skills/alpha" "$CORE/core/skills/beta" \
-         "$CORE/core/principles" "$CORE/core/case-law" "$CORE/core/rules" "$CORE/core/templates" \
+         "$CORE/core/templates" \
          "$CORE/bootstrap" \
          "$CORE/overlays/_selftest/claude-slots" "$CORE/overlays/_selftest/skill-bindings" \
          "$CORE/overlays/_selftest/skill-bindings/scripts" \
@@ -62,6 +71,9 @@ mkdir -p "$CORE/core/skills/alpha" "$CORE/core/skills/beta" \
          "$CORE/overlays/_selftest_noroot/claude-slots"
 
 printf '# Changelog\n\n## v0.0.1-test\n' > "$CORE/CHANGELOG.md"
+# the fixture core is generation 2; every fixture overlay is stamped to match, so the
+# generation gate is a no-op for the pre-existing cases and is exercised deliberately in 24/25
+printf '2\n' > "$CORE/core/GENERATION"
 # FIELD_GUIDE carries a core/ source path on purpose — it is EXEMPT from the source-path lint
 printf '# Field Guide (fixture)\nRead me once end-to-end. See core/METHODOLOGY.md.\n' > "$CORE/FIELD_GUIDE.md"
 
@@ -110,9 +122,8 @@ EOF
 printf 'methodology stub\n' > "$CORE/core/METHODOLOGY.md"
 printf 'enforcement stub\n'  > "$CORE/core/ENFORCEMENT.md"
 printf 'calibration stub\n'  > "$CORE/core/SUCCESSOR_CALIBRATION.md"
-printf 'principle one references <artifact-root>/audits.\n' > "$CORE/core/principles/p1.md"  # token: copied, no binding — isolates the artifact-root STALE fix (case 7)
-printf 'case one\n'          > "$CORE/core/case-law/c1.md"
-printf 'rule one\n'          > "$CORE/core/rules/r1.md"
+printf 'probe one references <artifact-root>/audits.\n' > "$CORE/core/templates/p1.md"  # token: copied, no binding — isolates the artifact-root STALE fix (case 7)
+printf 'rule one\n'          > "$CORE/core/templates/r1.md"
 printf 'template one\n'      > "$CORE/core/templates/t1.md"
 
 # good overlay: fills slot_one; slot_two intentionally EMPTY (a valid fill); alpha binding
@@ -147,11 +158,18 @@ printf -- '---\nname: ovr-agent\ndescription: Overlay-only agent for selftest.\n
 cat > "$CORE/overlays/_selftest/manifest.yaml" <<'EOF'
 name: _selftest
 runtime: claude-code
+core_generation: 2
 artifact_root: /fixture/artifact/root
 EOF
 
-# bad overlay: fills only slot_one -> slot_two stays unfilled
+# bad overlay: fills only slot_one -> slot_two stays unfilled. It carries a manifest for the
+# generation stamp alone (no artifact_root) — the slot scan fires before the artifact-root scan.
 printf 'FILLED-ONE\n' > "$CORE/overlays/_selftest_bad/claude-slots/slot_one.md"
+cat > "$CORE/overlays/_selftest_bad/manifest.yaml" <<'EOF'
+name: _selftest_bad
+runtime: claude-code
+core_generation: 2
+EOF
 
 # noroot overlay: BOTH slots filled (passes the slot scan) but the manifest omits
 # artifact_root -> the <artifact-root> substitution can't fill and the install fails closed
@@ -160,6 +178,7 @@ printf 'FILLED-ONE\n' > "$CORE/overlays/_selftest_noroot/claude-slots/slot_one.m
 cat > "$CORE/overlays/_selftest_noroot/manifest.yaml" <<'EOF'
 name: _selftest_noroot
 runtime: claude-code
+core_generation: 2
 EOF
 
 cp "$INSTALL" "$CORE/bootstrap/install.sh"
@@ -183,13 +202,12 @@ assert '[ -f "$T1/.claude/manifold-manifest.yaml" ]'         "manifest written"
 assert '[ -f "$T1/.claude/harness/METHODOLOGY.md" ]'         "METHODOLOGY in .claude/harness/"
 assert '[ -f "$T1/.claude/harness/SUCCESSOR_CALIBRATION.md" ]' "SUCCESSOR_CALIBRATION in .claude/harness/"
 assert '[ -f "$T1/.claude/harness/ENFORCEMENT.md" ]'         "ENFORCEMENT in .claude/harness/"
-assert '[ -f "$T1/.claude/harness/principles/p1.md" ]'       "principles copied under harness/"
-assert '[ -f "$T1/.claude/harness/case-law/c1.md" ]'         "case-law copied under harness/"
-assert '[ -f "$T1/.claude/rules/r1.md" ]'                    "rule installed"
+assert '[ -f "$T1/.claude/harness-templates/r1.md" ]'        "core plain file installed"
 assert '[ -f "$T1/.claude/harness-templates/t1.md" ]'        "template installed"
 assert '! grep -q "{{HARNESS:" "$T1/CLAUDE.harness.md"'      "no unfilled placeholder in assembled constitution"
 assert 'grep -q "FILLED-ONE" "$T1/CLAUDE.harness.md"'        "slot_one content substituted"
 assert '! grep -q "Constitution scaffold" "$T1/CLAUDE.harness.md"' "authoring header comment dropped from assembly"
+assert '[ "$(head -1 "$T1/CLAUDE.harness.md" | cut -c1)" = "#" ]' "assembly starts at the first heading (no leading blank line)"
 assert 'grep -q "^<!-- SLOT slot_one -->$" "$T1/CLAUDE.harness.md"' "slot comment reduced to bare boundary marker"
 assert '! grep -q "SLOT slot_one:" "$T1/CLAUDE.harness.md"'  "slot description text gone from assembly"
 assert 'grep -q "an unrelated comment that must survive untouched" "$T1/CLAUDE.harness.md"' "non-scaffold comment passes through"
@@ -281,9 +299,9 @@ assert 'grep -q "FLAG LOCAL-CHANGE .claude/skills/beta/SKILL.md" "$SCRATCH/d2.lo
 # case 6: doctor detects MISSING and exits nonzero
 # ---------------------------------------------------------------------------
 echo "== case 6: doctor detects MISSING =="
-rm -f "$T1/.claude/rules/r1.md"
+rm -f "$T1/.claude/harness-templates/r1.md"
 if "$DOC" "$T1" >"$SCRATCH/d3.log" 2>&1; then no "doctor exits nonzero when a file is MISSING"; else ok "doctor exits nonzero when a file is MISSING"; fi
-assert 'grep -q "FLAG MISSING .claude/rules/r1.md" "$SCRATCH/d3.log"' "doctor reports MISSING for deleted file"
+assert 'grep -q "FLAG MISSING .claude/harness-templates/r1.md" "$SCRATCH/d3.log"' "doctor reports MISSING for deleted file"
 
 # ---------------------------------------------------------------------------
 # case 7: doctor detects STALE with --harness
@@ -291,16 +309,16 @@ assert 'grep -q "FLAG MISSING .claude/rules/r1.md" "$SCRATCH/d3.log"' "doctor re
 echo "== case 7: doctor detects STALE with --harness =="
 T3="$SCRATCH/target3"; mkdir -p "$T3"
 "$INST" "$T3" --overlay _selftest >/dev/null 2>&1
-printf 'UPSTREAM CHANGE\n' >> "$CORE/core/rules/r1.md"      # core source moves on; install unchanged
+printf 'UPSTREAM CHANGE\n' >> "$CORE/core/templates/r1.md"      # core source moves on; install unchanged
 "$DOC" "$T3" --harness "$CORE" >"$SCRATCH/d4.log" 2>&1 || true
-assert 'grep -q "FLAG STALE .claude/rules/r1.md" "$SCRATCH/d4.log"' "doctor reports STALE when harness source moved"
+assert 'grep -q "FLAG STALE .claude/harness-templates/r1.md" "$SCRATCH/d4.log"' "doctor reports STALE when harness source moved"
 assert 'grep -q "OK .claude/harness/METHODOLOGY.md" "$SCRATCH/d4.log"' "unchanged source still reports OK under --harness"
 # a copied file whose <artifact-root> was bound at install time must NOT read as STALE:
 # doctor applies the same binding to the source before hashing (source has the raw token).
 # p1 is copied with no binding appended, so it isolates the artifact-root substitution.
-assert 'grep -q "OK .claude/harness/principles/p1.md" "$SCRATCH/d4.log"'   "artifact-root-bound copy reports OK, not STALE, under --harness"
-assert '! grep -q "FLAG STALE .claude/harness/principles/p1.md" "$SCRATCH/d4.log"' "artifact-root-bound copy is not falsely STALE"
-printf 'rule one\n' > "$CORE/core/rules/r1.md"             # revert for the link case
+assert 'grep -q "OK .claude/harness-templates/p1.md" "$SCRATCH/d4.log"'   "artifact-root-bound copy reports OK, not STALE, under --harness"
+assert '! grep -q "FLAG STALE .claude/harness-templates/p1.md" "$SCRATCH/d4.log"' "artifact-root-bound copy is not falsely STALE"
+printf 'rule one\n' > "$CORE/core/templates/r1.md"             # revert for the link case
 
 # ---------------------------------------------------------------------------
 # case 8: --link install + symlink handling
@@ -308,13 +326,13 @@ printf 'rule one\n' > "$CORE/core/rules/r1.md"             # revert for the link
 echo "== case 8: --link install =="
 T4="$SCRATCH/target4"; mkdir -p "$T4"
 if "$INST" "$T4" --overlay _selftest --link >"$SCRATCH/i4.log" 2>&1; then ok "--link install exits 0"; else no "--link install exits 0"; cat "$SCRATCH/i4.log"; fi
-assert '[ -L "$T4/.claude/rules/r1.md" ]'                             "plain file is a symlink in --link mode"
+assert '[ -L "$T4/.claude/harness-templates/r1.md" ]'                             "plain file is a symlink in --link mode"
 assert '[ -L "$T4/.claude/skills/beta/SKILL.md" ]'                    "no-binding skill is a symlink"
 assert '[ -f "$T4/.claude/skills/alpha/SKILL.md" ] && [ ! -L "$T4/.claude/skills/alpha/SKILL.md" ]' "binding-bearing skill falls back to a real copy"
 assert 'grep -q "alpha project binding line" "$T4/.claude/skills/alpha/SKILL.md"' "copy-fallback skill still gets its binding"
 assert 'grep -q "^mode: link" "$T4/.claude/manifold-manifest.yaml"'   "manifest top-level mode: link"
 assert 'grep -A3 "path: .claude/skills/alpha/SKILL.md" "$T4/.claude/manifold-manifest.yaml" | grep -q "mode: copy"' "alpha recorded per-file mode: copy under --link"
-assert 'grep -A3 "path: .claude/rules/r1.md" "$T4/.claude/manifold-manifest.yaml" | grep -q "mode: link"' "linked file recorded per-file mode: link"
+assert 'grep -A3 "path: .claude/harness-templates/r1.md" "$T4/.claude/manifold-manifest.yaml" | grep -q "mode: link"' "linked file recorded per-file mode: link"
 if "$DOC" "$T4" >"$SCRATCH/d5.log" 2>&1; then ok "doctor healthy on --link install"; else no "doctor healthy on --link install"; cat "$SCRATCH/d5.log"; fi
 
 # ---------------------------------------------------------------------------
@@ -403,8 +421,10 @@ T10="$SCRATCH/target10"; mkdir -p "$T10"
 "$INST" "$T10" --overlay _selftest >/dev/null 2>&1
 assert '[ -f "$T10/.claude/skills/beta/SKILL.md" ]' "pre-prune: beta installed"
 rm -rf "$CORE/core/skills/beta"                      # the harness retires beta
+: > "$T10/.claude/skills/beta/.DS_Store"             # a stray must not keep the dir alive as a husk
 if "$INST" "$T10" --overlay _selftest >"$SCRATCH/i10.log" 2>&1; then ok "re-install over existing target exits 0"; else no "re-install over existing target exits 0"; cat "$SCRATCH/i10.log"; fi
 assert '[ ! -e "$T10/.claude/skills/beta/SKILL.md" ]'          "retired beta pruned from target"
+assert '[ ! -d "$T10/.claude/skills/beta" ]'                   "retired skill dir swept, .DS_Store and all"
 assert 'grep -q "pruned" "$SCRATCH/i10.log"'                   "install output reports the prune"
 assert '! grep -q "path: .claude/skills/beta/SKILL.md" "$T10/.claude/manifold-manifest.yaml"' "new manifest no longer lists beta"
 
@@ -414,14 +434,14 @@ assert '! grep -q "path: .claude/skills/beta/SKILL.md" "$T10/.claude/manifold-ma
 echo "== case 15: local-edit conflict abort =="
 T11="$SCRATCH/target11"; mkdir -p "$T11"
 "$INST" "$T11" --overlay _selftest >/dev/null 2>&1
-printf 'LOCAL EDIT LINE\n' >> "$T11/.claude/rules/r1.md"       # local edit in the target
-printf 'UPSTREAM V2\n'     >> "$CORE/core/rules/r1.md"         # source moves too
+printf 'LOCAL EDIT LINE\n' >> "$T11/.claude/harness-templates/r1.md"       # local edit in the target
+printf 'UPSTREAM V2\n'     >> "$CORE/core/templates/r1.md"         # source moves too
 if "$INST" "$T11" --overlay _selftest >"$SCRATCH/i11.log" 2>&1; then no "conflicting re-install aborts"; else ok "conflicting re-install aborts"; fi
-assert 'grep -q "LOCAL EDIT: .claude/rules/r1.md" "$SCRATCH/i11.log"' "abort names the conflicted file"
-assert 'grep -q "LOCAL EDIT LINE" "$T11/.claude/rules/r1.md"'         "abort left the local edit in place"
+assert 'grep -q "LOCAL EDIT: .claude/harness-templates/r1.md" "$SCRATCH/i11.log"' "abort names the conflicted file"
+assert 'grep -q "LOCAL EDIT LINE" "$T11/.claude/harness-templates/r1.md"'         "abort left the local edit in place"
 if "$INST" "$T11" --overlay _selftest --overwrite-local >"$SCRATCH/i11b.log" 2>&1; then ok "--overwrite-local proceeds"; else no "--overwrite-local proceeds"; cat "$SCRATCH/i11b.log"; fi
-assert 'grep -q "UPSTREAM V2" "$T11/.claude/rules/r1.md"'             "--overwrite-local installed the new content"
-assert '! grep -q "LOCAL EDIT LINE" "$T11/.claude/rules/r1.md"'       "--overwrite-local discarded the local edit"
+assert 'grep -q "UPSTREAM V2" "$T11/.claude/harness-templates/r1.md"'             "--overwrite-local installed the new content"
+assert '! grep -q "LOCAL EDIT LINE" "$T11/.claude/harness-templates/r1.md"'       "--overwrite-local discarded the local edit"
 
 # ---------------------------------------------------------------------------
 # case 16: doctor survives a skill with no frontmatter name
@@ -551,6 +571,124 @@ assert 'grep -q "^modules: .*statusline" "$T23/.claude/manifold-manifest.yaml"' 
 assert '[ -f "$T23/.claude/statusline/statusline.sh" ]'     "statusline: core script installed"
 assert '[ -f "$T23/.claude/statusline/README.md" ]'         "statusline: README (the manual wiring step) installed"
 assert '[ -f "$T23/.claude/statusline/statusline-local.sh" ]' "statusline: overlay local file lands beside the script"
+
+# ---------------------------------------------------------------------------
+# case 23: doctor --overlay reports ORPHAN-SLOT + ORPHAN-BINDING (both non-blocking)
+# ---------------------------------------------------------------------------
+echo "== case 23: doctor --overlay orphan report =="
+ORPH="$CORE/overlays/_selftest_orphan"
+cp -R "$CORE/overlays/_selftest" "$ORPH"
+sed -i.bak 's/^name:.*/name: _selftest_orphan/' "$ORPH/manifest.yaml" && rm -f "$ORPH/manifest.yaml.bak"
+printf 'content no scaffold placeholder reads\n' > "$ORPH/claude-slots/nosuch_slot.md"
+printf 'binding for a skill core no longer has\n' > "$ORPH/skill-bindings/gone.md"
+T24="$SCRATCH/target24"; mkdir -p "$T24"
+"$INST" "$T24" --overlay _selftest_orphan >"$SCRATCH/i24.log" 2>&1 || cat "$SCRATCH/i24.log"
+if "$DOC" "$T24" --harness "$CORE" --overlay >"$SCRATCH/d24.log" 2>&1; then ok "doctor --overlay exits 0 (orphans are non-blocking)"; else no "doctor --overlay exits 0 (orphans are non-blocking)"; cat "$SCRATCH/d24.log"; fi
+assert 'grep -q "^OK SLOT slot_one$" "$SCRATCH/d24.log"'                   "overlay check: filled slot reports OK SLOT"
+assert 'grep -q "^OK SLOT slot_two$" "$SCRATCH/d24.log"'                   "overlay check: empty slot file counts as filled"
+assert '[ "$(grep -c "^FLAG ORPHAN-SLOT " "$SCRATCH/d24.log")" = "1" ]'    "overlay check: exactly one ORPHAN-SLOT"
+assert 'grep -q "^FLAG ORPHAN-SLOT nosuch_slot.md$" "$SCRATCH/d24.log"'    "overlay check: names the orphan slot file"
+assert '[ "$(grep -c "^FLAG ORPHAN-BINDING " "$SCRATCH/d24.log")" = "1" ]' "overlay check: exactly one ORPHAN-BINDING"
+assert 'grep -q "^FLAG ORPHAN-BINDING gone$" "$SCRATCH/d24.log"'           "overlay check: names the orphan binding's skill"
+assert 'grep -q "^OK GENERATION overlay 2 core 2$" "$SCRATCH/d24.log"'   "overlay check: reports the generation pair"
+assert '! grep -q "^FLAG UNFILLED-SLOT" "$SCRATCH/d24.log"'                "overlay check: no false UNFILLED-SLOT"
+"$DOC" "$T24" --harness "$CORE" >"$SCRATCH/d24b.log" 2>&1 || true
+assert 'grep -q "^FLAG ORPHAN-BINDING gone$" "$SCRATCH/d24b.log"'          "overlay check also runs inside the default --harness pass"
+if "$DOC" "$T24" --overlay >"$SCRATCH/d24c.log" 2>&1; then no "--overlay without --harness errors"; else ok "--overlay without --harness errors"; fi
+assert 'grep -q "needs --harness" "$SCRATCH/d24c.log"'                     "--overlay error names the missing flag"
+
+# ---------------------------------------------------------------------------
+# case 24: generation gate — update.sh stages the migration kit and exits 3
+# ---------------------------------------------------------------------------
+echo "== case 24: generation gate stages the migration kit =="
+mkdir -p "$CORE/bootstrap/skills/harness-migrate-overlay"
+printf -- '---\nname: harness-migrate-overlay\ndescription: Migration dummy skill for selftest.\n---\nMigration body.\n' > "$CORE/bootstrap/skills/harness-migrate-overlay/SKILL.md"
+GENOV="$CORE/overlays/_selftest_gen"
+cp -R "$CORE/overlays/_selftest" "$GENOV"
+sed -i.bak 's/^name:.*/name: _selftest_gen/' "$GENOV/manifest.yaml" && rm -f "$GENOV/manifest.yaml.bak"
+T25="$SCRATCH/target25"; mkdir -p "$T25"
+"$INST" "$T25" --overlay _selftest_gen >"$SCRATCH/i25.log" 2>&1 || cat "$SCRATCH/i25.log"
+assert 'grep -q "^core_generation: 2$" "$T25/.claude/manifold-manifest.yaml"' "install records core_generation in the target manifest"
+CONST_SHA="$(sha256_cmd "$T25/CLAUDE.harness.md" | awk '{print $1}')"
+find "$T25" -type f | sort > "$SCRATCH/t25.before"
+# content-level snapshot: every pre-existing file must be byte-identical afterwards (the
+# manifest is excluded — the staging records are appended to it by design and asserted below)
+find "$T25" -type f | sort | grep -v '/.claude/manifold-manifest.yaml$' \
+  | while IFS= read -r f; do sha256_cmd "$f"; done > "$SCRATCH/t25.sha.before"
+# the overlay falls behind the core (what a real core-generation bump looks like)
+sed -i.bak 's/^core_generation:.*/core_generation: 1/' "$GENOV/manifest.yaml" && rm -f "$GENOV/manifest.yaml.bak"
+"$UPD" "$T25" --no-pull >"$SCRATCH/u25.log" 2>&1; RC25=$?
+assert '[ "$RC25" = "3" ]'                                                  "update.sh exits 3 on a generation-behind overlay"
+assert '[ -f "$T25/.claude/skills/harness-migrate-overlay/SKILL.md" ]'      "migration skill staged into the target"
+assert '[ -f "$T25/.claude/manifold-migration-pending" ]'                   "pending marker written"
+assert 'grep -q "^core_generation: 2$" "$T25/.claude/manifold-migration-pending"' "marker records the core generation"
+assert 'grep -q "^harness_root: " "$T25/.claude/manifold-migration-pending"'      "marker records the harness root"
+assert 'grep -q "^overlay: _selftest_gen$" "$T25/.claude/manifold-migration-pending"' "marker records the overlay"
+assert 'grep -q "run /harness-migrate-overlay" "$SCRATCH/u25.log"'          "update.sh prints the migration instruction"
+assert 'grep -q "^FLAG GENERATION overlay 1 core 2$" "$SCRATCH/u25.log"'    "update.sh prints the doctor overlay check first"
+assert '[ "$(sha256_cmd "$T25/CLAUDE.harness.md" | awk "{print \$1}")" = "$CONST_SHA" ]' "the installed constitution is byte-unchanged"
+find "$T25" -type f | sort > "$SCRATCH/t25.after"
+ADDED="$(comm -13 "$SCRATCH/t25.before" "$SCRATCH/t25.after" | sed "s#^$T25/##" | sort | tr '\n' ' ')"
+assert '[ "$ADDED" = ".claude/manifold-migration-pending .claude/skills/harness-migrate-overlay/SKILL.md " ]' "the target gained exactly the marker + the migrate skill"
+find "$T25" -type f | sort \
+  | grep -v '/.claude/manifold-manifest.yaml$' \
+  | grep -v '/.claude/manifold-migration-pending$' \
+  | grep -v '/.claude/skills/harness-migrate-overlay/' \
+  | while IFS= read -r f; do sha256_cmd "$f"; done > "$SCRATCH/t25.sha.after"
+assert 'diff -q "$SCRATCH/t25.sha.before" "$SCRATCH/t25.sha.after" >/dev/null' "every pre-existing target file is byte-identical after staging"
+# a second run with the marker present repeats the instruction and stages nothing new
+"$UPD" "$T25" --no-pull >"$SCRATCH/u25b.log" 2>&1; RC25B=$?
+assert '[ "$RC25B" = "3" ]'                                                 "update.sh with the marker present still exits 3"
+find "$T25" -type f | sort > "$SCRATCH/t25.after2"
+assert 'diff -q "$SCRATCH/t25.after" "$SCRATCH/t25.after2" >/dev/null'      "second run stages nothing new"
+# the staged migration draft mirrors the overlay, literal {{HARNESS:...}} tokens and all —
+# the slot scan must skip it or the whole post-migration install reads as broken (round-2 M-2-001)
+mkdir -p "$T25/.claude/migration-draft"
+printf -- '# one {{HARNESS:x}} token in a comment\n' > "$T25/.claude/migration-draft/manifest.yaml"
+"$DOC" "$T25" >"$SCRATCH/d25draft.log" 2>&1; RC25D=$?
+rm -rf "$T25/.claude/migration-draft"
+assert '[ "$RC25D" = "0" ] && ! grep -q "UNFILLED-SLOT" "$SCRATCH/d25draft.log"' "doctor ignores the {{HARNESS:}} tokens in a staged migration draft"
+# install.sh refuses the same overlay directly, with exit 3 and nothing written
+T26="$SCRATCH/target26"; mkdir -p "$T26"
+"$INST" "$T26" --overlay _selftest_gen >"$SCRATCH/i26.log" 2>&1; RC26=$?
+assert '[ "$RC26" = "3" ]'                          "install.sh refuses a generation-behind overlay (exit 3)"
+assert '[ ! -d "$T26/.claude" ]'                    "refused install wrote nothing"
+assert 'grep -q "INSTALL REFUSED" "$SCRATCH/i26.log"' "refusal names itself"
+
+# staging is transactional: an unwritable manifest means the kit is never recorded, so
+# update.sh must refuse BEFORE touching the target (H1, round-1 Codex lens)
+T27="$SCRATCH/target27"; mkdir -p "$T27"
+sed -i.bak 's/^core_generation:.*/core_generation: 2/' "$GENOV/manifest.yaml" && rm -f "$GENOV/manifest.yaml.bak"
+"$INST" "$T27" --overlay _selftest_gen >"$SCRATCH/i27.log" 2>&1 || cat "$SCRATCH/i27.log"
+sed -i.bak 's/^core_generation:.*/core_generation: 1/' "$GENOV/manifest.yaml" && rm -f "$GENOV/manifest.yaml.bak"
+chmod 444 "$T27/.claude/manifold-manifest.yaml"
+"$UPD" "$T27" --no-pull >"$SCRATCH/u27.log" 2>&1; RC27=$?
+chmod 644 "$T27/.claude/manifold-manifest.yaml"
+assert '[ "$RC27" = "2" ]'                                   "update.sh exits 2 when the target manifest is not writable"
+assert 'grep -q "not writable" "$SCRATCH/u27.log"'           "the refusal names the unwritable manifest"
+assert '[ ! -e "$T27/.claude/skills/harness-migrate-overlay" ]' "unwritable manifest: no migration kit staged"
+assert '[ ! -e "$T27/.claude/manifold-migration-pending" ]'  "unwritable manifest: no pending marker staged"
+
+# a PRESENT but malformed core/GENERATION is a corrupt record, not an absent one: fail closed
+GENFILE="$CORE/core/GENERATION"; GENSAVE="$(cat "$GENFILE")"
+printf 'abc\n' > "$GENFILE"
+T28="$SCRATCH/target28"; mkdir -p "$T28"
+"$INST" "$T28" --overlay _selftest >"$SCRATCH/i28.log" 2>&1; RC28=$?
+printf '%s\n' "$GENSAVE" > "$GENFILE"
+assert '[ "$RC28" = "2" ]'                                    "install.sh exits 2 on a malformed core/GENERATION"
+assert '[ ! -d "$T28/.claude" ]'                              "malformed generation: nothing written"
+assert 'grep -q "malformed generation value" "$SCRATCH/i28.log"' "the malformed-generation error names itself"
+
+# ---------------------------------------------------------------------------
+# case 25: once the overlay is stamped, update.sh proceeds and prunes the kit
+# ---------------------------------------------------------------------------
+echo "== case 25: stamped overlay updates and prunes the kit =="
+sed -i.bak 's/^core_generation:.*/core_generation: 2/' "$GENOV/manifest.yaml" && rm -f "$GENOV/manifest.yaml.bak"
+if "$UPD" "$T25" --no-pull >"$SCRATCH/u26.log" 2>&1; then ok "update.sh proceeds once the overlay is stamped"; else no "update.sh proceeds once the overlay is stamped"; cat "$SCRATCH/u26.log"; fi
+assert '[ ! -e "$T25/.claude/manifold-migration-pending" ]'                 "pending marker pruned"
+assert '[ ! -e "$T25/.claude/skills/harness-migrate-overlay/SKILL.md" ]'    "migration skill pruned"
+assert '[ ! -d "$T25/.claude/skills/harness-migrate-overlay" ]'             "migration kit directory pruned too"
+assert '[ -f "$T25/CLAUDE.harness.md" ]'                                    "the install is whole again"
 
 # ---------------------------------------------------------------------------
 echo "======================================================"

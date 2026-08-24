@@ -1,8 +1,8 @@
 <!-- FILL project_hard_rules: project-specific HARD RULES that don't generalize into core
      (agent-spawn vocabulary contracts, naming/codename mandates, routing rules, binding
      operator directives). Each states the rule clean — its receipt (who decided it, when) is
-     diarized in the project's memory store, never inlined here (`core/rules/rule-writing.md`);
-     an anonymized worked example stays allowed inline.
+     diarized in the project's memory store, never inlined here; an anonymized worked example
+     stays allowed inline.
      Point at any rule file installed via rules/. An empty fill is valid if the project has
      none yet. (The scaffold provides the `## Project Hard Rules` heading.) -->
 

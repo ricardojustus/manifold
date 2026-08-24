@@ -35,8 +35,8 @@ intervening chat; until ended, every qualifying junction routes out.
   state, re-dispatch on loss.
 - **Harvest verification** — first-hand re-verification of everything a builder claims; the
   builder's green is a claim.
-- **The gates** — spec-adherence, audit-cycle, council sittings: convened and dispositioned by the
-  main loop, exactly as if it had built the work itself.
+- **The gates** — the contract's definition of done, audit-cycle, council sittings: convened and
+  dispositioned by the main loop, exactly as if it had built the work itself.
 - **Integration edits** — applying a revision pass to a drafted spec, wiring a harvested diff's
   loose ends, fixing a rename collision.
 - **Decision packets + operator comms + memory/diary/state** — never delegated, in any mode. In

@@ -1,7 +1,7 @@
 ---
 name: audit-cycle
 description: >-
-  Runs the pre-merge audit ladder to a 0 Critical/High/Medium lock gate. Required for any branch implementing a LOCKED spec, and for spec-LOCK cycles. Triggers "audit before merge", "audit X", "round-N audit", "dispatch the audit cycle", "consolidate the audits", "fix-pass", "/audit-cycle". Not a whole-subsystem pass (system-audit).
+  Runs the pre-merge audit ladder to a 0 Critical/High/Medium lock gate. Required for any branch implementing a LOCKED spec, and for spec-LOCK cycles. Triggers "audit before merge", "audit X", "round-N audit", "dispatch the audit cycle", "consolidate the audits", "fix-pass", "/audit-cycle". Not a whole-subsystem pass.
 ---
 
 # Audit cycle — pre-merge layer-audit dispatch
@@ -22,8 +22,6 @@ passes (working `audit-backlog.md` items).
   reviewer at the builder's judgment). It enters this ladder at the **builder's judgment**, is
   never auto-excluded, and during autonomous work the builder records the call in the run journal.
 - Single-PR diff review by one reviewer → the runtime's single-PR review tool
-- Scoped adversarial pass on a security-sensitive surface → `scoped-adversarial-audit`
-- Whole-subsystem inventory with no specific change → `system-audit`
 
 **When rounds END**: on operator word or orchestrator judgment, once the finding tail goes cosmetic
 or waived — the gate is 0C/0H/0M on REAL findings, not infinite rounds. Inherit declared postures
@@ -42,15 +40,15 @@ three registries live one level up at `<artifact-root>/audits/` (project-wide, n
 mid-audit stall with no error to debug. The reviewer-prompt-template writes to `AUDIT_DIR`; keep
 it that way.
 
-## Gate 0 — spec-adherence runs FIRST (code implementations)
+## Gate 0 — contract conformance runs FIRST (code implementations)
 
 For **code implementations**, a light conformance TRIPWIRE runs BEFORE round-1: one pass over
 the spec's RATIFIED surface (acceptance criteria + Decisions + amendment deltas), at most one
 fix-pass, then dispatch the multi-model audit only on a PASS. Conformance ("does the code obey
 the contract?") is a different axis from defect-finding ("is the code correct/safe/robust?"):
 divergent code is internally consistent and reads as correct, so it slips a bug-focused audit.
-Procedure lives in **`spec-adherence`** — invoke it, don't re-derive it; it is a tripwire, not
-a proof: one pass, at most one fix-pass, never an agent fleet and never a loop.
+The procedure above is a tripwire, not a proof: one pass, at most one fix-pass, never an agent
+fleet and never a loop.
 
 - Does NOT apply to spec-LOCK cycles (no impl to conform).
 - Distinct from Cat #15 (which checks the *spec's* claims about existing code) and from the
@@ -59,8 +57,8 @@ a proof: one pass, at most one fix-pass, never an agent fleet and never a loop.
   occasionally by design.
 - **Round-1 pre-flight binds the gate to a sha**: record the PASS as `PASS @ <sha>`; before
   dispatching round-1, assert `git rev-parse HEAD` equals it. Differ (a piggybacked Low, a "quick"
-  fix, a rebase after the gate) → the PASS is **STALE**; re-run spec-adherence scoped to the new
-  commits first. The round-1 brief carries `spec-adherence PASSED @ <sha>` as a note that does NOT
+  fix, a rebase after the gate) → the PASS is **STALE**; re-run Gate 0 scoped to the new
+  commits first. The round-1 brief carries `Gate 0 PASSED @ <sha>` as a note that does NOT
   relax the fidelity/confab checks — reviewers still run both and flag any gap.
 
 ## Finding authority — the anti-ratchet rule
@@ -276,7 +274,7 @@ of whether machinery is wanted).
 > Project bindings may prepend or amend steps — read the "## Project bindings" section (end of file) before the first step.
 
 ```
-implement → commit → [code impls: spec-adherence Gate 0 → PASS @ sha (see `spec-adherence`)] → dispatch round-1 (parallel primary + cross-model)
+implement → commit → [code impls: Gate 0 (contract conformance) → PASS @ sha (see Gate 0 above)] → dispatch round-1 (parallel primary + cross-model)
   → wait for BOTH (consolidating after one reviewer is a recurring waste)
   → consolidate findings MAX-severity with empirical-truth carve-out
   → classify authority (defect / cited machinery block; uncited machinery → ADVISORY)
@@ -321,11 +319,11 @@ second lens becomes reachable before the stakes justify shipping on one. Recorde
 ## Pre-flight (lead does this BEFORE dispatching reviewers)
 
 Every round, step 0: **where a minimality-mode tool is installed, dispatched reviewers run under
-the persona BY DESIGN** (the `minimality-mode` rule — every dispatched seat is an ON seat,
+the persona BY DESIGN** (the `minimality-persona` card — every dispatched seat is an ON seat,
 arc-wide) — no flag assert is owed. What the lead still checks is its
 OWN seat: a lead running the tool's sticky session persona (skill-path activation) does not lead
 the round's consolidation or severity calls until the operator deactivates it or a fresh session
-leads (the rule's judgment-seat clause).
+leads (the card's judgment-seat clause).
 
 Round-1:
 
@@ -427,7 +425,7 @@ the AUDIT is wrong — save the correction to the memory store and add it to the
 **Disposition paths** (every finding gets exactly one):
 - **Direct fix-pass** — code change, commit on feature branch (C/H/M; trivial Lows piggyback).
   Where a minimality-mode tool is installed, a dispatched fix seat runs with the mode ON at
-  standard intensity (`minimality-mode` rule — arc-wide, like every dispatched seat)
+  standard intensity (`minimality-persona` card — arc-wide, like every dispatched seat)
 - **Path A — spec amendment** — the implementer's choice was deliberate-and-correct but the spec
   wording diverged; amend the spec (clerical ratification, not relitigation)
 - **Path C — bounded code change** — a small additive change closes the finding + a related concern
@@ -517,8 +515,7 @@ owner-flagged, since a Medium-deferral bends the gate). Lows: triage.
 ## Evidentiary discipline — verify at edit time
 
 Every load-bearing claim in audit consolidation / fix-pass commit msg / spec amendment is governed
-by the constitution's *Grounding Claims in Source* rule (depth:
-`.claude/harness/principles/grounding-and-confabulation.md`).
+by floor wall 7 (never confabulate on deliverable surfaces).
 
 Two claim shapes that read as evidence and aren't: a **coverage claim** (a test asserting N×M
 combinations while seeding only N+M fixtures) — hold it to positive controls + explicit nested
@@ -603,9 +600,6 @@ unrelated, they don't apply.
 
 ## Related skills
 
-- `scoped-adversarial-audit` — scoped adversarial single-pass on a security-sensitive surface
-- `system-audit` — whole-subsystem inventory
-- `spec-adherence` — Gate 0 for code impls (runs before round-1)
 - `research` — the pre-feed dispatch shape this cycle reuses
 
 Skill-eval test prompts: `references/test-prompts.md`.

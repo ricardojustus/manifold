@@ -19,25 +19,29 @@ overlays/<name>/
 ├── skill-bindings/      # <core-skill-name>.md, appended to that core skill's SKILL.md as a
 │                        #   "## Project bindings" section on install.
 └── hooks/               # OPTIONAL enforcement bindings per core/ENFORCEMENT.md's ladder + taxonomy
-                         #   (installed to .claude/harness-hooks/, DRAFT — wiring is manual; README.md skipped).
+                         #   (installed to .claude/harness-hooks/, DRAFT — wiring is manual; its README.md installs too).
 ```
 
-This `_template/` ships a **fillable skeleton**: every one of the 10 slots is present as a
+This `_template/` ships a **fillable skeleton**: every one of the 7 slots is present as a
 commented `<!-- FILL … -->` file and `manifest.yaml` sets `artifact_root: .`, so a raw copy
-**installs out of the box** — but with placeholder content, so replace the FILL comments with
-real content before you rely on it. Each subdirectory carries a one-line README explaining what
-goes in it. Delete the placeholder READMEs (or leave them — the installer skips any `README.md`).
+**installs only with `--allow-placeholder-template`** (the FILL sentinels fail the install
+otherwise) — and then with placeholder content, so replace the FILL comments with real content
+before you rely on it. Each subdirectory carries a one-line README explaining what
+goes in it. Delete the placeholder READMEs or leave them — the installer skips them, except
+`hooks/README.md`, which installs as the manual-wiring instruction.
 
 ## Fill order (recommended)
 
 1. **`manifest.yaml`** — set `name` (must equal the directory name), `runtime`, `description`,
    and set `artifact_root` (defaults to `.`, the target repo root — point it at your project's
    audit/evidence dir; removing the key entirely makes the install fail closed).
-2. **`claude-slots/`** — fill each slot from your project's constitution / operator profile.
-   The comment in each file says what it needs. `identity`, `user_import`, `system_map`,
-   `security_directive`, `memory_paths`, `comms_style` are almost always worth writing;
-   `self_knowledge_corpus`, `project_hard_rules`, `compact_instructions` may be empty early.
-3. **`rules/`** — drop in any binding project directive that doesn't generalize into core.
+2. **`claude-slots/`** — fill each of the seven slots (`identity`, `user_import`,
+   `system_map`, `accounts`, `model_pins`, `comms_style`, `project_hard_rules`) from your
+   project's constitution / operator profile. The comment in each file says what it needs.
+   `identity`, `user_import`, `system_map` and `model_pins` are almost always worth writing;
+   `accounts` and `project_hard_rules` may be empty early.
+3. **`rules/`** — drop in any binding project directive that doesn't generalize into core
+   and belongs in no slot. Empty by default (model pins moved into the `model_pins` slot).
 4. **`skill-bindings/`** — for each core skill that needs project concretes (paths, dispatch
    mechanics, doc-corpus refs), add `<skill>.md`; it appends as a `## Project bindings` section.
 5. **`hooks/`** — optional. Read `core/ENFORCEMENT.md`'s enforcement ladder FIRST: prefer a
@@ -70,9 +74,9 @@ Assembly is exact: the installer replaces each `{{HARNESS:slot_name}}` in
 matching slot file, the install writes nothing to the target and exits nonzero, naming each
 unfilled slot. `doctor.sh` then verifies the installed tree against the manifest.
 
-## Future tooling
+## The guided path
 
-An interactive `harness-init` interview (planned) will walk a new project through these
-steps — asking for the operator profile, the system map, the security posture, etc., and
-writing the slot files for you. Until it lands, fill the skeleton by hand — each slot file's
-FILL comment states its contract, and `install.sh` fails closed naming anything you missed.
+`/harness-onboarding` walks a new project through these steps — asking for the operator
+profile, the system map, the security posture, etc., and writing the slot files for you. Fill
+the skeleton by hand instead if you prefer — each slot file's FILL comment states its contract,
+and `install.sh` fails closed naming anything you missed.

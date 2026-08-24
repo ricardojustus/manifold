@@ -34,8 +34,8 @@ anything inside a running audit-cycle or council sitting. Invoked often ≠ invo
 
 **Operator-question precedence**: when the question came FROM the operator as a system-question
 ("is this overengineering?", "do we need this?", "why does this exist?"), the plain-terms
-whole-system explanation to them comes BEFORE any consult (operator-translation's audit-question
-trigger) — their answer may dissolve the consult entirely.
+whole-system explanation to them comes BEFORE any consult (the operator's system-question is
+answered plainly first) — their answer may dissolve the consult entirely.
 
 ## The three modes
 

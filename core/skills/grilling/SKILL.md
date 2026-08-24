@@ -5,9 +5,9 @@ description: >-
   batching every currently-answerable question, each carrying your recommended answer — until
   shared understanding is reached. Use when the operator wants their thinking stress-tested ("grill
   me", "grill this plan", "poke holes in this"), or when another skill needs a grilling pass
-  mid-flow. Sharpens an existing intent, unlike `brainstorming` (which generates one toward a
-  Vision draft) and unlike `council` (which convenes a panel against an existing Vision/Plan —
-  grilling is a live interview with the operator).
+  mid-flow. Sharpens an existing intent, unlike open-ended idea generation toward a Vision draft,
+  and unlike `council` (which convenes a panel against an existing Vision/Plan — grilling is a
+  live interview with the operator).
 ---
 
 # Grilling
@@ -42,8 +42,8 @@ Each question is formatted like so:
   prerequisite, so only the questions downstream of it wait for the subagent to report — ask the
   rest of the frontier now. The decisions are the operator's: put each to them and wait.
 - **Capture as you go.** A decision settled mid-grill is filed to the project's memory store at
-  the moment it lands (the file-at-the-event rule) — the interview is not a substitute for the
-  record.
+  the moment it lands (the continuity card's diary discipline) — the interview is not a substitute
+  for the record.
 
 ## Completion and exit
 

@@ -20,7 +20,7 @@
 
 | Status | Agent means | Controller response |
 |---|---|---|
-| **DONE** | Complete and verified — every success criterion passes; nothing owed. | Verify the load-bearing claims (verify-what-changes-your-next-action), then merge/accept. |
+| **DONE** | Complete and verified — every success criterion passes; nothing owed. | Verify the load-bearing claims, then merge/accept. |
 | **DONE_WITH_CONCERNS** | Complete and verified, but N risks/caveats flagged that the agent could not resolve in scope. | Weigh each concern; decide fix-now vs backlog; then merge or send back with a decision. |
 | **NEEDS_CONTEXT** | Blocked on information the brief should have carried — a decision or input from you unblocks the rest. | Supply the decision/input; re-dispatch the remainder. Do NOT treat as failure. |
 | **BLOCKED** | Cannot proceed — a dependency, a decision, or a broken precondition, stated. | Resolve the blocker (or reroute the work); the agent did right by stopping, not guessing. |

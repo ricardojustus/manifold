@@ -17,8 +17,7 @@
      bearing ones a newcomer must know exist — not an exhaustive dependency dump. -->
 
 ## Practices
-<!-- How work is done here: test strategy (e.g. test-first? see test-driven-development),
-     review/audit gates, branch and commit discipline, how changes ship. Point at the harness
+<!-- How work is done here: test strategy (e.g. test-first?), review/audit gates, branch and commit discipline, how changes ship. Point at the harness
      skills that own each practice rather than restating them. -->
 
 ## Conventions

@@ -13,8 +13,8 @@ or flattened — and a summary feels like memory, so a subtly-wrong framing ride
 
 So the checkpoint is written for a **you-who-half-remembers** — not a cold stranger (session-end's
 job), not full-context-you (gone). Four jobs: **anchor durable state to files** (anything not in a
-file evaporates); **name what to RE-READ VERBATIM** (constitution §Grounding Claims in Source;
-depth: `grounding-and-confabulation`); **lock the decisions** so summarized-you doesn't reopen
+file evaporates); **name what to RE-READ VERBATIM** (floor wall 7 — never confabulate on
+deliverable surfaces); **lock the decisions** so summarized-you doesn't reopen
 what's settled; **pin the exact resume point**. Keep it lighter than session-end — no full close
 ceremony unless a milestone genuinely landed mid-arc.
 
@@ -39,8 +39,8 @@ faithfully — handle it while context is intact.
 - **Arc shipped runtime-significant code OR materially changed a documented subsystem** → consult
   the project's doc-freshness mechanism (the binding names it — scripts to run, or a scheduled
   job's flags file to read), then update the changed subsystem's reference doc or add a
-  same-session placeholder index entry (via `reference-doc-writing`); commit the doc/index changes
-  alongside the code.
+  same-session placeholder index entry via the project's Atlas orientation (where the project
+  keeps one); commit the doc/index changes alongside the code.
 - **Arc was design / spec / research only (no source change)** → SKIP; the checks are a no-op.
 
 Still deferred even when code shipped: authoring a brand-new reference doc for a subsystem that

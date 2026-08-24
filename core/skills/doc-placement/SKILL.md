@@ -32,8 +32,8 @@ Run top-down; stop at the first match.
 1. **Records a hard-to-reverse / future-constraining decision** (the "why" behind a choice future-you would otherwise re-litigate) → `specs/adr/` (an ADR — template below). Not indexed.
    - **In an Atlas project** (the repo carries `atlas/orientation.md`) the record goes to **`adr/` at the repo root** instead, named `NNNN-slug.md`, on `.claude/harness-templates/atlas/ADR.md` — dual status (decision + implementation), and rejected alternatives each carrying a one-line cause of death. Root placement is deliberate: a dispatched seat reads the repo, not this taxonomy.
 2. **An implementation contract** — has acceptance criteria + names an owning-reference target it will promote into → `specs/`. Not indexed.
-3. **Documents observed *current runtime* behavior** ("how subsystem X works right now") → `reference/`. Indexed. Write via `reference-doc-writing`.
-4. **Durable design *intent*** independent of any one implementation session ("what we decided to build and why, at the roadmap/subsystem level") → `plans/` (with an authored short). Indexed. Maintain via `plan-update`.
+3. **Documents observed *current runtime* behavior** ("how subsystem X works right now") → `reference/`. Indexed. Write via the project's Atlas orientation (where the project keeps one).
+4. **Durable design *intent*** independent of any one implementation session ("what we decided to build and why, at the roadmap/subsystem level") → `plans/` (with an authored short). Indexed. Maintain via the operator's vision / the thread's STATE.md.
 5. **Exploratory / not-yet-authoritative** (a spike, a prior-art survey, an investigation) → `research/`. Not indexed.
 
 Tie-breakers:
@@ -47,7 +47,7 @@ Tie-breakers:
 
 When a spec finishes implementation, this is **part of definition-of-done in the SAME implementing session** — not deferred doc-debt:
 
-- **(a) Fold** the spec's durable behavior into the **owning subsystem's reference doc** (subsystem-shaped — a small spec becomes a *section* of a bigger doc, not its own doc). If no owning subsystem doc exists, **create it** (`reference-doc-writing`). Bump its as-of + its index row. Add the **forward pointer** (the reference doc is the only searchable surface, so it's the discovery path to the un-indexed provenance).
+- **(a) Fold** the spec's durable behavior into the **owning subsystem's reference doc** (subsystem-shaped — a small spec becomes a *section* of a bigger doc, not its own doc). If no owning subsystem doc exists, **create it** (per the project's Atlas orientation, where the project keeps one). Bump its as-of + its index row. Add the **forward pointer** (the reference doc is the only searchable surface, so it's the discovery path to the un-indexed provenance).
 - **(b)** If the spec embodied an **architecturally-significant decision**, write an **ADR** (`specs/adr/`).
 - **(c) Move** the spec → `specs/archive/` with an IMPLEMENTED banner back-linking the reference doc (+ ADR).
 
@@ -87,12 +87,12 @@ Write an ADR only for an **architecturally-significant** decision: one that (a) 
 
 ## When NOT to use this
 
-- Choosing *what* to write in a reference doc (structure/tone) → `reference-doc-writing`.
-- Updating a plan + its short → `plan-update`.
+- Choosing *what* to write in a reference doc (structure/tone) → the project's Atlas orientation (where the project keeps one).
+- Updating a plan + its short → the operator's vision / the thread's STATE.md.
 - Running the freshness/promotion backstop sweep → `session-end`.
 
 ## Related
 
-- `reference-doc-writing` — writes the reference doc the promotion folds into.
-- `plan-update` — maintains plan + plan-short (strict dual-update).
+- The project's Atlas orientation (where the project keeps one) — writes the reference doc the promotion folds into.
+- The operator's vision / the thread's STATE.md — maintains plan + plan-short (strict dual-update).
 - `session-end` — the freshness sweep that backstops promotion + short-vs-full sync.

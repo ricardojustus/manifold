@@ -15,14 +15,14 @@ bootstrap/install.sh <target-repo> --overlay <name-or-path> [--link]
                      [--allow-placeholder-template] [--overwrite-local]
 bootstrap/install.sh <target-repo> --bootstrap [--profile base|full] [--modules m1,m2]
 bootstrap/update.sh  [<target-repo>] [--no-pull] [--overwrite-local]
-bootstrap/doctor.sh  <target-repo> [--harness <harness-repo-path>]
+bootstrap/doctor.sh  <target-repo> [--harness <harness-repo-path>] [--overlay]
 bootstrap/maintenance-check.sh <artifact-root> [--days N]
 ```
 
 ## First-time setup: `--bootstrap` + the onboarding interview
 
 A new project has no overlay, and an overlay is what makes the harness *that project's*
-harness — ten slot files, a security posture, model pins. Filling them by hand before your
+harness — seven slot files, hard rules, model pins. Filling them by hand before your
 first session is the wrong order. `--bootstrap` inverts it:
 
 ```
@@ -48,9 +48,8 @@ Then open a Claude Code session in the project and run `/harness-onboarding`. Th
    session always knows where to look. Act 3 installs from there with
    `--overlay <target>/manifold-overlay`; keeping an overlay inside this harness clone
    (`overlays/<name>/`, the right home for a meta-project) stays available via the same flag.
-2. **Optional capabilities** — the three Manifold modules (`inter-session`, `multi-agent`,
-   `atlas`) and
-   the companion tools below, each asked before installing and verified after. The
+2. **Optional capabilities** — the four Manifold modules (`inter-session`, `multi-agent`,
+   `atlas`, `statusline`) and the companion tools below, each asked before installing and verified after. The
    cross-model counterparty is *guided, never auto-installed*: it has its own account and
    billing.
 3. **Assemble and verify** — the full install with your new overlay, `doctor.sh`, marker
@@ -70,10 +69,10 @@ in. All the re-install safety semantics below apply unchanged.
 
 **Profiles.** `--profile base` installs the core discipline set; `--profile full` adds the
 optional modules — `inter-session` (peer-session messaging bus + its Python runtime),
-`multi-agent` (parallel-workstreams + merge-and-cleanup) and `atlas` (decision records in
-`adr/` plus a hand-written `atlas/orientation.md`; templates only, no skills). Enable
-modules individually with
-`--modules`. The overlay manifest may pin `profile:`/`modules:`; the CLI overrides; the
+`multi-agent` (parallel-workstreams + merge-and-cleanup), `atlas` (decision records in
+`adr/` plus a hand-written `atlas/orientation.md`; templates only, no skills) and `statusline`
+(the status-bar script + Codex job board; no skills, needs manual settings wiring). Enable
+modules individually with `--modules`. The overlay manifest may pin `profile:`/`modules:`; the CLI overrides; the
 default (nothing specified anywhere) is full, for back-compat. `doctor.sh` reports each
 skill-owning module READY/UNAVAILABLE — and `atlas`, which owns no skills, from its manifest
 token plus its one artifact: no atlas module line while the token is absent,
@@ -108,10 +107,9 @@ records which was used (`overlay: <name-or-abspath>`).
 | Source (in this repo)            | Destination (in target)              | Notes |
 |----------------------------------|--------------------------------------|-------|
 | `core/skills/*`                  | `.claude/skills/*`                   | overlay `skill-bindings/<skill>.md` appended to that skill's `SKILL.md` |
-| `core/rules/*`                   | `.claude/rules/*`                    | |
 | `core/output-styles/*`           | `.claude/output-styles/*`            | activate with `"outputStyle": "simple"` in the target's `.claude/settings.json` (manual, like hook wiring) |
 | `core/templates/*`               | `.claude/harness-templates/*`        | |
-| `core/METHODOLOGY.md`, `core/ENFORCEMENT.md`, `core/principles/`, `core/case-law/` | `.claude/harness/` | |
+| `core/METHODOLOGY.md`, `core/ENFORCEMENT.md`, `core/SUCCESSOR_CALIBRATION.md` | `.claude/harness/` | |
 | `FIELD_GUIDE.md` (repo root)     | `.claude/harness/FIELD_GUIDE.md`     | the onboarding narrative — ships with the installed project |
 | `core/CLAUDE.scaffold.md` + overlay `claude-slots/` | `CLAUDE.harness.md` (target root) | assembled; **never** overwrites an existing `CLAUDE.md` |
 | —                                | `.claude/manifold-manifest.yaml`     | records a sha256 per installed file |
@@ -170,8 +168,26 @@ Reads the manifest and prints one line per file:
 
 Plus a structural lint over installed skills (frontmatter `name`+`description`,
 `name` == directory, WARN on descriptions >150 words or bodies >500 lines), an
-unfilled-slot scan, and a check that `.claude/harness/` exists. Exit is nonzero iff there
-is a `MISSING` file or an unfilled slot.
+unfilled-slot scan, and a check that `.claude/harness/` exists. Exit is nonzero iff a
+blocking FLAG fired: `MISSING`, `BAD-RECORD`, `BROKEN-LINK`, `UNFILLED-SLOT`,
+`OVERLAY-MISSING`, `GENERATION` (overlay behind core), `GENERATION-MALFORMED`, or a
+`{{HARNESS:` token left in an installed file.
+
+**The overlay check.** With `--harness`, `doctor.sh` also checks the overlay's SHAPE against
+that harness's current core — and `--overlay` runs that block alone (it requires `--harness`):
+
+- `OK SLOT <name>` — the scaffold declares this slot and the overlay has a file for it (an
+  empty file is a valid fill).
+- `FLAG UNFILLED-SLOT <name>` — the scaffold declares a slot the overlay never filled (**fails**).
+- `FLAG ORPHAN-SLOT <file>` — an overlay slot file no scaffold placeholder reads (informational;
+  dead weight, usually a slot core retired).
+- `FLAG ORPHAN-BINDING <skill>` — a `skill-bindings/<skill>.md` for a skill core no longer has,
+  so it appends to nothing (warning).
+- `FLAG GENERATION overlay <o> core <c>` — the overlay's `core_generation` is behind
+  `core/GENERATION` (**fails**); `OK GENERATION overlay <o> core <c>` when it is equal or ahead.
+
+`update.sh` runs this check before every update, so a core change that leaves an overlay behind
+is reported rather than half-installed.
 
 ## Vendored (upstream) skills
 
@@ -188,18 +204,18 @@ skill installs them or you do:
 | `mcp-builder` | Author MCP servers | Anthropic (`anthropics/skills`) |
 | `skill-creator` | Create / edit / eval skills | Anthropic (`anthropics/skills`) |
 | `doc-coauthoring` | Co-author docs | Anthropic (`anthropics/skills`) |
-| `karpathy-guidelines` | Coding-guidelines depth for the constitution's Implementation Discipline section | `karpathy-skills` Claude Code plugin marketplace (`~/.claude/plugins/marketplaces/karpathy-skills/`) |
+| `karpathy-guidelines` | Coding-guidelines depth for the constitution's Dispositions (the facts core's standing behaviours) | `karpathy-skills` Claude Code plugin marketplace (`~/.claude/plugins/marketplaces/karpathy-skills/`) |
 | `ponytail` | Minimality mode: a plan-blind YAGNI lens over CODE — session persona plus `ponytail-review` (diff) and `ponytail-audit` (whole repo) | `ponytail` Claude Code plugin marketplace (`dietrichgebert/ponytail`) |
 
-`karpathy-guidelines` is **optional**: the constitution's Implementation Discipline section
-states its four principles inline and refers to "the project's coding-guidelines skill, if one
-is installed" generically (core names no specific repo — a purity requirement). Install this
-plugin to get the fuller worked-examples depth; skip it and the four principles still apply.
+`karpathy-guidelines` is **optional**: the constitution's Dispositions (the facts core's
+standing behaviours) carry the discipline inline and core names no specific repo — a purity
+requirement. Install this plugin to get the fuller worked-examples depth; skip it and the
+Dispositions still apply.
 **Exception: an overlay that wires this plugin into its authoring junctions (via its skill
 bindings) makes it REQUIRED for that overlay's installs** — such an install without the plugin
 leaves junctions ordering a nonexistent skill.
 
-`ponytail` is **optional** and, if installed, is governed by `core/rules/minimality-mode.md`
+`ponytail` is **optional** and, if installed, is governed by the `minimality-persona` skill
 (written generically, per the same purity requirement). Two install-time steps, both needed:
 pin the default mode off — `~/.config/ponytail/config.json` = `{"defaultMode":"off"}`, or
 `PONYTAIL_DEFAULT_MODE=off` (**its native default is `full`**, i.e. persona injection in every
@@ -216,8 +232,40 @@ in this repo's `core/` or `overlays/`; the overlay only *depends on* them. (The 
 installer does not fetch them — add them to a target the same way the live checkout has
 them: from their upstream source.)
 
-## ⚠️ Re-install / upgrade caution (v0.1 — R-2)
-Re-running `install.sh` onto an already-installed target OVERWRITES installed files —
-including any deliberate local modifications (which the manifest + `doctor.sh` track as
-sanctioned `LOCAL-CHANGE`). Until the guarded `--upgrade` mode ships (H5/H7): run
-`doctor.sh` first, and hand-preserve any `LOCAL-CHANGE` files before re-installing.
+## Rolling back to the previous core
+
+Every core replacement is tagged before it lands, so any project can go back to the harness it
+had. Two lines, per project — the target's own files are rewritten from the tagged harness, and
+nothing outside the install is touched:
+
+```
+git -C <harness-clone> checkout pre-from-zero
+<harness-clone>/bootstrap/update.sh <project> --no-pull --overwrite-local
+```
+
+`--overwrite-local` is required: rolling back *is* an overwrite of managed files with older
+content, which the re-install guard would otherwise abort. Run `doctor.sh <project>` afterwards.
+Then `git -C <harness-clone> checkout <branch>` to come back to the current core.
+
+The target repo's own install commit is a second, independent path: `git revert` it (or
+`git checkout <commit> -- CLAUDE.harness.md .claude/`), which needs no harness clone at all.
+
+## Upgrading across a core generation
+
+`core/GENERATION` names the core's slot-and-roster shape; an overlay's `manifest.yaml` records
+the generation it was written for (`core_generation:`). When the core moves ahead — generation 2
+replaced ten slots with seven and trimmed the skill roster — an existing overlay cannot fill the
+new scaffold, so it is not installed over:
+
+- `install.sh` **refuses** (exit 3, nothing written), naming both generations.
+- `update.sh` prints the overlay check, then **stages a one-time migration**: it copies the
+  `harness-migrate-overlay` skill into `<target>/.claude/skills/` and writes
+  `<target>/.claude/manifold-migration-pending` (recording the harness clone, the overlay, and
+  the core generation), and exits 3 with instructions. Nothing else in the install changes.
+
+Then, in a Claude Code session in the project, run `/harness-migrate-overlay`. It reads the old
+overlay, drafts the new slot files into `.claude/migration-draft/`, shows you a per-slot summary
+(kept / moved / dropped) plus the full diff, and **asks**. Only on your explicit yes does it
+write into the overlay, delete bindings for skills core retired, and stamp `core_generation`.
+Then re-run `update.sh` — the migration kit and the marker are manifest-owned, so the ordinary
+prune removes them as part of that update.

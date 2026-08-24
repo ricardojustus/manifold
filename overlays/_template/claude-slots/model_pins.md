@@ -1,8 +1,14 @@
-# Model pins — which model tier does which job
+<!-- FILL model_pins: which model tier does which job, by explicit model ID — plus any
+     cross-model (second-family) lens IDs and the facts about model fallbacks this project
+     must know. A pin naming a retired model silently falls back to the session model, which
+     is the failure this slot exists to prevent: re-verify whenever the lineup changes.
+     (The scaffold provides the heading.) -->
 
-Dated pins (public defaults, 2026-07-29). **Re-verify whenever the model lineup changes** —
-a pin naming a retired model silently falls back to the session model, which is the failure
-this file exists to prevent.
+<!-- Suggested starting content (public defaults, dated 2026-07-29) — accept, edit, or drop it,
+     then DELETE the placeholder comment above (an install with that comment still present
+     fails closed). Hand-filling this template? Do the same by hand. -->
+
+Dated pins (public defaults, 2026-07-29). **Re-verify whenever the model lineup changes.**
 
 | Tier | Model | Used for |
 |---|---|---|

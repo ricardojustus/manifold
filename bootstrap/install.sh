@@ -31,6 +31,10 @@
 # the new stage would overwrite ABORTS the install unless --overwrite-local is given —
 # sync your local edit back to the harness source first (that is where it belongs).
 #
+# GENERATION GATE: core/GENERATION (absent = 1) vs the overlay manifest's core_generation
+# (absent = 1). An overlay older than the core is REFUSED (exit 3, nothing written) — run
+# update.sh, which stages the one-time migration kit. --bootstrap has no overlay and is exempt.
+#
 # Fail-closed: everything is assembled in a scratch staging dir first; if any assembled
 # file still contains a {{HARNESS:...}} placeholder, an unbound <artifact-root> token,
 # OR an unfilled `<!-- FILL` template sentinel (unless --allow-placeholder-template),
@@ -146,6 +150,28 @@ manifest_key() { # <key>
   v="${v%\'}"; v="${v#\'}"
   printf '%s' "$v"
 }
+
+# --- core generation gate ------------------------------------------------------------------
+# core/GENERATION is the harness's CORE GENERATION: it bumps only when the scaffold's slot set
+# or the core roster changes in a way an existing overlay cannot satisfy. An overlay records the
+# generation it was written for (`core_generation:` in its manifest). Installing a gen-N overlay
+# over a gen-N+1 core would assemble a constitution with unfilled slots (or silently drop content
+# the new slots expect), so it is REFUSED before anything is staged. --bootstrap has no overlay
+# to check.
+# Absent/empty -> generation 1 (pre-generation harnesses/overlays). A value that is PRESENT
+# but not a positive integer is a corrupt record, not an absent one: fail closed (return 2).
+gen_or_1() { case "${1:-}" in '') echo 1 ;; *[!0-9]*|0*) return 2 ;; *) echo "$1" ;; esac; }
+CORE_GEN_RAW=""
+[ -f "$HARNESS_ROOT/core/GENERATION" ] && CORE_GEN_RAW="$(head -1 "$HARNESS_ROOT/core/GENERATION" | tr -d '[:space:]')"
+CORE_GENERATION="$(gen_or_1 "$CORE_GEN_RAW")" || { echo "error: malformed generation value '$CORE_GEN_RAW' (expected a positive integer)" >&2; exit 2; }
+if [ "$BOOTSTRAP" != 1 ]; then
+  OVL_GEN_RAW="$(manifest_key core_generation)"
+  OVERLAY_GENERATION="$(gen_or_1 "$OVL_GEN_RAW")" || { echo "error: malformed generation value '$OVL_GEN_RAW' (expected a positive integer)" >&2; exit 2; }
+  if [ "$OVERLAY_GENERATION" -lt "$CORE_GENERATION" ]; then
+    echo "INSTALL REFUSED: overlay '$OVERLAY_RECORD' is core generation $OVERLAY_GENERATION, this harness is generation $CORE_GENERATION — run update.sh to stage the migration, then /harness-migrate-overlay in a session" >&2
+    exit 3
+  fi
+fi
 
 # The overlay's REQUIRED artifact_root binds the <artifact-root> token in core prose (the
 # Evidence-Store path where audit/council records live). Empty (or a template placeholder
@@ -269,11 +295,8 @@ copy_tree() { # <src-root> <dest-prefix> <source-prefix> [skip_readme]
     else stage_copy "$f" "$destrel"; record "$destrel" "$srcrel" "copy" "$f" ""; fi
   done < <(find "$1" -type f ! -path '*/__pycache__/*' ! -name '*.pyc')
 }
-copy_tree "$HARNESS_ROOT/core/rules"      ".claude/rules"             "core/rules"  skip_readme
 copy_tree "$HARNESS_ROOT/core/output-styles" ".claude/output-styles"  "core/output-styles"
 copy_tree "$HARNESS_ROOT/core/templates"  ".claude/harness-templates" "core/templates"
-copy_tree "$HARNESS_ROOT/core/principles" ".claude/harness/principles" "core/principles"
-copy_tree "$HARNESS_ROOT/core/case-law"   ".claude/harness/case-law"   "core/case-law"
 
 # --- overlay trees: project rules + enforcement hooks ---
 # Overlay rules merge into .claude/rules/ alongside core rules (README placeholders skipped);
@@ -380,6 +403,8 @@ fi
 # boundary marker "<!-- SLOT name -->" (the marker is load-bearing — it is what lets a
 # maintainer back-port live edits to the right slot source). Any other comment — including
 # ones inside slot CONTENT — passes through untouched. Source scaffold keeps the full text.
+# The trailing awk drops the blank lines the stripped header leaves behind, so the assembled
+# file opens on its first heading.
 scaffold="$(printf '%s\n' "$scaffold" | awk '
   function emit(b, name) {
     b = buf; sub(/^[[:space:]]*<!--[[:space:]]*/, "", b)
@@ -400,7 +425,7 @@ scaffold="$(printf '%s\n' "$scaffold" | awk '
     }
     buf = buf "\n" $0
     if ($0 ~ /-->/) { inc = 0; emit() }
-  }')"
+  }' | awk 'seen || NF { seen = 1; print }')"
 printf '%s\n' "$scaffold" > "$STAGE/CLAUDE.harness.md"
 record "CLAUDE.harness.md" "assembled" "copy" "" ""
 fi
@@ -452,6 +477,7 @@ MANIFEST="$STAGE/.claude/manifold-manifest.yaml"
   echo "# Manifold install manifest. To update this install: run bootstrap/update.sh from the"
   echo "# harness clone (harness_repo below) — it re-reads this file and reconstructs the install."
   echo "harness_version: $HARNESS_VERSION"
+  echo "core_generation: $CORE_GENERATION"
   echo "harness_repo: $HARNESS_ROOT"
   if [ "$BOOTSTRAP" = 1 ]; then echo "mode: bootstrap"; else echo "mode: $MODE"; fi
   echo "overlay: $OVERLAY_RECORD"
@@ -547,8 +573,21 @@ if [ -s "$OLDLIST" ]; then
       echo "  WARN kept (retired from harness but locally edited): $opath" >&2
     fi
   done < "$OLDLIST"
-  # sweep now-empty managed dirs, best-effort
-  find "$TARGET/.claude" -type d -empty -delete 2>/dev/null || true
+  # sweep now-empty managed dirs, best-effort. A dir whose only survivor is a stray .DS_Store
+  # is empty in substance: drop the stray so the chain collapses with it, or a retired skill
+  # dir lingers as a husk and doctor then reports its SKILL.md MISSING.
+  sweeps=0
+  while [ "$sweeps" -lt 8 ]; do
+    sweeps=$((sweeps+1)); dropped=0
+    find "$TARGET/.claude" -type d -empty -delete 2>/dev/null || true
+    while IFS= read -r d; do
+      [ -n "$d" ] || continue
+      if [ "$(ls -A "$d" 2>/dev/null)" = ".DS_Store" ]; then
+        rm -f "$d/.DS_Store"; dropped=1
+      fi
+    done < <(find "$TARGET/.claude" -type d 2>/dev/null)
+    [ "$dropped" = 1 ] || break
+  done
 fi
 
 n_files="$(grep -c '  - path: ' "$MANIFEST" 2>/dev/null || true)"

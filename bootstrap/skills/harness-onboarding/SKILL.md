@@ -107,9 +107,9 @@ slot file as soon as its group is answered (so an abandoned interview loses only
 questions). Slot files live in `manifold-overlay/claude-slots/`.
 
 Each template slot opens with a FILL comment stating that slot's contract — **read it before
-asking that group's questions**, and **delete it when you write the real content**. Two slots
-(`security_directive`, `project_hard_rules`) also carry suggested content below their FILL
-comment: that is the text you offer verbatim. Those two slots carry a second wrapper comment
+asking that group's questions**, and **delete it when you write the real content**. One slot
+(`project_hard_rules`) also carries suggested content below its FILL
+comment: that is the text you offer verbatim. That slot carries a second wrapper comment
 (`<!-- Suggested starting content … -->`) — **delete both comments** and keep only the text you
 and the operator agreed on; the wrapper is authoring meta and would otherwise ship inside their
 always-loaded constitution. The installer refuses to build a constitution while any FILL comment
@@ -138,7 +138,8 @@ which you concluded.
    import? If not, offer to write the two or three lines you just learned directly into the
    slot instead of an `@`-import.
 4. How should it talk to you? First explain, briefly and in plain words, what the harness's
-   shipped default already codifies (installed at `.claude/rules/response-style.md`): plain
+   shipped default already codifies (the Simple output style, part of the always-loaded facts
+   core): plain
    language with codes in parentheses; shorter by default (shortness drops detail, never
    clarity); uncertainty stated first; every response ending with
    what's-happening/what's-needed/what's-next; status reports that rebuild context from zero
@@ -162,7 +163,7 @@ which you concluded.
    ceremony scales with this answer — the further toward "bring me everything", the more
    junctions stop and ask. Record it in `comms_style` beside Q4's answer.
 
-### Group 2 — what the project is and where things live → `system_map`, `project_knowledge_sources`, `memory_paths`, a tracker binding in `manifold-overlay/rules/`
+### Group 2 — what the project is and where things live → `system_map`, a tracker binding in `manifold-overlay/rules/`
 
 6. What is this project, and where does its code, runtime, and docs live? Anything the agent
    must know about and *not* touch?
@@ -171,8 +172,8 @@ which you concluded.
    vetted sources → empirical testing last, stated explicitly as a mode switch.)
 8. Where should continuity files live — state, journal, decisions, questions-for-you, lessons?
    Offer the default (`.claude/` next to the harness, or a `docs/` folder) and move on if they
-   have no preference. `self_knowledge_corpus` and `compact_instructions` are legitimately
-   empty on a young project — say so and leave them empty rather than inventing content.
+   have no preference. This can legitimately be thin on a young project — say so and leave it
+   thin rather than inventing content.
 9. Does the project use an issue tracker — and which (Linear, Jira, GitHub Issues, …) — or
    plain files? Note what it changes: `to-tickets` and `wayfinder` publish to the tracker when
    there is one and fall back to plain ticket/map files when there is not. Record the answer in
@@ -180,7 +181,7 @@ which you concluded.
    stating there is none, and where ticket files live), and listed in the manifest's `rules:` to
    keep it in sync — and mention it in `system_map` so the agent knows where work items live.
 
-### Group 3 — what is off-limits → `security_directive`, `project_hard_rules`
+### Group 3 — what is off-limits → `project_hard_rules`
 
 10. Print the template's suggested security-directive text **verbatim** and ask: accept as-is,
     edit, or drop? Then ask the one thing the suggestion cannot know: **which concrete paths,
@@ -228,7 +229,7 @@ strict version is the safe start and can be loosened later with a one-line edit.
     `inter-session` and `multi-agent` questions (`atlas` is asked on its own — it turns on a
     need for durable decision records, not on parallelism). Also ask, if yes, whether one
     session owns the shared state files or each
-    workstream keeps its own folder; record their answer in `memory_paths`.
+    workstream keeps its own folder; record their answer in `system_map`.
 
 **Close Act 1** by running the FILL grep above and showing the operator the list of files you
 wrote. Offer to show any of them in full.
@@ -337,7 +338,7 @@ claude plugin list                      # verification, every time
 | Companion | Source / plugin id | Ask |
 |---|---|---|
 | ponytail (minimality mode: a plan-blind YAGNI lens over code) | `dietrichgebert/ponytail` → `ponytail@ponytail` | optional; recommend it if they build a lot of glue code |
-| karpathy-guidelines (coding-guidelines depth for the constitution's Implementation Discipline section) | `forrestchang/andrej-karpathy-skills` → `andrej-karpathy-skills@karpathy-skills` | **required** if any of their overlay's skill bindings point at it; optional otherwise — the constitution states the four principles inline either way |
+| karpathy-guidelines (coding-guidelines depth for the constitution's Dispositions, the facts core's standing behaviours) | `forrestchang/andrej-karpathy-skills` → `andrej-karpathy-skills@karpathy-skills` | **required** if any of their overlay's skill bindings point at it; optional otherwise — the constitution's Dispositions carry the discipline either way |
 
 **ponytail has a second step humans skip: pin its default off.** Its native default is `full`,
 which injects the persona into every session including lead and judgment seats; the harness

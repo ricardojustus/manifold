@@ -6,7 +6,7 @@ description: >-
 
 # Research
 
-**Hypothesize, then research to validate, THEN act.** This operationalizes the Cardinal Rule
+**Hypothesize, then research to validate, THEN act.** This operationalizes the research protocol
 (`HYPOTHESIZE → RESEARCH → PRESENT → IMPLEMENT`) plus the pre-feed rule for dispatched agents.
 Skipping it is how sessions spend hours fixing the wrong thing.
 
@@ -84,10 +84,10 @@ wait), or the research is short (under a minute).
 
 ## Output discipline
 
-Before acting on findings: **subagent output is not trusted** — the constitution's grounding rule
-applies to every load-bearing claim it returns. **Separate facts from recommendations** — facts cite
-sources, recommendations name the tradeoff. **Present findings to the operator before implementing**
-(Cardinal Rule step 3).
+Before acting on findings: **subagent output is not trusted** — floor wall 7 (never confabulate on
+deliverable surfaces) applies to every load-bearing claim it returns. **Separate facts from
+recommendations** — facts cite sources, recommendations name the tradeoff. **Present findings to
+the operator before implementing** (the research protocol's PRESENT step).
 
 **Name the shape of the uncertainty, not just its presence** — conflicting sources, an unendorsed
 community answer, and an inference from a secondary signal are three different results, and the
@@ -97,8 +97,8 @@ endorsed unverified" · "no primary source — inferred from `<secondary signal>
 
 ## Related
 
-`research-sufficiency` (principle — when the research is enough to act on) · `phase-start` (invokes
-this in its reading order before any new phase) · `scoped-adversarial-audit`
-(the sibling pre-fed-subagent pattern, for adversarial review of a code surface) · `brief-authoring`
-(the full dispatched-brief discipline — a research brief is one instance) · the constitution's
-**Cardinal Rule** + **Grounding Claims in Source**.
+the judgment for when research is enough to act on · the GROUND-FIRST disposition (facts core —
+invokes this in its reading order before any new phase) · an `audit-cycle` round scoped to the
+surface (the sibling pre-fed-subagent pattern, for adversarial review of a code surface) ·
+`brief-authoring` (the full dispatched-brief discipline — a research brief is one instance) · the
+research protocol above + floor wall 7 (never confabulate on deliverable surfaces).

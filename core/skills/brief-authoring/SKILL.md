@@ -1,7 +1,7 @@
 ---
 name: brief-authoring
 description: >-
-  Authors the brief for any dispatched agent — subagent, teammate, parallel lane, or implementer. Use when about to dispatch a subagent / teammate / lane / implementer, or on "write the brief". Other skills invoke it by name whenever they need a dispatch contract authored. Not the spec itself (spec-writing) or lane mechanics (parallel-workstreams).
+  Authors the brief for any dispatched agent — subagent, teammate, parallel lane, or implementer. Use when about to dispatch a subagent / teammate / lane / implementer, or on "write the brief". Other skills invoke it by name whenever they need a dispatch contract authored. Not the contract's definition of done itself (`contract-template.md`) or lane mechanics (parallel-workstreams).
 ---
 
 # Brief-Authoring Discipline — GIVEN Context Up Front
@@ -80,8 +80,8 @@ Before writing a brief that DESIGNS work, two lookups:
   set of triggers its own read discipline names, not a single query on the headline decision: the
   operator may have ruled this in another thread, and the project facts the brief is about to
   assert may already be on record. A ruling found constrains the brief rather than being re-derived
-  inside it. Decision packets and cards run the already-ruled check in `operator-translation`,
-  which owns that surface — this bullet governs dispatch briefs.
+  inside it. Decision packets and cards run their own already-ruled check for operator-facing
+  surfaces — this bullet governs dispatch briefs.
 - **Prior runs** — grep the project's research / audit / experiment corpus for the investigation
   the brief proposes. A brief commissioning work the corpus already did spends the budget twice
   and reaches the operator carrying claims its own record contradicts.

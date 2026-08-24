@@ -7,8 +7,14 @@ name: <name>                 # must equal the overlays/<name>/ directory name
 runtime: claude-code
 description: <one line — what this overlay adapts core to>
 
-# Install profile: `base` = the core discipline set (methodology, session lifecycle,
-# spec/audit/research skills, principles, agents); `full` = base + every optional module.
+# The core generation this overlay is written for (matches core/GENERATION in the harness
+# clone). install.sh REFUSES to install an overlay older than the core. Bump this ONLY by
+# running /harness-migrate-overlay — that skill re-shapes the slots first and stamps this
+# key last, on the owner's yes.
+core_generation: 2
+
+# Install profile: `base` = the core discipline set (the facts core + floor + continuity card,
+# the cards and kept skills, the two agent roles); `full` = base + every optional module.
 # Optional modules (enable individually via `modules:` below or --modules at install time):
 #   inter-session — the peer-session messaging bus (ships a Python runtime; only useful when
 #                   the project runs multiple coordinated Claude Code sessions on one machine)
@@ -31,14 +37,11 @@ artifact_root: .
 claude_slots:
   - identity
   - user_import
-  - self_knowledge_corpus
   - system_map
-  - project_knowledge_sources
-  - security_directive
-  - memory_paths
+  - accounts
+  - model_pins
   - comms_style
   - project_hard_rules
-  - compact_instructions
 
 # Core skills that get a project binding appended on install (skill-bindings/<skill>.md).
 skill_bindings: []
@@ -46,9 +49,9 @@ skill_bindings: []
 # Project-only skills shipped by this overlay (skills/<name>/SKILL.md).
 skills: []
 
-# Project rules installed to .claude/rules/ (rules/<file>.md).
-rules:
-  - model-pins               # pre-filled with dated public defaults — confirm or remap them
+# Project rules installed to .claude/rules/ (rules/<file>.md). None by default: model pins
+# now live in the `model_pins` slot, in the constitution itself.
+rules: []
 
 # Enforcement hook bindings for core/ENFORCEMENT.md bright-lines (hooks/<script>.sh).
 # DRAFT on install (not wired into settings.json). exit 2 = block, exit 0 = allow.

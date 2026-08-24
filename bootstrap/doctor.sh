@@ -2,7 +2,7 @@
 #
 # doctor.sh — verify a Manifold install and lint its structure.
 #
-#   doctor.sh <target-repo> [--harness <harness-repo-path>]
+#   doctor.sh <target-repo> [--harness <harness-repo-path>] [--overlay]
 #
 # Per manifest file, prints exactly one line:
 #   OK <path>                  installed matches manifest (and, with --harness, the source)
@@ -18,8 +18,18 @@
 #   FLAG DIVERGED <path>       (with --harness) installed matches neither manifest nor
 #                              current source — local edit + upstream movement (warn)
 #
+# OVERLAY CHECK (needs --harness; runs at the end of the default pass, or alone with
+# --overlay). Compares the install's overlay against the harness's current core:
+#   OK SLOT <name>             scaffold slot with a claude-slots/<name>.md (empty = filled)
+#   FLAG UNFILLED-SLOT <name>  scaffold slot the overlay has no file for      (blocking)
+#   FLAG ORPHAN-SLOT <file>    overlay slot file no scaffold placeholder reads (info)
+#   FLAG ORPHAN-BINDING <skill> binding for a skill no longer in core          (warn)
+#   OK GENERATION overlay <o> core <c>     overlay generation equal to or ahead of core
+#   FLAG GENERATION overlay <o> core <c>   overlay generation behind core/GENERATION (blocking)
+#
 # Then lints installed skills (frontmatter name+description, name==dirname, description
-# and body length WARNs), scans for unfilled {{HARNESS:...}} slots (blocking), lints for
+# and body length WARNs), scans for unfilled {{HARNESS:...}} slots (blocking, except the
+# migration draft dir .claude/migration-draft/, which mirrors the overlay's own tokens), lints for
 # core/ source-tree paths in installed .md (informational), checks that .claude/harness/
 # exists (blocking), reports module/capability status (informational), and WARNs on unfinished
 # onboarding and on companion tools an install expects but the machine lacks.
@@ -31,13 +41,15 @@
 # macOS bash-3.2 safe.
 set -euo pipefail
 
-usage() { echo "usage: doctor.sh <target-repo> [--harness <harness-repo-path>]" >&2; }
+usage() { echo "usage: doctor.sh <target-repo> [--harness <harness-repo-path>] [--overlay]" >&2; }
 
 TARGET=""
 HARNESS=""
+OVERLAY_ONLY=0
 while [ $# -gt 0 ]; do
   case "$1" in
     --harness) HARNESS="${2:-}"; shift 2 ;;
+    --overlay) OVERLAY_ONLY=1; shift ;;
     -h|--help) usage; exit 0 ;;
     -*)        echo "error: unknown option: $1" >&2; usage; exit 2 ;;
     *)         if [ -z "$TARGET" ]; then TARGET="$1"; shift
@@ -50,6 +62,9 @@ TARGET="$(cd "$TARGET" && pwd)"
 MANIFEST="$TARGET/.claude/manifold-manifest.yaml"
 [ -f "$MANIFEST" ] || { echo "error: no manifest at $MANIFEST — is the harness installed?" >&2; exit 2; }
 [ -z "$HARNESS" ] || HARNESS="$(cd "$HARNESS" && pwd)"
+if [ "$OVERLAY_ONLY" = 1 ] && [ -z "$HARNESS" ]; then
+  echo "error: --overlay needs --harness <harness-repo-path> (the overlay is checked against that core)" >&2; usage; exit 2
+fi
 
 sha256_cmd() { if command -v shasum >/dev/null 2>&1; then shasum -a 256 "$@"; else sha256sum "$@"; fi; }
 sha256_of() { sha256_cmd "$1" | awk '{print $1}'; }
@@ -61,15 +76,22 @@ MF_PROFILE="$(hdr_key profile)"
 MF_MODULES="$(hdr_key modules)"
 ARTIFACT_ROOT="$(hdr_key artifact_root)"
 
+# Resolve the overlay this install was built from, the same way install.sh did: a bare name
+# lives under the harness's overlays/, a path is an external overlay dir. Needs --harness for
+# the bare-name form. Used by the artifact_root fallback below and by the overlay check.
+OVERLAY_REF="$(hdr_key overlay)"
+OVERLAY_DIR=""; OVL_MANIFEST=""
+if [ -n "$OVERLAY_REF" ]; then
+  case "$OVERLAY_REF" in
+    */*) OVERLAY_DIR="$OVERLAY_REF" ;;                                   # external overlay path
+    *)   [ -n "$HARNESS" ] && OVERLAY_DIR="$HARNESS/overlays/$OVERLAY_REF" ;;  # bare name
+  esac
+  [ -n "$OVERLAY_DIR" ] && OVL_MANIFEST="$OVERLAY_DIR/manifest.yaml"
+fi
+
 # Older manifests predate the artifact_root header — fall back to resolving it from the
 # overlay manifest (the same file install.sh read), the pre-recipe behavior.
 if [ -z "$ARTIFACT_ROOT" ] && [ -n "$HARNESS" ]; then
-  OVERLAY_REF="$(hdr_key overlay)"
-  case "$OVERLAY_REF" in
-    "")  OVL_MANIFEST="" ;;
-    */*) OVL_MANIFEST="$OVERLAY_REF/manifest.yaml" ;;        # external overlay path
-    *)   OVL_MANIFEST="$HARNESS/overlays/$OVERLAY_REF/manifest.yaml" ;;  # bare name
-  esac
   if [ -n "$OVL_MANIFEST" ] && [ -f "$OVL_MANIFEST" ]; then
     ARTIFACT_ROOT="$(sed -n 's/^artifact_root:[[:space:]]*//p' "$OVL_MANIFEST" | head -1)"
     ARTIFACT_ROOT="${ARTIFACT_ROOT%%#*}"
@@ -114,6 +136,78 @@ expected_hash() { # <abs-source> <abs-binding-or-empty>
 FAILS=0   # MISSING + BAD-RECORD + BROKEN-LINK + unfilled-slot + missing harness dir
 WARNS=0
 RECORD_COUNT=0
+
+# --- overlay check (needs --harness): the overlay's SHAPE against the harness's current core.
+# This is the guard that catches an overlay left behind by a core change — a slot the scaffold
+# gained and the overlay never filled, a slot file nothing reads any more, a binding for a
+# skill core retired, and the generation stamp itself. Structure only; no hashes.
+# Absent/empty -> generation 1 (pre-generation harnesses/overlays). A value that is PRESENT
+# but not a positive integer is a corrupt record, not an absent one: fail closed (return 2).
+gen_or_1() { case "${1:-}" in '') echo 1 ;; *[!0-9]*|0*) return 2 ;; *) echo "$1" ;; esac; }
+overlay_check() {
+  local scaffold="$HARNESS/core/CLAUDE.scaffold.md" slot sf skill core_gen ovl_gen core_gen_raw ovl_gen_raw
+  echo "--- overlay ---"
+  if [ -z "$OVERLAY_REF" ]; then
+    echo "INFO OVERLAY-NONE — manifest records no overlay (bootstrap install); nothing to check"; return 0
+  fi
+  if [ ! -d "$OVERLAY_DIR" ]; then
+    echo "FLAG OVERLAY-MISSING $OVERLAY_REF (recorded overlay dir not found)"; FAILS=$((FAILS+1)); return 0
+  fi
+  if [ ! -f "$scaffold" ]; then
+    echo "INFO SCAFFOLD-MISSING core/CLAUDE.scaffold.md not found under $HARNESS; slot check not run"
+  else
+    # every {{HARNESS:slot}} the scaffold declares must have a claude-slots/<slot>.md
+    while IFS= read -r slot; do
+      [ -n "$slot" ] || continue
+      if [ -f "$OVERLAY_DIR/claude-slots/$slot.md" ]; then echo "OK SLOT $slot"
+      else echo "FLAG UNFILLED-SLOT $slot"; FAILS=$((FAILS+1)); fi
+    done < <(grep -o '{{HARNESS:[A-Za-z0-9_]*}}' "$scaffold" 2>/dev/null | sed -e 's/^{{HARNESS://' -e 's/}}$//' | sort -u)
+    # ...and every slot file must have a placeholder that reads it (info: harmless, but dead)
+    if [ -d "$OVERLAY_DIR/claude-slots" ]; then
+      for sf in "$OVERLAY_DIR/claude-slots"/*.md; do
+        [ -f "$sf" ] || continue
+        slot="$(basename "$sf" .md)"
+        [ "$slot" = "README" ] && continue
+        grep -q "{{HARNESS:$slot}}" "$scaffold" 2>/dev/null || echo "FLAG ORPHAN-SLOT $slot.md"
+      done
+    fi
+  fi
+  # a skill-binding whose core skill is gone appends to nothing — it is silently dead weight
+  if [ -d "$OVERLAY_DIR/skill-bindings" ]; then
+    for sf in "$OVERLAY_DIR/skill-bindings"/*.md; do
+      [ -f "$sf" ] || continue
+      skill="$(basename "$sf" .md)"
+      [ "$skill" = "README" ] && continue
+      if [ ! -d "$HARNESS/core/skills/$skill" ]; then
+        echo "FLAG ORPHAN-BINDING $skill"; WARNS=$((WARNS+1))
+      fi
+    done
+  fi
+  core_gen_raw=""
+  [ -f "$HARNESS/core/GENERATION" ] && core_gen_raw="$(head -1 "$HARNESS/core/GENERATION" | tr -d '[:space:]')"
+  ovl_gen_raw=""
+  [ -f "$OVL_MANIFEST" ] && ovl_gen_raw="$(sed -n 's/^core_generation:[[:space:]]*//p' "$OVL_MANIFEST" | head -1 | sed -e 's/#.*//' -e 's/[[:space:]]*$//')"
+  if ! core_gen="$(gen_or_1 "$core_gen_raw")"; then
+    echo "FLAG GENERATION-MALFORMED core/GENERATION '$core_gen_raw' (expected a positive integer)"; FAILS=$((FAILS+1)); return 0
+  fi
+  if ! ovl_gen="$(gen_or_1 "$ovl_gen_raw")"; then
+    echo "FLAG GENERATION-MALFORMED $OVERLAY_REF core_generation '$ovl_gen_raw' (expected a positive integer)"; FAILS=$((FAILS+1)); return 0
+  fi
+  if [ "$ovl_gen" -lt "$core_gen" ]; then
+    echo "FLAG GENERATION overlay $ovl_gen core $core_gen"; FAILS=$((FAILS+1))
+  else
+    echo "OK GENERATION overlay $ovl_gen core $core_gen"
+  fi
+}
+
+# --overlay is a standalone mode: the overlay block and its verdict, nothing else.
+if [ "$OVERLAY_ONLY" = 1 ]; then
+  overlay_check
+  echo "---"
+  if [ "$FAILS" -gt 0 ]; then echo "doctor: FAIL — $FAILS blocking issue(s), $WARNS warning(s)"; exit 1; fi
+  echo "doctor: PASS — 0 blocking issue(s), $WARNS warning(s)"
+  exit 0
+fi
 
 # --- per-file manifest verification (state machine over the manifest) ---
 P=""; S=""; SRC=""; M=""; SRCH=""; BREF=""; BH=""
@@ -228,7 +322,7 @@ fi
 
 # --- unfilled-slot scan over installed files ---
 scan_hit() { # <file-or-dir>
-  grep -RIl '{{HARNESS:' "$1" 2>/dev/null || true
+  grep -RIl --exclude-dir=migration-draft '{{HARNESS:' "$1" 2>/dev/null || true
 }
 if [ -d "$TARGET/.claude" ]; then
   while IFS= read -r hit; do
@@ -335,6 +429,9 @@ if [ -d "$SKILLS_DIR" ]; then
     echo "INFO audit-cycle: no project binding appended — cross-model lens unbound; runs the documented solo-fallback"
   fi
 fi
+
+# --- overlay check, on every doctor run that can resolve the harness ---
+if [ -n "$HARNESS" ]; then overlay_check; fi
 
 # --- onboarding + companion warnings (never blocking) ---
 # The pending marker means install.sh ran in --bootstrap mode and the interview hasn't

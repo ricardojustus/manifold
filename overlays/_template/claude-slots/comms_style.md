@@ -3,4 +3,4 @@
      switching). Voice and report shape belong to the `simple` output style
      (core/output-styles/simple.md), never to this slot — contradictory voice sources
      blend unpredictably.
-     (The scaffold provides the `## Communication Style` heading.) -->
+     (The scaffold provides the `## Voice` heading.) -->
