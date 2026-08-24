@@ -27,9 +27,17 @@ acct=$(jq -r '.oauthAccount.emailAddress // empty' "$CONFIG_DIR/.claude.json" 2>
 # Target the session id from $TMUX (the session the pane was CREATED in), not the
 # bare '#S' — bare #S resolves via the attached client, so viewing through an
 # umbrella session (link-window) mislabels every pane as that umbrella.
+# Fallback: the creating session can die while the pane lives on (relinked into a
+# rebuilt session) — then resolve via the pane itself, picking the session with the
+# FEWEST windows among those containing it: a dedicated home session holds few
+# windows, an umbrella by definition aggregates many.
 track=""
 if [ -n "$TMUX" ]; then
   track=$(tmux display-message -t "\$${TMUX##*,}" -p '#S' 2>/dev/null)
+  if [ -z "$track" ] && [ -n "$TMUX_PANE" ]; then
+    track=$(tmux list-panes -a -F '#{pane_id} #{session_windows} #{session_name}' 2>/dev/null |
+      awk -v p="$TMUX_PANE" '$1 == p { print $2, $3 }' | sort -n | head -1 | cut -d' ' -f2)
+  fi
 fi
 
 # --- Directory: basename of current working directory ---

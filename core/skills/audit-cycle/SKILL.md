@@ -439,7 +439,7 @@ the AUDIT is wrong — save the correction to the memory store and add it to the
 - **Reject-per-plan** — the writer/lead rejects a finding ON THE RECORD by citing the governing
   plan / vision / posture clause or standing operator ruling it conflicts with. Logged in the
   consolidated findings' rejections table; surfaced to the operator with the lock report as a
-  ⚠ line (mirror of the council's ruling-conflict tags). **The lock PROCEEDS**; the operator
+  ⚠ line (same purpose as the council's "set aside as relitigation" line). **The lock PROCEEDS**; the operator
   ratifies or overturns asynchronously — an overturn becomes a normal follow-up fix-pass. A
   rejection without a citation is not a rejection (it's a Dispute at best).
 - **Advisory** — a machinery finding with no authority citation (see Finding authority) →

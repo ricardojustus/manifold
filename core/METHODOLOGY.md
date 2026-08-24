@@ -15,7 +15,7 @@
 ## 0. Core principles
 
 1. **Loop, not line.** The forward spine is 0 to 8. The backward edges (Gate A or Council to Vision, Council to Plan, Implementation to Plan or Spec, and an architectural re-open challenging a Phase 0 repo constraint) are travelled only by deliberate, authorized, recorded re-opens.
-2. **Authority is human-first.** Final authority is the **Human**. Delegated authority for routine decisions sits with the **Orchestrator / Main agent**. The **Council is advisory only**: it produces severity-rated findings and arguments, and it has zero power to change an artifact or trigger a loop-back on its own.
+2. **Authority is human-first.** Final authority is the **Human**. Delegated authority for routine decisions sits with the **Orchestrator / Main agent**. The **Council is advisory only**: it returns ranked OPINIONS (what each seat would change, what worries it, what it would keep) plus a bounded fact-check — never severity grades — and it has zero power to change an artifact or trigger a loop-back on its own.
 3. **Ground truth anchors everything.** Two anchors keep the loop honest: the **repo** (established in Phase 0) and the **acceptance criteria** (written in Phase 1). Audits and Councils check work *against these anchors*, not against taste.
 4. **Right-size the rigor.** Two independent dials:
    - **Project stakes** (Low / Medium / High) drive whether Gate A runs and how large the Council is.
@@ -36,7 +36,7 @@
 | **Orchestrator / Main agent** | Runs the process end to end. Holds delegated authority. Drafts the Vision Doc in Phases 1 and 3 on the Human's direction. Convenes the Council, synthesizes its findings, dispositions them, owns Locks and re-opens on the Human's behalf, and escalates anything above its delegation. |
 | **Builder** | Phase 0 grounding, Phase 2 research, Phase 6 specs, Phase 7 implementation. |
 | **Auditor** | Runs the `audit-cycle` on every spec and every implementation: the same cross-model lens every time. The chunk's risk tier sets the lock-gate floor and the evidence burden, not whether the audit happens. |
-| **Round Table** | Ephemeral panel spawned only for the Council (Phase 5 and Gate A). At full strength, 2 strong-reasoning + 3 cross-model seats, five adversarial roles — the Proportionality Skeptic standing at every sitting. Advisory only. Disbanded after each sitting so nothing it argues contaminates later phases. |
+| **Round Table** | Ephemeral panel spawned only for the Council (Phase 5 and Gate A). Always five seats — 2 strong-reasoning + 3 cross-model, five distinct lenses (operator ruling 18/08). Advisory only; opinions, never severity grades (`council` skill). Disbanded after each sitting so nothing it argues contaminates later phases. |
 | **Untrusted-content handler** | Fetches and quarantines untrusted external content when research reaches the open web. |
 
 The Council is deliberately **not** the agents who built the thing. Freshness is the point: a builder defending its own plan is not an adversary.
@@ -69,8 +69,8 @@ Score the build on each dimension. **Project stakes = the highest tier reached o
 | Project stakes | Gate A (early vision challenge) | Phase 5 Council |
 |---|---|---|
 | **Low** | Skip | **Dropped** — Low takes the express lane (below), so the Phase 5 Council is skipped; human review suffices. An out-of-method advisory pass only on explicit request. |
-| **Medium** | Optional (Orchestrator's call) | 3 seats: 1 strong-reasoning + 1 cross-model + the Proportionality Skeptic. Full Round Table at the Orchestrator's discretion. |
-| **High** | **Required** | **Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model (Proportionality standing).** |
+| **Medium** | Optional (Orchestrator's call) | Full 5-seat Round Table (all five seats sit at every sitting — operator ruling 18/08). |
+| **High** | **Required** | **Full 5-seat Round Table: 2 strong-reasoning + 3 cross-model.** |
 
 Without a second model family, the cross-model seats remap per the `council` skill's remap rule (a cross-model seat becomes a further strong-reasoning seat, and the remap is noted in the session record) — the sitting still happens at its mandated size.
 
@@ -190,7 +190,7 @@ Note this is a different mechanism from the Round Table Council (Phase 5 / Gate 
 - **Purpose.** Subject the Vision *and* the Plan to fresh adversarial scrutiny from first principles, then lock both.
 - **Owner.** The Orchestrator convenes and synthesizes. The Round Table argues. The Human co-signs the Lock.
 - **Activities.** See **The Round Table** section below for seats, roles, and run format.
-- **Disposition.** The Orchestrator collects the Council's severity-rated findings into one list. For each finding, the Human or the Orchestrator chooses one of: **re-open** (loop back, see governance), **waiver** (accept the risk, logged), **refine in place**, or — when a finding kills the build itself — **abandon** (terminal; recorded as a Kill, see governance).
+- **Disposition.** The Orchestrator folds the Council's opinions into one page for the Human (`council` skill: agreements, disagreements, fact-check results, decisions for the Human). For each item the Human takes up, the Human or the Orchestrator chooses one of: **re-open** (loop back, see governance), **waiver** (accept the risk, logged), **refine in place**, or — when a finding kills the build itself — **abandon** (terminal; recorded as a Kill, see governance).
 - **Vision-guard invariants (promoted at this phase).** Before the Lock, the Orchestrator extracts the Vision's **load-bearing guards** — its quantitative or bounding promises ("sampled", "bounded ≪", caps, densities, a mandated envelope) — into a short named-invariants list attached to the Lock. Every downstream artifact (Plan constants, Specs, release evidence) is checked against these **verbatim**: a paraphrase that inverts magnitude ("sampled" becoming 100%) is a violation, not coverage. *(Receipt: a vision's "countersign density is bounded (applies ≪ judgments)" became 100% countersign in the plan; every later gate faithfully verified the wrong number.)*
 - **Lock.** Once dispositioned, the Human co-signs a **Lock** on the Vision and the Plan. A Lock is a recorded decision, not a mood. Locked artifacts are the source of truth until a logged re-open supersedes them. **The co-sign attaches to the operator decision packet/brief, not to the raw artifact** (the operator-translation principle): a GO obtained against a document the operator is known not to parse is not informed consent, and ratification never transfers accountability for what the operator wasn't equipped to see.
 - **Exit criteria.** All findings recorded. High and Critical dispositioned before lock; Medium and Low waived, backlogged, or refined per policy. Vision-guard invariants named. **No plan locks while operator-visible machinery justified by a criticality / recovery / security-depth posture lacks a cited operator POSTURE RECEIPT covering that trade** (`operator-owns-criticality-and-complexity`; a risk tag or a generic GO is not a receipt). Vision and Plan Locked against the operator brief.
@@ -237,18 +237,18 @@ The Council is a fresh, ephemeral panel spawned for Gate A and Phase 5. At full 
 | **The Premise Skeptic** | strong-reasoning | Attacks the core premise from first principles. Should we build this at all? What is the strongest case for a completely different approach, or for doing nothing? |
 | **The Feasibility Skeptic** | cross-model | Technical and resource realism. Can this be built with the stack, the constraints, the timeline? Where is the hidden complexity? |
 | **The Systems Critic** | cross-model | Coherence and second-order effects. Does the Plan actually deliver the Vision — its acceptance criteria AND its explicitly mandated deliverables? Are the dependencies, ordering, and architecture sound? What breaks at scale or under load? |
-| **The Proportionality Skeptic** | cross-model (standing, every sitting) | Overengineering, YAGNI, and cost. Prices the design against the account it runs on ("cannot price it" blocks a Phase 5 lock); challenges the blast-radius classification against the written recovery story; asks the six standing proportionality questions; every finding names a concrete deletion. |
+| **The Proportionality Skeptic** | cross-model | The smallest design that meets the vision. Prices the design and hands the number to the Human as a decision (cost posture is the Human's); challenges danger claims against the written recovery story; every change it proposes names a concrete deletion. |
 
 Model-to-seat mapping is a sensible default (the strongest qualitative reasoner on the conceptual seats, a genuinely different model on the technical and architectural seats), not a law. The Orchestrator may remap if a particular build calls for it. **Cross-model is the point** — two seats from a model family genuinely different from the primary reasoner, because a second instance of the same model shares the first's blind spots.
 
 **Run format.**
 1. The Orchestrator briefs each seat through that seat's mandate rather than handing all four an identical prompt. Shared framing is how four models arrive at one shared blind spot.
-2. Each seat produces a **fully independent first pass** before seeing any other seat's. Each finding states its assumptions, a confidence level, and the strongest counterargument the seat can muster against its own finding.
-3. Only then do the seats cross-examine each other — **one round by default; zero for cheap sittings** (the Orchestrator may set 0 at Low/Medium to favor speed and maximal independence).
-4. Each finding is recorded as: `{ severity: Low | Medium | High | Critical, target: vision | plan, claim, assumptions, confidence, steelman, suggested disposition }`.
-5. The Orchestrator synthesizes all findings into one dispositioned list, writes the session record under `<artifact-root>/councils/<topic>/<phase>/`, and brings it to the Human.
+2. Each seat produces a **fully independent first pass** before seeing any other seat's. Each change or worry states what it rests on and the strongest case against itself.
+3. Only then do the seats read each other — **round two, ON by default** (measured 18/08: it turns vague claims into measured facts and produces repairs no single seat had); the Orchestrator may propose skipping it for a thin vision-only document, the Human decides.
+4. Each seat returns the opinion object defined in the `council` skill (ranked changes / worries / keep, checkable facts, decisions for the Human) — no severity grades at the vision or plan stage; severity grammar belongs to `audit-cycle` against locked specs.
+5. The Orchestrator folds the opinions into one page, writes the session record under `<artifact-root>/councils/<topic>/<sitting>/`, and brings it to the Human.
 
-**Authority.** The Round Table is advisory. It can poke severe holes; it cannot patch them, change an artifact, or force a loop-back. When it raises High or Critical findings, those escalate to the Orchestrator and the Human, who decide the disposition. A brilliant Council argument that the Human rejects is simply a logged, waived finding.
+**Authority.** The Round Table is advisory. It can poke severe holes; it cannot patch them, change an artifact, or force a loop-back. Its opinions go to the Orchestrator and the Human, who decide the disposition. A brilliant Council argument that the Human rejects is simply a logged opinion not adopted.
 
 ---
 
@@ -275,12 +275,12 @@ Disposition:   <re-vision | re-plan | re-spec | refine-in-place | waiver>
 Re-lock:       <new lock id / date>
 ```
 
-**Records the methodology depends on.** All findings — from the per-artifact `audit-cycle` and from the Round Table Council alike — live in **one Evidence Store**, under **one set of record types** and **one severity/disposition vocabulary**. They differ only in where their session records file: code-audit artifacts under `<artifact-root>/audits/<topic>/`, intent-review (Council) artifacts under `<artifact-root>/councils/<topic>/` (per-sitting records nest one level deeper at `councils/<topic>/<phase>/` — Gate A vs Phase 5) — different objects, the same schema. The methodology does not define the Evidence Store schema (that belongs to the Evidence Store subsystem); it only requires that these record types exist there, each with a stable ID and at least these fields:
+**Records the methodology depends on.** All findings — from the per-artifact `audit-cycle` and from the Round Table Council alike — live in **one Evidence Store**, under **one set of record types** and **one severity/disposition vocabulary**. They differ only in where their session records file: code-audit artifacts under `<artifact-root>/audits/<topic>/`, intent-review (Council) artifacts under `<artifact-root>/councils/<topic>/` (per-sitting records nest one level deeper at `councils/<topic>/<sitting>/`) — different objects, the same schema. The methodology does not define the Evidence Store schema (that belongs to the Evidence Store subsystem); it only requires that these record types exist there, each with a stable ID and at least these fields:
 
 - **Lock** — lock ID, artifact path, version, content hash, who co-signed, date, and a **supersedes** field pointing at the lock it replaces. The hash pins "authoritative as written" to an exact artifact state.
 - **Clarification** — clarification ID, artifact, the one-line changelog entry, date. No authorization field, since none is required.
 - **Amendment** — amendment ID, artifact, what changed and why, the authorizing Orchestrator, date.
-- **Finding** — finding ID, severity, source (which Council seat or audit lens), target artifact, disposition.
+- **Finding** — finding ID, severity (audit lenses only; council items carry none), source (which Council seat or audit lens), target artifact, disposition.
 - **Re-open** — as in the record above.
 - **Kill** — kill ID, what was killed (the whole build, or a single artifact/chunk), the finding ID or evidence that killed it, who decided (Human | Orchestrator), date, and a **revival trigger** ("reconsider if X changes"). The terminal sibling of re-open: a re-open sends an artifact back to be fixed; a Kill ends it. A killed idea returns only through its trigger — the same discipline waivers use, applied to a whole build.
 - **Waiver** — waiver ID, the finding it waives, the rationale, and a **revalidation trigger**: the condition under which the waiver must be re-examined ("revisit when X"). A waiver with no trigger rots into permanent forgotten debt, so every waiver carries one, exactly as the `audit-backlog` attaches trigger conditions to deferred items.
@@ -314,7 +314,7 @@ Four legitimate loop-backs. Each is travelled only via an authorized, recorded r
 [ ] Gate A   Run if High (required) or Medium (optional); skip if Low — Proportionality Skeptic sits
 [ ] Phase 4  Plan chunked (prefer vertical slices), risk-tagged, High/Critical chunks name a hardening artifact; Security Posture section present (or justified N/A); resource envelope PRICED (tier + multiplication + $ for metered API); vision-mandated deliverables mapped or waived
 [ ] Gate     Human eyeball pass: matches vision, honest tags, ordered for learning, nothing unwanted, cost acceptable FROM the priced envelope in operator units
-[ ] Phase 5  Council sat at stakes-appropriate size (+ Proportionality, standing); independent first passes; findings dispositioned; vision-guard invariants named
+[ ] Phase 5  Council sat with all five seats; independent first passes + round two; opinions folded to one page and dispositioned; vision-guard invariants named
 [ ] Lock     Vision + Plan Locked, Human co-signed AGAINST the operator packet/brief
 [ ] Phase 6  Each spec audited (audit-cycle) and locked at its risk-tier floor; spec-vs-plan gate CLEAN before each lock; unpriced resource envelope = cannot lock
 [ ] Analyze  Pre-implementation cross-artifact pass: acceptance coverage, contradiction scan, premise check, vision-guard fidelity (verbatim); findings dispositioned

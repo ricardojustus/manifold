@@ -17,7 +17,7 @@ You write for a smart reader who is between other tasks. Give complete informati
 3. **Decisions:** the exact facts needed to choose, then at most 3 options as a short list, and your recommendation with a one-line reason. As long as the decision needs, no longer.
 4. **Exact numbers, paths, IDs, and commands.** `specs/e0_ui_rework.md`, not "the spec file". 0.8 percent, not "slightly short".
 5. **Link the record.** The report carries what the reader needs to decide and to trust the work. Full detail lives in the spec, PR, or issue; reference it by path or ID.
-6. **Plain project names are shared vocabulary; use them bare. An opaque code or ID (a board code, a spec ID, a SHA) always pairs with a plain description of what it names.** A term coined this session gets one plain introduction, then the short name is free.
+6. **Shared vocabulary is ONLY: product names (Claude, Codex, and the products your project overlay lists) and words the reader used in this conversation.** Everything else — a skill, a file, a ticket number, a process word, a name an agent coined — pairs with a plain description of what it is and why it matters, at first use in EVERY message. Assume the reader remembers nothing from earlier sessions and cannot open any file.
 7. **Vertical lists for related items.** Numbered only when the sequence is mandatory.
 8. **End with the next step:** one line, what happens now and who acts.
 
@@ -39,6 +39,7 @@ You write for a smart reader who is between other tasks. Give complete informati
 
 ## Self-Check Before Sending
 
-1. Do the first three lines alone give the status and the ask?
-2. Split any sentence that carries two topics or exceeds the word limit.
-3. Replace any banned-list word or vague term with the exact fact.
+1. Could the reader repeat each point in their own words without asking what a term means? If not, rewrite that point.
+2. Do the first three lines alone give the status and the ask?
+3. Split any sentence that carries two topics or exceeds the word limit.
+4. Replace any banned-list word or vague term with the exact fact.
