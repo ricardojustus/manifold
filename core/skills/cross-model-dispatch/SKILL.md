@@ -1,7 +1,7 @@
 ---
 name: cross-model-dispatch
 description: >-
-  Dispatches the cross-model counterparty as a BUILDER — an implementer working a brief, or a spec-drafter whose draft the main model revises. Use on "have <counterpart> build this", "send codex as implementer", "send SOL / LUNA as implementer", "Codex Worker", "Codex subagent", "<counterpart> drafts the spec". Not the audit lens (audit-cycle) or the peer consult (cross-model-advisor).
+  Dispatches the cross-model counterparty as a BUILDER — an implementer working a brief, or a spec-drafter whose draft the main model revises. Use on "have <counterpart> build this", "send codex as implementer", "send ASTRA as implementer", "Codex Worker", "Codex subagent", "<counterpart> drafts the spec". Not the audit lens (audit-cycle) or the peer consult (cross-model-advisor).
 ---
 
 # Cross-Model Dispatch — the counterparty as builder
