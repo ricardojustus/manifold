@@ -106,10 +106,15 @@ When the user invokes `/inter-session [args]`:
    Monitor(
      command="python3 <bin>/client.py --name <name> --label '<label>'",
      description="inter-agent messages (<name>)",
-     persistent=true,
-     timeout_ms=3600000
+     timeout_ms=1800000
    )
    ```
+   The Monitor tool caps a watch at 30 minutes and has no persistent option (Claude Code
+   2.1.278): a model-armed watch expires every half hour and costs a model turn to re-arm.
+   Re-arm SILENTLY — an expiry with nothing to report gets the tool call and no text. A host
+   that supports plugin monitors can arm the listener for the session lifetime instead (a
+   plugin `monitors/monitors.json` running this same client); a project binding may wire that,
+   in which case `connect` is only the fallback and the first step is `status`.
    Don't pass `--port` / `--idle-shutdown-minutes` — `client.py` resolves them
    (env `INTER_SESSION_PORT` / `INTER_SESSION_IDLE_MINUTES`, else 9473 / 10).
    Plain `python3` is correct: `client.py` re-execs under the isolated venv

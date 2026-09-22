@@ -11,7 +11,7 @@ description: >-
   (the `model` parameter beats frontmatter). Frontmatter pins medium effort as the
   default for specced implementation; a dispatch may still name a different effort per
   invocation.
-model: claude-opus-5
+model: claude-opus-5-5
 effort: medium
 tools: Read, Write, Edit, Grep, Glob, Bash
 ---
