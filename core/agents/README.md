@@ -16,7 +16,7 @@ Grounding: a research capture (official docs + Anthropic's shipped plugin agents
   roster SMALL (community consensus: 4–8 max) and prune abandoned roles — every description
   costs context in every session.
 - **Model/effort doctrine**: pin in frontmatter the settled per-role economics (the reviewer
-  pins `effort: xhigh`; both roles pin the operator's named review/build tier as the model
+  pins `effort: high`; both roles pin the operator's named review/build tier as the model
   DEFAULT, so an unpinned dispatch can never silently inherit the session's frontier model).
   The dispatcher's per-invocation `model` parameter beats frontmatter
   (resolution: env `CLAUDE_CODE_SUBAGENT_MODEL` > invocation param > frontmatter > session

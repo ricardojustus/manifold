@@ -8,7 +8,7 @@ description: >-
   C/H/M/L findings with pasted evidence and confidence scores, and a MERGE /
   NEEDS-FIX-PASS / NEEDS-ROUND-N+1 verdict. Never modifies code.
 model: claude-opus-5-5
-effort: xhigh
+effort: high
 tools: Read, Grep, Glob, Bash, Write
 ---
 

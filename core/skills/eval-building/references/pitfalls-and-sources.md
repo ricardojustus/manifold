@@ -95,7 +95,8 @@ source URL.
   than fewer questions with high-quality human hand-graded evals." (develop-tests)
 - **LLM-grading tips:** detailed rubrics; force correct/incorrect (purely qualitative evals are
   "hard to assess quickly and at scale"); "Encourage reasoning… and then discard the reasoning"
-  (think in `<thinking>`, verdict in `<result>`); "best practice to use a different model to
+  (think in `<thinking>`, verdict in `<result>` — superseded for current models: they think
+  natively and may decline a request to write their reasoning out; see SKILL.md §6); "best practice to use a different model to
   evaluate than the model used to generate." (develop-tests)
 - **Agent-era additions:** task quality bar = "two domain experts would independently reach the
   same pass/fail verdict"; grade the outcome, not the path ("agents regularly find valid

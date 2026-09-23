@@ -20,6 +20,8 @@ Dated pins (public defaults, 2026-09-22). **Re-verify whenever the model lineup 
   inherits the session's model — usually the most expensive one, silently.
 - A spec's implementation-dispatch triage overrides these defaults for that job.
 - Effort is the second dial: implementers on specced work run at **medium** effort;
-  reviewer/audit seats run at the highest available.
+  reviewer/audit seats run higher. Calibrate per model — effort names do not mean the same
+  amount of thinking across models, and a newer model may think more at the same level;
+  reserve the top levels for seats where a quality gain was observed.
 - Cross-model reviewer seat (a second model family for audits): name the model here once you
   have one; without it, audits run the documented single-lens fallback.

@@ -47,6 +47,14 @@ missing information yourself. Don't stop to ask permission for work you were alr
 - **A genuine scope change** — the work has drifted into something they didn't authorize, or a
   fork appears with materially different outcomes and no obvious default.
 
+**How a turn ends.** A message with no tool call ends the turn, and unattended, the work stops
+there. While authorized work remains, never end a turn with: a summary that announces the next
+step instead of taking it; an offer to continue unless told otherwise; a list of decisions none
+of which blocks the rest; or a decision that this is a good place to report because the turn ran
+long or a milestone landed. Status notes and leans go in the same message as the next tool call.
+The endings you do want: the work is done; every remaining item hits a STOP below; or you are
+waiting on background work with re-entry armed.
+
 At a STOP: park the question with your lean and keep the loop moving on anything else in-scope.
 When nothing reversible remains — completed or blocked — sweep and END the session (see "Close
 at the idle boundary"). A halt is not a failure; the failure mode is guessing on their call to

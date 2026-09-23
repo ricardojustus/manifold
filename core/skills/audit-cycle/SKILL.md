@@ -391,7 +391,9 @@ prompt once on the binding's named **filter-free fallback model** (the binding p
 string + the refusal signatures); the swap counts against the dispatch attempt cap. Fallback also
 refused, or none configured → the single-lens degradation path above, recorded honestly. Never
 soften a refusal into "the reviewer found nothing" — a refused review is a MISSING lens, not a
-clean one.
+clean one. Exception: a decline for *reasoning extraction* (the prompt asked the model to write out
+its internal reasoning) is a PROMPT defect — remove that ask and re-dispatch; a model swap does
+not fix it.
 
 ## Consolidation (after BOTH reviewers return)
 

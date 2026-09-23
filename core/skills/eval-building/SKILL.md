@@ -102,8 +102,9 @@ Prefer the lowest rung that still captures the criterion (§12).
   one-line reason.
 - **One dimension at a time, isolated** — correctness, then completeness, then tone; never one
   judge call for "overall quality".
-- **Encourage reasoning, then discard it.** Reasoning in `<thinking>` tags, verdict in `<result>`
-  tags; keep the verdict.
+- **Verdict plus a one-line critique citing the decisive evidence.** Do not ask the judge to
+  write out an internal reasoning trace or scratchpad — current models think natively, and some
+  decline prompts that push them to reproduce their reasoning in the response.
 - **Give an escape hatch** — "Unknown" on an ambiguous case; route abstentions to a human.
 - **Supply a reference answer where one exists.** Excluding it causes the greatest performance
   degradation.
